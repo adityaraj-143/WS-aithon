@@ -16,6 +16,10 @@ struct RegistryPromptIntent {
     /// Parsed budget ceiling, e.g. 500.0 from "under $500" or "budget of 300".
     /// `nil` means no budget constraint was detected.
     let budget: Double?
+    let eventType: String?
+    let styleHints: [String]
+    let ownedKeywords: [String]
+    let excludedKeywords: [String]
 
     /// Whether a budget was explicitly mentioned in the prompt.
     var hasBudget: Bool { budget != nil }
@@ -49,11 +53,39 @@ struct PromptParser {
         #"\$(\d+(?:\.\d{1,2})?)"#,
     ]
 
+    private static let knownEvents: [String] = [
+        "birthday", "wedding", "housewarming", "anniversary", "baby shower", "dinner", "brunch"
+    ]
+
+    private static let knownStyles: [String] = [
+        "elegant", "minimal", "cozy", "modern", "rustic", "classic", "luxury", "warm", "neutral"
+    ]
+
+    private static let ownershipPatterns: [String] = [
+        #"i\s+already\s+have\s+([a-z0-9\s\-]+)"#,
+        #"already\s+have\s+([a-z0-9\s\-]+)"#,
+        #"i\s+have\s+([a-z0-9\s\-]+)"#
+    ]
+
+    private static let exclusionPatterns: [String] = [
+        #"remove\s+([a-z0-9\s\-]+)"#,
+        #"no\s+([a-z0-9\s\-]+)"#,
+        #"without\s+([a-z0-9\s\-]+)"#,
+        #"exclude\s+([a-z0-9\s\-]+)"#
+    ]
+
     // MARK: - Parse
 
     func parse(_ prompt: String) -> RegistryPromptIntent {
         let budget = extractBudget(from: prompt)
-        return RegistryPromptIntent(rawPrompt: prompt, budget: budget)
+        return RegistryPromptIntent(
+            rawPrompt: prompt,
+            budget: budget,
+            eventType: extractEventType(from: prompt),
+            styleHints: extractKnownTerms(from: prompt, terms: Self.knownStyles),
+            ownedKeywords: extractPatternCaptures(from: prompt, patterns: Self.ownershipPatterns),
+            excludedKeywords: extractPatternCaptures(from: prompt, patterns: Self.exclusionPatterns)
+        )
     }
 
     // MARK: - Private
@@ -81,5 +113,39 @@ struct PromptParser {
         let captureRange = match.range(at: 1)
         guard let swiftRange = Range(captureRange, in: text) else { return nil }
         return String(text[swiftRange])
+    }
+
+    private func extractEventType(from text: String) -> String? {
+        extractKnownTerms(from: text, terms: Self.knownEvents).first
+    }
+
+    private func extractKnownTerms(from text: String, terms: [String]) -> [String] {
+        let normalized = text.lowercased()
+        return terms.filter { normalized.contains($0) }
+    }
+
+    private func extractPatternCaptures(from text: String, patterns: [String]) -> [String] {
+        var captures: [String] = []
+
+        for pattern in patterns {
+            guard let regex = try? NSRegularExpression(pattern: pattern, options: [.caseInsensitive]) else {
+                continue
+            }
+            let range = NSRange(text.startIndex..., in: text)
+            let matches = regex.matches(in: text, range: range)
+
+            for match in matches where match.numberOfRanges > 1 {
+                let captureRange = match.range(at: 1)
+                guard let swiftRange = Range(captureRange, in: text) else { continue }
+                let captured = text[swiftRange]
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                    .lowercased()
+                if !captured.isEmpty {
+                    captures.append(captured)
+                }
+            }
+        }
+
+        return Array(Set(captures)).sorted()
     }
 }

@@ -11,6 +11,13 @@ struct ProductItem: Identifiable {
     let title: String
     let price: Double?
     let path: String?
+    let description: String?
+    let eventTags: [String]
+    let slotHints: [String]
+    let styleTags: [String]
+    let settingTags: [String]
+    let essentialForEvents: [String]
+    let color: String?
     
     var imageURL: URL? {
         if let imageUrl = path {
@@ -38,5 +45,13 @@ extension ProductItem {
         } else {
             self.path = nil
         }
+
+        self.description = dto.description
+        self.eventTags = dto.eventTags ?? []
+        self.slotHints = dto.slotHints ?? []
+        self.styleTags = dto.styleTags ?? []
+        self.settingTags = dto.settingTags ?? []
+        self.essentialForEvents = dto.essentialForEvents ?? []
+        self.color = dto.properties?.color
     }
 }

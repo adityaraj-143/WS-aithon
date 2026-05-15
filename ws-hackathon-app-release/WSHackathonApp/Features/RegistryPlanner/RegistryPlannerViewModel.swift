@@ -70,7 +70,16 @@ final class RegistryPlannerViewModel: ObservableObject {
         Task {
             // Run the CPU-bound search off the main thread
             let (plan) = await Task.detached(priority: .userInitiated) { [weak self] in
-                guard let self else { return RegistryPlan(items: [], totalCost: 0, budget: .infinity) }
+                guard let self else {
+                    return RegistryPlan(
+                        items: [],
+                        totalCost: 0,
+                        budget: .infinity,
+                        coverageScore: 0,
+                        missingEssentials: [],
+                        budgetBreakdown: RegistryBudgetBreakdown(essentialsCost: 0, optionalCost: 0)
+                    )
+                }
 
                 let intent = self.parser.parse(query)
                 let candidates = self.vectorStore.search(prompt: query, topK: 20, minScore: 0.1)

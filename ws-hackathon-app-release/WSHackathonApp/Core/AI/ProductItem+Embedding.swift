@@ -16,16 +16,40 @@ extension ProductItem {
     var embeddableDescription: String {
         var parts: [String] = []
 
-        // Core identity
         parts.append(title)
 
-        // We need the DTO data, but ProductItem is already flattened.
-        // We extend using the DTO-sourced properties that survive into ProductItem.
-        // Additional richness comes from the DTO extension below.
+        if let description, !description.isEmpty {
+            parts.append(description)
+        }
+
+        if !eventTags.isEmpty {
+            parts.append("events: \(eventTags.joined(separator: ", "))")
+        }
+
+        if !slotHints.isEmpty {
+            parts.append("slots: \(slotHints.joined(separator: ", "))")
+        }
+
+        if !styleTags.isEmpty {
+            parts.append("style: \(styleTags.joined(separator: ", "))")
+        }
+
+        if !settingTags.isEmpty {
+            parts.append("setting: \(settingTags.joined(separator: ", "))")
+        }
+
+        if !essentialForEvents.isEmpty {
+            parts.append("essential for: \(essentialForEvents.joined(separator: ", "))")
+        }
+
+        if let color, !color.isEmpty {
+            parts.append("color: \(cleanToken(color))")
+        }
 
         if let price = price {
             let formatted = String(format: "$%.2f", price)
             parts.append("priced at \(formatted)")
+            parts.append("price band: \(priceBand(for: price))")
         }
 
         return parts.joined(separator: ", ")
@@ -41,61 +65,67 @@ extension ProductItemDTO {
     var embeddableDescription: String {
         var parts: [String] = []
 
-        // Name
         parts.append(name)
 
-        // Brand
+        if let description, !description.isEmpty {
+            parts.append(description)
+        }
+
         if let brand = properties?.brand, !brand.isEmpty {
-            let cleanBrand = brand
-                .replacingOccurrences(of: "-parent/", with: " ")
-                .replacingOccurrences(of: "-", with: " ")
+            let cleanBrand = cleanToken(brand)
             parts.append("brand: \(cleanBrand)")
         }
 
-        // Material
         if let material = properties?.material, !material.isEmpty {
-            let cleanMaterial = material
-                .replacingOccurrences(of: "-parent/", with: " ")
-                .replacingOccurrences(of: "-", with: " ")
-                .replacingOccurrences(of: "[", with: "")
-                .replacingOccurrences(of: "]", with: "")
+            let cleanMaterial = cleanToken(material)
             parts.append("material: \(cleanMaterial)")
         }
 
-        // Product type / category
         if let productType = properties?.productType, !productType.isEmpty {
-            let cleanType = productType.replacingOccurrences(of: "-", with: " ")
+            let cleanType = cleanToken(productType)
             parts.append("category: \(cleanType)")
         }
 
-        // Color
         if let color = properties?.color, !color.isEmpty {
-            let cleanColor = color
-                .replacingOccurrences(of: "-parent/", with: " ")
-                .replacingOccurrences(of: "-", with: " ")
+            let cleanColor = cleanToken(color)
             parts.append("color: \(cleanColor)")
         }
 
-        // Pattern / style domain (e.g. cookware, tabletop, electrics)
         if let pattern = properties?.pattern, !pattern.isEmpty {
-            let cleanPattern = pattern
-                .replacingOccurrences(of: "[", with: "")
-                .replacingOccurrences(of: "]", with: "")
+            let cleanPattern = cleanToken(pattern)
             parts.append("style: \(cleanPattern)")
         }
 
-        // Collection
         if let collection = properties?.collection, !collection.isEmpty {
-            let cleanCollection = collection.replacingOccurrences(of: "-", with: " ")
+            let cleanCollection = cleanToken(collection)
             parts.append("collection: \(cleanCollection)")
         }
 
-        // Price
-        if let regularPrice = price?.regularPrice {
-            parts.append(String(format: "priced at $%.2f", regularPrice))
+        if let eventTags, !eventTags.isEmpty {
+            parts.append("events: \(eventTags.joined(separator: ", "))")
         }
 
-        // Food / furniture flags for semantic distinction
+        if let slotHints, !slotHints.isEmpty {
+            parts.append("slots: \(slotHints.joined(separator: ", "))")
+        }
+
+        if let styleTags, !styleTags.isEmpty {
+            parts.append("style tags: \(styleTags.joined(separator: ", "))")
+        }
+
+        if let settingTags, !settingTags.isEmpty {
+            parts.append("setting tags: \(settingTags.joined(separator: ", "))")
+        }
+
+        if let essentialForEvents, !essentialForEvents.isEmpty {
+            parts.append("essential for: \(essentialForEvents.joined(separator: ", "))")
+        }
+
+        if let regularPrice = price?.regularPrice {
+            parts.append(String(format: "priced at $%.2f", regularPrice))
+            parts.append("price band: \(priceBand(for: regularPrice))")
+        }
+
         if properties?.isFood == "true" {
             parts.append("food item")
         }
@@ -104,5 +134,27 @@ extension ProductItemDTO {
         }
 
         return parts.joined(separator: ", ")
+    }
+}
+
+private func cleanToken(_ value: String) -> String {
+    value
+        .replacingOccurrences(of: "-parent/", with: " ")
+        .replacingOccurrences(of: "[", with: "")
+        .replacingOccurrences(of: "]", with: "")
+        .replacingOccurrences(of: "-", with: " ")
+        .replacingOccurrences(of: "/", with: " ")
+}
+
+private func priceBand(for price: Double) -> String {
+    switch price {
+    case ..<30:
+        return "budget"
+    case ..<100:
+        return "mid range"
+    case ..<250:
+        return "premium"
+    default:
+        return "luxury"
     }
 }

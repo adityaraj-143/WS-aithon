@@ -43,7 +43,13 @@
       ]
     },
     "availability": "ON_HAND",
-    "deliveryEstimate": "TRANSIT"
+    "deliveryEstimate": "TRANSIT",
+    "description": "A premium acacia cutting board for prep, serving cheese, and creating a warm tabletop presentation for casual hosting.",
+    "eventTags": ["birthday", "dinner", "housewarming"],
+    "slotHints": ["food prep", "serveware"],
+    "styleTags": ["warm", "rustic", "classic"],
+    "settingTags": ["kitchen", "tabletop"],
+    "essentialForEvents": ["housewarming"]
   },
   {
     "id": "6121370",
@@ -87,7 +93,13 @@
       ]
     },
     "availability": "ON_HAND",
-    "deliveryEstimate": "TRANSIT"
+    "deliveryEstimate": "TRANSIT",
+    "description": "Maintenance oil that keeps wooden boards and serving pieces ready for hosting and long-term kitchen use.",
+    "eventTags": ["housewarming", "dinner"],
+    "slotHints": ["homekeeping", "food prep"],
+    "styleTags": ["practical", "minimal"],
+    "settingTags": ["kitchen"],
+    "essentialForEvents": []
   },
   {
     "id": "6247040",
@@ -132,7 +144,13 @@
       ]
     },
     "availability": "ON_HAND",
-    "deliveryEstimate": "TRANSIT"
+    "deliveryEstimate": "TRANSIT",
+    "description": "A lidded ceramic bowl that works for serving salads, sides, or snacks while keeping a polished tabletop feel.",
+    "eventTags": ["birthday", "dinner", "brunch", "housewarming"],
+    "slotHints": ["serveware", "tabletop"],
+    "styleTags": ["cozy", "warm", "modern"],
+    "settingTags": ["tabletop", "dining"],
+    "essentialForEvents": ["birthday", "dinner", "brunch"]
   },
   {
     "id": "1341411",
@@ -177,7 +195,13 @@
         }
       ]
     },
-    "availability": "NLA"
+    "availability": "NLA",
+    "description": "A classic porcelain cup and saucer set for coffee or tea service in elegant brunch and dinner settings.",
+    "eventTags": ["brunch", "dinner", "wedding"],
+    "slotHints": ["tabletop", "coffee", "drinkware"],
+    "styleTags": ["elegant", "classic", "neutral"],
+    "settingTags": ["tabletop", "coffee station"],
+    "essentialForEvents": ["brunch"]
   },
   {
     "id": "2453926",
@@ -226,7 +250,13 @@
       ]
     },
     "availability": "ON_HAND",
-    "deliveryEstimate": "TRANSIT"
+    "deliveryEstimate": "TRANSIT",
+    "description": "A statement dutch oven for hearty meals, family dinners, and wedding registry essentials with a premium finish.",
+    "eventTags": ["wedding", "housewarming", "dinner"],
+    "slotHints": ["cookware"],
+    "styleTags": ["luxury", "classic", "warm"],
+    "settingTags": ["kitchen", "stovetop"],
+    "essentialForEvents": ["wedding", "housewarming", "dinner"]
   },
   {
     "id": "8381456",
@@ -279,7 +309,13 @@
       ]
     },
     "availability": "ON_HAND",
-    "deliveryEstimate": "TRANSIT"
+    "deliveryEstimate": "TRANSIT",
+    "description": "A programmable coffee maker for hosting brunch, setting up a morning beverage station, or rounding out a practical registry.",
+    "eventTags": ["brunch", "housewarming", "wedding"],
+    "slotHints": ["coffee", "beverage"],
+    "styleTags": ["modern", "practical", "minimal"],
+    "settingTags": ["kitchen", "coffee station"],
+    "essentialForEvents": ["brunch"]
   },
   {
     "id": "8227593",
@@ -325,7 +361,13 @@
       ]
     },
     "availability": "BACK_ORDERED",
-    "deliveryEstimate": "TRANSIT"
+    "deliveryEstimate": "TRANSIT",
+    "description": "A walnut lazy Susan that helps organize condiments, desserts, and shared dishes for entertaining.",
+    "eventTags": ["birthday", "dinner", "housewarming"],
+    "slotHints": ["serveware", "decor", "homekeeping"],
+    "styleTags": ["warm", "rustic", "cozy"],
+    "settingTags": ["tabletop", "countertop"],
+    "essentialForEvents": []
   },
   {
     "id": "5001660",
@@ -369,7 +411,13 @@
       ]
     },
     "availability": "ON_HAND",
-    "deliveryEstimate": "TRANSIT"
+    "deliveryEstimate": "TRANSIT",
+    "description": "An organic olive oil pantry staple that complements dinner hosting, bread service, and thoughtful housewarming bundles.",
+    "eventTags": ["dinner", "housewarming", "birthday"],
+    "slotHints": ["pantry", "food prep"],
+    "styleTags": ["warm", "practical", "rustic"],
+    "settingTags": ["kitchen", "pantry"],
+    "essentialForEvents": []
   },
   {
     "id": "9670912",
@@ -416,7 +464,13 @@
       ]
     },
     "availability": "BACK_ORDERED",
-    "deliveryEstimate": "TRANSIT"
+    "deliveryEstimate": "TRANSIT",
+    "description": "Crystal martini glasses for elevated cocktail service, adult birthday entertaining, and elegant barware gifting.",
+    "eventTags": ["birthday", "anniversary", "wedding"],
+    "slotHints": ["drinkware", "barware"],
+    "styleTags": ["elegant", "luxury", "modern"],
+    "settingTags": ["bar cart", "tabletop"],
+    "essentialForEvents": ["birthday", "anniversary"]
   },
   {
     "id": "181543",
@@ -466,6 +520,12 @@
       ]
     },
     "availability": "ON_HAND",
-    "deliveryEstimate": "TRANSIT"
+    "deliveryEstimate": "TRANSIT",
+    "description": "A colorful cast iron skillet for everyday cooking and complete registry packages focused on cookware essentials.",
+    "eventTags": ["wedding", "housewarming", "dinner"],
+    "slotHints": ["cookware"],
+    "styleTags": ["warm", "classic", "premium"],
+    "settingTags": ["kitchen", "stovetop"],
+    "essentialForEvents": ["housewarming", "dinner"]
   }
 ]

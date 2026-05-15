@@ -23,6 +23,9 @@ struct RegistryPlan {
     let items: [ScoredProduct]
     let totalCost: Double
     let budget: Double
+    let coverageScore: Double
+    let missingEssentials: [String]
+    let budgetBreakdown: RegistryBudgetBreakdown
 
     var remainingBudget: Double {
         max(0, budget - totalCost)
@@ -34,5 +37,46 @@ struct RegistryPlan {
 
     var isEmpty: Bool {
         items.isEmpty
+    }
+}
+
+struct RegistryBudgetBreakdown {
+    let essentialsCost: Double
+    let optionalCost: Double
+}
+
+struct PlannedRegistryResponse {
+    let intent: RegistryPromptIntent
+    let browseProducts: [ScoredProduct]
+    let registryPlan: RegistryPlan
+}
+
+struct RegistryConversationState {
+    var budget: Double?
+    var eventType: String?
+    var styleHints: Set<String>
+    var ownedKeywords: Set<String>
+    var excludedKeywords: Set<String>
+
+    static var empty: RegistryConversationState {
+        RegistryConversationState(
+            budget: nil,
+            eventType: nil,
+            styleHints: [],
+            ownedKeywords: [],
+            excludedKeywords: []
+        )
+    }
+
+    mutating func merge(intent: RegistryPromptIntent) {
+        if let budget = intent.budget {
+            self.budget = budget
+        }
+        if let eventType = intent.eventType {
+            self.eventType = eventType
+        }
+        styleHints.formUnion(intent.styleHints)
+        ownedKeywords.formUnion(intent.ownedKeywords)
+        excludedKeywords.formUnion(intent.excludedKeywords)
     }
 }
