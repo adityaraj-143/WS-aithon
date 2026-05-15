@@ -20,7 +20,6 @@ struct WSTabView: View {
                         Label(tab.title, systemImage: tab.icon)
                     }
                     .tag(tab)
-                    .badge(tab == .cart ? (viewModel.cartItemCount > 0 ? viewModel.cartItemCount : 0) : 0)
             }
         }
     }
@@ -32,11 +31,10 @@ struct WSTabView: View {
             HomeView()
         case .registry:
             RegistryView()
-        case .cart:
-            CartView()
         }
     }
 }
+
 
 #Preview {
     WSTabView()
