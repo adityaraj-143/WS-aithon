@@ -19,6 +19,9 @@ struct RegistryView: View {
     @EnvironmentObject var registryRepo: RegistryRepository
     @EnvironmentObject var cartRepo: CartRepository
     @EnvironmentObject var tabBarVM: WSTabBarViewModel
+    @EnvironmentObject var homeVM: HomeViewModel
+    
+    @State private var showPlanner = false
     
     var body: some View {
         NavigationStack(path: $tabBarVM.registryPath) {
@@ -80,6 +83,10 @@ struct RegistryView: View {
         .onAppear {
             viewModel.bind(repository: registryRepo)
         }
+        .sheet(isPresented: $showPlanner) {
+            RegistryPlannerView(productDTOs: homeVM.productDTOs)
+                .environmentObject(registryRepo)
+        }
     }
 }
 
@@ -96,6 +103,16 @@ private extension RegistryView {
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            
+            Divider().padding(.horizontal)
+            
+            Button {
+                showPlanner = true
+            } label: {
+                planRegistryButton
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
         }
         .frame(maxWidth: .infinity)
         .background(Color.white)
@@ -108,6 +125,21 @@ private extension RegistryView {
             Image(systemName: AppImages.Registry.plus)
                 .foregroundColor(.black)
             Text(AppStrings.Registry.create)
+                .font(.headline)
+                .foregroundColor(.black)
+            Spacer()
+            Image(systemName: AppImages.Registry.chevron)
+                .foregroundColor(.gray)
+        }
+        .frame(maxWidth: .infinity)
+        .padding()
+    }
+    
+    var planRegistryButton: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "sparkles")
+                .foregroundColor(Color(hex: "e94560"))
+            Text("Plan My Registry with AI")
                 .font(.headline)
                 .foregroundColor(.black)
             Spacer()

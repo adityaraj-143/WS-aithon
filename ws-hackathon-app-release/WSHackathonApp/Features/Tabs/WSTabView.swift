@@ -11,6 +11,7 @@ struct WSTabView: View {
     @EnvironmentObject var viewModel: WSTabBarViewModel
     @EnvironmentObject var cartRepository: CartRepository
     @EnvironmentObject var registryRepository: RegistryRepository
+    @EnvironmentObject var homeVM: HomeViewModel
     
     var body: some View {
         TabView(selection: $viewModel.selectedTab) {

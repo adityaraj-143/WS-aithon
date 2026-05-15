@@ -11,6 +11,8 @@ import Combine
 class HomeViewModel: ObservableObject {
     @Published var searchText: String = ""
     @Published var products: [ProductItem] = []
+    /// Raw DTOs exposed for the on-device AI planner (richer fields than ProductItem)
+    @Published var productDTOs: [ProductItemDTO] = []
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
     
@@ -74,6 +76,7 @@ class HomeViewModel: ObservableObject {
         
         do {
             let dtos: [ProductItemDTO] = try await APIClient.shared.request(Endpoint.products())
+            self.productDTOs = dtos
             self.products = dtos.map { ProductItem(from: $0) }
         } catch {
             print(error)
