@@ -16,6 +16,9 @@ struct ProductDetailView: View {
     
     private let bgColor = Color(red: 245/255, green: 243/255, blue: 237/255)
     
+    @State private var showRegistrySheet = false
+    @State private var selectedRegistryIds: Set<UUID> = []
+    
     var body: some View {
         ZStack(alignment: .top) {
             bgColor.ignoresSafeArea()
@@ -133,24 +136,38 @@ struct ProductDetailView: View {
         .navigationBarHidden(true)
         .onAppear {
             viewModel.bind(cartRepository: cartRepository, registryRepository: registryRepository)
+            if let activeId = registryRepository.activeRegistryId {
+                selectedRegistryIds.insert(activeId)
+            }
+        }
+        .sheet(isPresented: $showRegistrySheet) {
+            RegistrySelectionSheet(
+                product: viewModel.product,
+                registries: registryRepository.registries,
+                selectedIds: $selectedRegistryIds,
+                onSave: {
+                    for id in selectedRegistryIds {
+                        registryRepository.addProduct(viewModel.product, to: id)
+                    }
+                    showRegistrySheet = false
+                },
+                onCreateNew: {
+                    showRegistrySheet = false
+                    tabBarVM.selectTab(.registry)
+                }
+            )
+            .presentationDetents([.fraction(0.85)])
+            .presentationDragIndicator(.visible)
         }
     }
     
     private var bottomActionBar: some View {
         Button(action: {
-            if viewModel.hasActiveRegistry {
-                if viewModel.quantityInRegistry > 0 {
-                    viewModel.removeFromRegistry()
-                } else {
-                    viewModel.addToRegistry()
-                }
-            } else {
-                tabBarVM.selectTab(.registry)
-            }
+            showRegistrySheet = true
         }) {
             HStack {
-                Image(systemName: viewModel.quantityInRegistry > 0 ? "minus" : "plus")
-                Text(viewModel.hasActiveRegistry ? (viewModel.quantityInRegistry > 0 ? "Remove from Registry" : "Add to Registry") : "Create Registry to Add")
+                Image(systemName: "plus")
+                Text("Add to Repository")
             }
             .font(.system(size: 15, weight: .medium))
             .foregroundColor(.white)
@@ -193,6 +210,175 @@ struct ProductDetailView: View {
                 .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
                 .fixedSize(horizontal: false, vertical: true)
         }
+    }
+}
+
+// MARK: - Registry Selection Sheet
+struct RegistrySelectionSheet: View {
+    let product: ProductItem
+    let registries: [Registry]
+    @Binding var selectedIds: Set<UUID>
+    let onSave: () -> Void
+    let onCreateNew: () -> Void
+    
+    @Environment(\.dismiss) var dismiss
+    
+    private let bgColor = Color(red: 245/255, green: 243/255, blue: 237/255)
+    
+    var body: some View {
+        ZStack(alignment: .top) {
+            bgColor.ignoresSafeArea()
+            
+            VStack(alignment: .leading, spacing: 0) {
+                // Header
+                HStack {
+                    Text("Save to Repository")
+                        .font(.system(size: 24, weight: .regular, design: .serif))
+                        .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                    Spacer()
+                    Button(action: { dismiss() }) {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundColor(.black)
+                            .frame(width: 30, height: 30)
+                            .background(Color.black.opacity(0.05))
+                            .clipShape(Circle())
+                    }
+                }
+                .padding(.horizontal, 24)
+                .padding(.top, 30)
+                .padding(.bottom, 24)
+                
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 16) {
+                        ForEach(registries) { registry in
+                            registryRow(registry)
+                        }
+                        
+                        // Create New
+                        Button(action: onCreateNew) {
+                            HStack {
+                                Spacer()
+                                Image(systemName: "plus")
+                                Text("Create New Repository")
+                                    .font(.system(size: 15, weight: .medium))
+                                Spacer()
+                            }
+                            .foregroundColor(Color(red: 115/255, green: 125/255, blue: 105/255))
+                            .padding(.vertical, 18)
+                            .background(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .strokeBorder(
+                                        style: StrokeStyle(lineWidth: 1, dash: [6, 4])
+                                    )
+                                    .foregroundColor(Color(red: 0.7, green: 0.7, blue: 0.7))
+                            )
+                        }
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 120) // space for bottom button
+                }
+            }
+            
+            // Bottom Save Button
+            VStack {
+                Spacer()
+                Button(action: onSave) {
+                    Text(saveButtonTitle)
+                        .font(.system(size: 15, weight: .medium))
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 18)
+                        .background(Color(red: 115/255, green: 125/255, blue: 105/255))
+                        .clipShape(Capsule())
+                }
+                .disabled(selectedIds.isEmpty)
+                .opacity(selectedIds.isEmpty ? 0.5 : 1.0)
+                .padding(.horizontal, 24)
+                .padding(.bottom, 20)
+                .background(
+                    LinearGradient(
+                        colors: [bgColor.opacity(0), bgColor, bgColor],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                    .frame(height: 100)
+                    .offset(y: 10)
+                )
+            }
+        }
+    }
+    
+    private var saveButtonTitle: String {
+        if selectedIds.isEmpty {
+            return "Select a Repository"
+        } else if selectedIds.count == 1, let id = selectedIds.first, let reg = registries.first(where: { $0.id == id }) {
+            return "Save to \(reg.displayName)"
+        } else {
+            return "Save to Multiple Repositories"
+        }
+    }
+    
+    private func registryRow(_ registry: Registry) -> some View {
+        let isSelected = selectedIds.contains(registry.id)
+        
+        return Button(action: {
+            if isSelected {
+                selectedIds.remove(registry.id)
+            } else {
+                selectedIds.insert(registry.id)
+            }
+        }) {
+            HStack(spacing: 16) {
+                // Folder Icon Box
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(Color(red: 0.92, green: 0.9, blue: 0.88))
+                        .frame(width: 48, height: 48)
+                    Image(systemName: "folder")
+                        .font(.system(size: 20))
+                        .foregroundColor(Color(red: 0.5, green: 0.5, blue: 0.5))
+                }
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(registry.displayName)
+                        .font(.system(size: 15, weight: .medium))
+                        .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                    
+                    Text("\(registry.items.count) Items • 1 Collaborators")
+                        .font(.system(size: 13))
+                        .foregroundColor(Color(red: 0.5, green: 0.5, blue: 0.5))
+                }
+                
+                Spacer()
+                
+                // Radio/Check circle
+                ZStack {
+                    Circle()
+                        .stroke(isSelected ? Color.clear : Color(red: 0.8, green: 0.8, blue: 0.8), lineWidth: 1)
+                        .frame(width: 24, height: 24)
+                    
+                    if isSelected {
+                        Circle()
+                            .fill(Color(red: 115/255, green: 125/255, blue: 105/255))
+                            .frame(width: 24, height: 24)
+                        Image(systemName: "checkmark")
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundColor(.white)
+                    }
+                }
+            }
+            .padding(16)
+            .background(
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(isSelected ? Color(red: 0.9, green: 0.9, blue: 0.86) : Color.white)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(isSelected ? Color(red: 115/255, green: 125/255, blue: 105/255) : Color(red: 0.9, green: 0.9, blue: 0.9), lineWidth: 1)
+            )
+        }
+        .buttonStyle(PlainButtonStyle())
     }
 }
 

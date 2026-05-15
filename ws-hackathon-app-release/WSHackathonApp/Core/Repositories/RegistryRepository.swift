@@ -63,12 +63,18 @@ final class RegistryRepository: ObservableObject {
     // MARK: - Add Product
     
     func addProduct(_ product: ProductItem) {
-        guard var registry = currentRegistry else { return }
+        guard let registry = currentRegistry else { return }
+        addProduct(product, to: registry.id)
+    }
+    
+    func addProduct(_ product: ProductItem, to registryId: UUID) {
+        guard let index = registries.firstIndex(where: { $0.id == registryId }) else { return }
+        var registry = registries[index]
         
         let price = product.price ?? 0.0
         
-        if let index = registry.items.firstIndex(where: { $0.id == product.id }) {
-            registry.items[index].quantity += 1
+        if let itemIndex = registry.items.firstIndex(where: { $0.id == product.id }) {
+            registry.items[itemIndex].quantity += 1
         } else {
             registry.items.append(
                 RegistryItem(
@@ -81,7 +87,10 @@ final class RegistryRepository: ObservableObject {
             )
         }
         
-        currentRegistry = registry
+        registries[index] = registry
+        if activeRegistryId == registryId {
+            currentRegistry = registry
+        }
     }
     
     // MARK: - Remove Item

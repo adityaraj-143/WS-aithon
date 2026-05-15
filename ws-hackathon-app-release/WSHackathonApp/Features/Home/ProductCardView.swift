@@ -43,15 +43,6 @@ struct ProductCardView: View {
                 HStack(alignment: .top) {
                     statusPill
                     Spacer()
-                    Button(action: onAddToRegistry) {
-                        Image(systemName: registryQuantity > 0 ? "heart.fill" : "heart")
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundColor(registryQuantity > 0 ? .red : .black)
-                            .frame(width: 32, height: 32)
-                            .background(Color.white)
-                            .clipShape(Circle())
-                            .shadow(color: .black.opacity(0.1), radius: 2, y: 1)
-                    }
                 }
                 .padding(10)
             }
