@@ -5,7 +5,6 @@
 //  Created by Nilesh Mahajan on 03/04/26.
 //
 
-import Foundation
 import SwiftUI
 
 struct ProductCardView: View {
@@ -16,127 +15,92 @@ struct ProductCardView: View {
     let onRemove: () -> Void
     let onAddToRegistry: () -> Void
     let onRemoveFromRegistry: () -> Void
-    
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            GeometryReader { geo in
-                
-                AsyncImage(url: product.imageURL) { phase in
-                    if let image = phase.image {
-                        image
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: geo.size.width, height: 150)
-                            .clipped()
-                            .cornerRadius(8)
-                    } else if phase.error != nil {
-                        ZStack {
-                            Color(.systemGray5)
-                            Image(systemName: "photo")
-                                .foregroundColor(.gray)
-                                .font(.system(size: 30))
+        HStack(alignment: .top, spacing: 14) {
+
+            // ─── Product Image ───────────────────────────────
+            productImage
+
+            // ─── Info + Actions ──────────────────────────────
+            VStack(alignment: .leading, spacing: 6) {
+                Text(product.title)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Color.wsTitle)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                if let price = product.price {
+                    Text(price, format: .currency(code: "USD"))
+                        .font(.headline.weight(.bold))
+                        .foregroundStyle(Color.wsBrand)
+                }
+
+                Spacer(minLength: 4)
+
+                // ─── Cart Control ────────────────────────────
+                HStack(spacing: 10) {
+                    if quantity == 0 {
+                        Button(action: onAdd) {
+                            Label("Add", systemImage: "cart.badge.plus")
+                                .font(.caption.weight(.bold))
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 14)
+                                .padding(.vertical, 8)
+                                .background(Color.wsBrand)
+                                .clipShape(Capsule())
                         }
-                        .frame(width: geo.size.width, height: 150)
-                        .cornerRadius(8)
                     } else {
-                        ZStack {
-                            Color(.systemGray5)
-                            ProgressView()
-                        }
-                        .frame(width: geo.size.width, height: 150)
-                        .cornerRadius(8)
+                        StepperPill(
+                            count: quantity,
+                            onIncrement: onAdd,
+                            onDecrement: onRemove
+                        )
+                    }
+
+                    Spacer()
+
+                    // ─── Registry Toggle ──────────────────────
+                    Button(action: registryQuantity == 0 ? onAddToRegistry : onRemoveFromRegistry) {
+                        Image(systemName: registryQuantity == 0 ? "gift" : "gift.fill")
+                            .font(.system(size: 15, weight: .semibold))
+                            .foregroundStyle(registryQuantity == 0 ? Color.wsBrand : .white)
+                            .frame(width: 34, height: 34)
+                            .background(registryQuantity == 0
+                                        ? Color.wsBrandLight
+                                        : Color.wsBrand)
+                            .clipShape(Circle())
                     }
                 }
-            }
-            .frame(height: 150) // fix GeometryReader height
-            
-            // Product Text
-            Text(product.title)
-                .font(.subheadline)
-            
-            Text(product.price?.formatted(.currency(code: "USD")) ?? "")
-                .font(.subheadline)
-                .foregroundColor(.primary)
-            Spacer()
-            // Add To Cart
-            if quantity == 0 {
-                Button(action: onAdd) {
-                    Text(AppStrings.Home.addToCartButton)
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
-                        .frame(maxWidth: .infinity)
-                        .padding(8)
-                        .background(Color.black)
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
-                }
-            } else {
-                HStack {
-                    Text(AppStrings.Cart.title)
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                        .frame(width: 60, alignment: .leading)
-                    
-                    Button(action: onRemove) {
-                        Image(systemName: "minus.circle.fill")
-                    }
-                    
-                    Spacer()
-                    
-                    Text("\(quantity)")
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                    
-                    Spacer()
-                    
-                    Button(action: onAdd) {
-                        Image(systemName: "plus.circle.fill")
-                    }
-                }
-                .font(.title3)
-                .foregroundColor(.black)
-            }
-            // Add To Registry
-            if registryQuantity == 0 {
-                Button(AppStrings.Home.addToRegistry, action: onAddToRegistry)
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
-                    .frame(maxWidth: .infinity)
-                    .padding(8)
-                    .background(Color.black)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-            } else {
-                HStack {
-                    Text(AppStrings.Registry.title)
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                        .frame(width: 60, alignment: .leading)
-                    
-                    Button(action: onRemoveFromRegistry) {
-                        Image(systemName: "minus.circle.fill")
-                    }
-                    
-                    Spacer()
-                    
-                    Text("\(registryQuantity)")
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                    
-                    Spacer()
-                    
-                    Button(action: onAddToRegistry) {
-                        Image(systemName: "plus.circle.fill")
-                    }
-                }
-                .font(.title3)
-                .foregroundColor(.black)
             }
         }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
-        .shadow(color: Color(.systemGray4), radius: 2, x: 0, y: 1)
-        .frame(maxWidth: .infinity)
+        .wsCard()
+    }
+
+    // ─── Image View ──────────────────────────────────────────────
+    private var productImage: some View {
+        AsyncImage(url: product.imageURL) { phase in
+            switch phase {
+            case .success(let image):
+                image
+                    .resizable()
+                    .scaledToFill()
+            case .failure:
+                ZStack {
+                    Color.wsElevated
+                    Image(systemName: "photo")
+                        .font(.title3)
+                        .foregroundStyle(Color.wsCaption)
+                }
+            default:
+                ZStack {
+                    Color.wsElevated
+                    ProgressView()
+                        .tint(Color.wsBrand)
+                }
+            }
+        }
+        .frame(width: 100, height: 110)
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 }

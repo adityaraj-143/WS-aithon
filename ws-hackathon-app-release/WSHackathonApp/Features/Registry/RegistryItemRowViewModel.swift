@@ -69,7 +69,6 @@ final class RegistryItemRowViewModel: ObservableObject {
         let quantityInRegistry = registryRepo.quantity(for: item)
         
         cartRepo.add(product: product, quantity: quantityInRegistry)
-        
-        tabBarVM.selectTab(.cart)
+        // Tab programmatic navigation removed to conform to Apple guidelines
     }
 }

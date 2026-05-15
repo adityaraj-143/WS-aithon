@@ -8,61 +8,45 @@
 import SwiftUI
 
 struct CartItemRow: View {
-    
+
     let item: CartItem
     let onAdd: () -> Void
     let onRemove: () -> Void
-    
+
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            let url = item.imageURL
-            // MARK: - Image
-            CustomAsyncImage(url: url)
-                .frame(width: 80, height: 80)
-                .cornerRadius(8)
-                .clipped()
-            
-            // MARK: - Info
-            VStack(alignment: .leading, spacing: 6) {
-                
+        HStack(spacing: 14) {
+            // ─── Image ───────────────────────────────────────
+            CustomAsyncImage(url: item.imageURL)
+                .frame(width: 72, height: 72)
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+
+            // ─── Info ────────────────────────────────────────
+            VStack(alignment: .leading, spacing: 4) {
                 Text(item.title)
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Color.wsTitle)
                     .lineLimit(2)
-                
+
                 Text("$\(item.price, specifier: "%.2f")")
-                    .font(.subheadline)
-                    .foregroundColor(.black)
-                
-                Spacer()
-                
-                // MARK: - Quantity Controls
-                HStack(spacing: 12) {
-                    Button(action: onRemove) {
-                        Image(systemName: "minus.circle.fill")
-                    }
-                    
-                    Text("\(item.quantity)")
-                        .fontWeight(.medium)
-                    
-                    Button(action: onAdd) {
-                        Image(systemName: "plus.circle.fill")
-                    }
-                }
-                .font(.title3)
-                .foregroundColor(.black)
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(Color.wsBody)
+
+                Spacer(minLength: 0)
+
+                StepperPill(
+                    count: item.quantity,
+                    onIncrement: onAdd,
+                    onDecrement: onRemove
+                )
             }
-            
-            Spacer()
-            
-            // MARK: - Total Price per item
+
+            Spacer(minLength: 0)
+
+            // ─── Line Total ──────────────────────────────────
             Text("$\(item.price * Double(item.quantity), specifier: "%.2f")")
-                .font(.subheadline)
-                .fontWeight(.semibold)
+                .font(.headline.weight(.bold))
+                .foregroundStyle(Color.wsTitle)
         }
-        .padding()
-        .background(Color.white)
-        .cornerRadius(12)
-        .shadow(color: Color(.systemGray4), radius: 2, x: 0, y: 1)
+        .wsCard()
     }
 }

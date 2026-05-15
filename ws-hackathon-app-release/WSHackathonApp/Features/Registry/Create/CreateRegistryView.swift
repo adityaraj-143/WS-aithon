@@ -7,56 +7,82 @@
 
 import SwiftUI
 
-import SwiftUI
-
 struct CreateRegistryView: View {
-    
+
     @StateObject private var viewModel = CreateRegistryViewModel()
     @EnvironmentObject var tabBarVM: WSTabBarViewModel
     @EnvironmentObject var registryRepo: RegistryRepository
-    
+
     @State private var navigateToSuccess = false
-    
-    private let spacing: CGFloat = 16
-    
+
     var body: some View {
-        ScrollView {
-            VStack(spacing: spacing) {
-                
-                // MARK: - Header
-                Text(AppStrings.Registry.createYourRegistry)
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .padding(.top, 32)
-                
-                // MARK: - Form fields
-                VStack(spacing: spacing) {
-                    
-                    TextField(AppStrings.Registry.firstName, text: $viewModel.firstName)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding(.horizontal)
-                    
-                    TextField(AppStrings.Registry.lastName, text: $viewModel.lastName)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding(.horizontal)
-                    
-                    VStack {
+        ScrollView(showsIndicators: false) {
+            VStack(spacing: 28) {
+
+                // ─── Header ──────────────────────────────────
+                VStack(spacing: 8) {
+                    Image(systemName: "gift.fill")
+                        .font(.system(size: 44))
+                        .foregroundStyle(Color.wsBrand)
+                        .padding(.bottom, 4)
+
+                    Text(AppStrings.Registry.createYourRegistry)
+                        .font(.title.weight(.bold))
+                        .foregroundStyle(Color.wsTitle)
+                        .multilineTextAlignment(.center)
+
+                    Text("Set up your registry in seconds")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.wsBody)
+                }
+                .padding(.top, 24)
+
+                // ─── Form ────────────────────────────────────
+                VStack(spacing: 16) {
+                    formField(
+                        label: AppStrings.Registry.firstName,
+                        icon: "person.fill",
+                        text: $viewModel.firstName
+                    )
+
+                    formField(
+                        label: AppStrings.Registry.lastName,
+                        icon: "person.fill",
+                        text: $viewModel.lastName
+                    )
+
+                    // Event picker
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(AppStrings.Registry.event)
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(Color.wsBody)
+
                         HStack {
-                            Text(AppStrings.Registry.event)
-                            Spacer()
-                            // Event Picker
+                            Image(systemName: "calendar.badge.clock")
+                                .foregroundStyle(Color.wsCaption)
                             Picker(AppStrings.Registry.event, selection: $viewModel.selectedEvent) {
                                 ForEach(RegistryEvent.allCases) { event in
                                     Text(event.title).tag(event)
                                 }
                             }
-                            .pickerStyle(MenuPickerStyle())
-                            .padding()
-                            .cornerRadius(8)
-                            .padding(.horizontal)
+                            .pickerStyle(.menu)
+                            .tint(Color.wsTitle)
+                            Spacer()
                         }
+                        .padding(12)
+                        .background(Color.wsElevated)
+                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    }
+
+                    // Date picker
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(AppStrings.Registry.eventDate)
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(Color.wsBody)
+
                         HStack {
-                            Text(AppStrings.Registry.eventDate)
+                            Image(systemName: "calendar")
+                                .foregroundStyle(Color.wsCaption)
                             DatePicker(
                                 "",
                                 selection: $viewModel.date,
@@ -64,18 +90,18 @@ struct CreateRegistryView: View {
                                 displayedComponents: .date
                             )
                             .datePickerStyle(.compact)
-                            .padding()
-                            .background(Color(.systemGray6))
-                            .cornerRadius(8)
-                            .padding(.horizontal)
+                            .tint(Color.wsBrand)
                         }
-                        // Date Picker
-                    }.padding()
-                    
+                        .padding(12)
+                        .background(Color.wsElevated)
+                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    }
                 }
-                
-                // MARK: - Create Button
-                Button(action: {
+                .wsCard(cornerRadius: 20, padding: 20)
+                .padding(.horizontal, 20)
+
+                // ─── Create Button ───────────────────────────
+                Button {
                     registryRepo.createRegistry(
                         firstName: viewModel.firstName,
                         lastName: viewModel.lastName,
@@ -83,26 +109,40 @@ struct CreateRegistryView: View {
                         date: viewModel.date
                     )
                     navigateToSuccess = true
-                }) {
+                } label: {
                     Text(AppStrings.Registry.createButton)
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(viewModel.isValid ? Color.black : Color.gray)
-                        .cornerRadius(12)
-                        .padding(.horizontal)
                 }
+                .buttonStyle(WSPrimaryButtonStyle(isEnabled: viewModel.isValid))
                 .disabled(!viewModel.isValid)
-                .padding(.top, 16)
-                Spacer()
+                .padding(.horizontal, 20)
+
+                Spacer(minLength: 40)
             }
-            .padding(.bottom, 32)
         }
-        .background(Color(.systemGray6).ignoresSafeArea())
+        .background(Color.wsBackground.ignoresSafeArea())
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(isPresented: $navigateToSuccess) {
             RegistrySuccessView()
+        }
+    }
+
+    // ─── Reusable Form Field ─────────────────────────────────────
+    private func formField(label: String, icon: String, text: Binding<String>) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(label)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(Color.wsBody)
+
+            HStack(spacing: 10) {
+                Image(systemName: icon)
+                    .foregroundStyle(Color.wsCaption)
+                TextField(label, text: text)
+                    .font(.body)
+                    .foregroundStyle(Color.wsTitle)
+            }
+            .padding(12)
+            .background(Color.wsElevated)
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
         }
     }
 }

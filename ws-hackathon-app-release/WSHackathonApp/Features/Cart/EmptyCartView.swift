@@ -4,38 +4,30 @@
 //
 //  Created by Nilesh Mahajan on 05/04/26.
 //
+
 import SwiftUI
+
 struct EmptyCartView: View {
-    
-    var onContinueShopping: (() -> Void)? = nil
-    
+
     var body: some View {
-        VStack(spacing: 16) {
-            VStack {
-                HStack {
-                    Text(AppStrings.Cart.emptyMessage)
-                        .font(.headline)
-                        .fontWeight(.medium)
-                        .multilineTextAlignment(.leading)
-                        .foregroundColor(.black)
-                    Spacer()
-                }.padding(16)
-                 
-                Button(action: {
-                    onContinueShopping?()
-                }) {
-                    HStack {
-                        Text(AppStrings.Cart.emptyButton)
-                    }
-                    .foregroundColor(.white)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.black)
-                }
-                .padding(.horizontal, 16)
-            }
-            .padding(.bottom, 16)
+        VStack(spacing: 20) {
+            Image(systemName: "cart")
+                .font(.system(size: 52, weight: .light))
+                .foregroundStyle(Color.wsBrand.opacity(0.5))
+                .padding(.bottom, 4)
+
+            Text(AppStrings.Cart.emptyMessage)
+                .font(.title3.weight(.semibold))
+                .foregroundStyle(Color.wsTitle)
+                .multilineTextAlignment(.center)
+
+            Text("Use the tab bar to browse and add items")
+                .font(.subheadline)
+                .foregroundStyle(Color.wsBody)
+                .multilineTextAlignment(.center)
         }
-        .background(Color.white)
+        .frame(maxWidth: .infinity)
+        .wsCard(cornerRadius: 20, padding: 32)
+        .padding(.horizontal, 20)
     }
 }
