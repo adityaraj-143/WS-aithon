@@ -15,53 +15,87 @@ struct RegistryItemRow: View {
     }
     
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(alignment: .top, spacing: 16) {
             
-            CustomAsyncImage(url: viewModel.imageURL)
-                .frame(width: 80, height: 80)
-                .cornerRadius(8)
+            // Image
+            ZStack {
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(Color.white)
+                    .frame(width: 80, height: 80)
+                
+                if viewModel.imageURL != nil {
+                    CustomAsyncImage(url: viewModel.imageURL)
+                        .frame(width: 80, height: 80)
+                        .cornerRadius(16)
+                }
+            }
             
-            VStack(alignment: .leading, spacing: 6) {
+            // Text Details
+            VStack(alignment: .leading, spacing: 4) {
+                Text("BRAND")
+                    .font(.system(size: 10, weight: .bold))
+                    .tracking(1.0)
+                    .foregroundColor(.gray)
                 
                 Text(viewModel.title)
-                    .font(.subheadline)
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
                     .lineLimit(2)
                 
                 Text(viewModel.priceText)
-                    .foregroundColor(.green)
+                    .font(.system(size: 14))
+                    .foregroundColor(Color(red: 0.54, green: 0.40, blue: 0.31)) // Brownish price
+            }
+            .padding(.top, 4)
+            
+            Spacer(minLength: 8)
+            
+            // Actions
+            VStack(alignment: .trailing, spacing: 0) {
+                Menu {
+//                    Button(action: viewModel.addToCart) {
+//                        Label("Add to Cart", systemImage: "cart.badge.plus")
+//                    }
+                    Button(role: .destructive, action: viewModel.removeItem) {
+                        Label("Remove Item", systemImage: "trash")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .foregroundColor(.gray)
+                        .frame(width: 32, height: 32)
+                        .background(Color.white)
+                        .clipShape(Circle())
+                        .overlay(Circle().stroke(Color(white: 0.9), lineWidth: 1))
+                }
                 
-                HStack {
+                Spacer()
+                
+                HStack(spacing: 12) {
                     Button(action: viewModel.decreaseQty) {
-                        Image(systemName: "minus.circle.fill")
+                        Image(systemName: "minus")
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundColor(.gray)
                     }
                     
                     Text(viewModel.quantityText)
-                        .font(.caption)
-                        .frame(minWidth: 20)
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                        .frame(minWidth: 14, alignment: .center)
                     
                     Button(action: viewModel.increaseQty) {
-                        Image(systemName: "plus.circle.fill")
+                        Image(systemName: "plus")
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundColor(.gray)
                     }
                 }
-                .foregroundColor(.black)
-            }
-            
-            Spacer()
-            
-            VStack(spacing: 12) {
-//                Button(action: viewModel.addToCart) {
-//                    Image(systemName: "cart.badge.plus")
-//                }
-//                .foregroundColor(.black)
-                
-                Button(action: viewModel.removeItem) {
-                    Image(systemName: "trash")
-                }
-                .foregroundColor(.red)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 8)
+                .background(Color.white)
+                .clipShape(Capsule())
+                .overlay(Capsule().stroke(Color(white: 0.9), lineWidth: 1))
             }
         }
-        .padding()
-        .background(Color.white)
-        .cornerRadius(12)
+        .frame(height: 80)
+        .padding(.vertical, 8)
     }
 }

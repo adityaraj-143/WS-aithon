@@ -11,40 +11,22 @@ import SwiftUI
 
 @MainActor
 final class RegistryViewModel: ObservableObject {
-    
-    @Published private(set) var registry: Registry?
+    @Published private(set) var registries: [Registry] = []
     
     private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Bind Repository
     
     func bind(repository: RegistryRepository) {
-        repository.$currentRegistry
+        repository.$registries
             .receive(on: RunLoop.main)
-            .assign(to: &$registry)
+            .assign(to: &$registries)
     }
     
     // MARK: - Computed
     
     var hasRegistry: Bool {
-        registry != nil
-    }
-    
-    var hasItems: Bool {
-        !(registry?.items.isEmpty ?? true)
-    }
-    
-    var items: [RegistryItem] {
-        registry?.items ?? []
-    }
-    
-    var displayTitle: String {
-        registry?.displayName ?? ""
-    }
-    
-    var displayDate: String {
-        guard let date = registry?.date else { return "" }
-        return date.formatted(date: .abbreviated, time: .omitted)
+        !registries.isEmpty
     }
     
     // MARK: - Instructions
