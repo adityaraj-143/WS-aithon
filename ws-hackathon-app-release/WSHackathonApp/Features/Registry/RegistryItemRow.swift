@@ -49,10 +49,10 @@ struct RegistryItemRow: View {
             Spacer()
             
             VStack(spacing: 12) {
-                Button(action: viewModel.addToCart) {
-                    Image(systemName: "cart.badge.plus")
-                }
-                .foregroundColor(.black)
+//                Button(action: viewModel.addToCart) {
+//                    Image(systemName: "cart.badge.plus")
+//                }
+//                .foregroundColor(.black)
                 
                 Button(action: viewModel.removeItem) {
                     Image(systemName: "trash")

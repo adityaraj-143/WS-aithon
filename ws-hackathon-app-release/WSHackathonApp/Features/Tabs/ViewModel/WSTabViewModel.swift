@@ -9,12 +9,17 @@ import Foundation
 import Combine
 import SwiftUI
 
+enum HomeRoute: Hashable {
+    case detail(ProductItem)
+}
+
 @MainActor
 class WSTabBarViewModel: ObservableObject {
     
     @Published var selectedTab: TabItem = .home
-    @Published var cartItemCount: Int = 0
     @Published var registryPath: [RegistryRoute] = []
+    @Published var homePath: [HomeRoute] = []
+
     
     var tabs: [TabItem] {
         TabItem.allCases
@@ -31,4 +36,9 @@ class WSTabBarViewModel: ObservableObject {
     func resetRegistryFlow() {
         registryPath.removeAll()
     }
+    
+    func navigateToDetail(_ product: ProductItem) {
+        homePath.append(.detail(product))
+    }
 }
+
