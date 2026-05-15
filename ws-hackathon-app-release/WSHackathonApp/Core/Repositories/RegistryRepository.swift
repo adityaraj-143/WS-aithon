@@ -11,32 +11,53 @@ import Foundation
 @MainActor
 final class RegistryRepository: ObservableObject {
     
-    @Published var currentRegistry: Registry?
+    @Published var registries: [Registry] = []
+    @Published var activeRegistryId: UUID?
+    
+    var currentRegistry: Registry? {
+        get {
+            guard let id = activeRegistryId else { return nil }
+            return registries.first { $0.id == id }
+        }
+        set {
+            guard let newValue = newValue else { return }
+            if let index = registries.firstIndex(where: { $0.id == newValue.id }) {
+                registries[index] = newValue
+            }
+        }
+    }
     
     // MARK: - Create
     var isActiveRegistry: Bool {
-        currentRegistry != nil
+        activeRegistryId != nil
     }
     
     func createRegistry(firstName: String,
                         lastName: String,
                         event: RegistryEvent,
-                        date: Date) {
+                        date: Date,
+                        budget: String?) {
         
-        currentRegistry = Registry(
+        let newRegistry = Registry(
             id: UUID(),
             firstName: firstName,
             lastName: lastName,
             event: event,
             date: date,
+            budget: budget,
             items: []
         )
+        
+        registries.append(newRegistry)
+        activeRegistryId = newRegistry.id
     }
     
     // MARK: - Delete Registry
     
     func deleteRegistry() {
-        currentRegistry = nil
+        guard let id = activeRegistryId else { return }
+        registries.removeAll { $0.id == id }
+        activeRegistryId = registries.last?.id
     }
     
     // MARK: - Add Product
