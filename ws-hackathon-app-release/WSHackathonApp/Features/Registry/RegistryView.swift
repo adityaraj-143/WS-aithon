@@ -64,6 +64,10 @@ struct RegistryView: View {
             .navigationDestination(isPresented: $showCreateSheet) {
                 CreateRegistryView(
                     onCancel: { showCreateSheet = false },
+                    onCreateComplete: {
+                        showCreateSheet = false
+                        showDetail = true
+                    },
                     onCreateWithAI: { context in
                         pendingPlanningContext = context
                         showCreateSheet = false
