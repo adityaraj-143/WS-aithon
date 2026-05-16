@@ -28,11 +28,11 @@ struct RegistryView: View {
                 VStack(alignment: .leading, spacing: 0) {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Registries")
-                            .font(.system(size: 40, weight: .regular, design: .serif))
+                            .font(.system(size: 34, weight: .regular, design: .serif))
                             .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
 
                         Text("Your curated planning collections")
-                            .font(.system(size: 16, weight: .regular, design: .default))
+                            .font(.system(size: 15, weight: .regular, design: .default))
                             .foregroundColor(Color.gray)
                     }
                     .padding(.horizontal, 24)

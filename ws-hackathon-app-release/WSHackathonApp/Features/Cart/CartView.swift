@@ -76,28 +76,36 @@ private extension CartView {
 
     // ─── Empty State ─────────────────────────────────────────────
     var emptyState: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 32) {
             Spacer()
             
-            Image(systemName: "cart")
-                .font(.system(size: 52, weight: .light))
-                .foregroundColor(Color(red: 0.7, green: 0.7, blue: 0.7))
-                .padding(.bottom, 4)
-
-            Text(AppStrings.Cart.emptyMessage)
-                .font(.system(size: 20, weight: .medium, design: .serif))
-                .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
-                .multilineTextAlignment(.center)
-
-            Text("Use the tab bar to browse and add items")
-                .font(.system(size: 15))
-                .foregroundColor(Color(red: 0.45, green: 0.45, blue: 0.45))
-                .multilineTextAlignment(.center)
+            ZStack {
+                RoundedRectangle(cornerRadius: 32)
+                    .fill(Color(white: 0.97))
+                    .frame(width: 120, height: 120)
+                
+                Image(systemName: "cart")
+                    .font(.system(size: 44, weight: .light))
+                    .foregroundColor(.gray.opacity(0.6))
+            }
             
+            VStack(spacing: 12) {
+                Text("Your Cart is Empty")
+                    .font(.system(size: 32, weight: .regular, design: .serif))
+                    .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                
+                Text("Explore our curated collection and\nadd items to start your journey.")
+                    .font(.system(size: 16))
+                    .foregroundColor(.gray)
+                    .multilineTextAlignment(.center)
+                    .lineSpacing(4)
+            }
+            
+            Spacer()
             Spacer()
         }
-        .frame(maxWidth: .infinity)
-        .padding(.horizontal, 20)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.horizontal, 24)
     }
 
     // ─── Cart Content ────────────────────────────────────────────

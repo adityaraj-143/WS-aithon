@@ -45,7 +45,7 @@ struct CreateRegistryView: View {
                         // Titles
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Create Registry")
-                                .font(.system(size: 40, weight: .regular, design: .serif))
+                                .font(.system(size: 34, weight: .regular, design: .serif))
                                 .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
 
                             Text("Plan and organize your perfect collection.")

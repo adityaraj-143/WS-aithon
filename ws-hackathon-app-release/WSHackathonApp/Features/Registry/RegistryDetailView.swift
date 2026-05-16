@@ -48,7 +48,7 @@ struct RegistryDetailView: View {
                         // Title
                         VStack(alignment: .leading, spacing: 8) {
                             Text(registry.displayName.components(separatedBy: " - ").first ?? registry.displayName)
-                                .font(.system(size: 36, weight: .regular, design: .serif))
+                                .font(.system(size: 34, weight: .regular, design: .serif))
                                 .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
                             
                             HStack(spacing: 8) {
