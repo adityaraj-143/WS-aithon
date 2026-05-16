@@ -5,29 +5,43 @@
 //  Created by Nilesh Mahajan on 06/04/26.
 //
 
-import Foundation
 import SwiftUI
 
 struct RegistrySuccessView: View {
-    
+
     @EnvironmentObject var registryRepo: RegistryRepository
     @EnvironmentObject var tabBarVM: WSTabBarViewModel
-    
+
     var body: some View {
-        VStack(spacing: 24) {
-            
+        VStack(spacing: 28) {
+            Spacer()
+
+            // Celebration icon
+            ZStack {
+                Circle()
+                    .fill(Color.wsBrandLight)
+                    .frame(width: 100, height: 100)
+                Image(systemName: "checkmark.seal.fill")
+                    .font(.system(size: 48))
+                    .foregroundStyle(Color.wsBrand)
+            }
+
             Text("Registry Created 🎉")
-                .font(.title)
-                .fontWeight(.bold)
-            
+                .font(.title.weight(.bold))
+                .foregroundStyle(Color.wsTitle)
+
             Text(registryRepo.currentRegistry?.displayName ?? "")
                 .font(.headline)
             
             Button("Start Browsing") {
-                tabBarVM.resetRegistryFlow()
                 tabBarVM.selectTab(.home)
             }
+            .buttonStyle(WSPrimaryButtonStyle())
+            .padding(.horizontal, 40)
+
+            Spacer(minLength: 40)
         }
-        .padding()
+        .frame(maxWidth: .infinity)
+        .background(Color.wsBackground.ignoresSafeArea())
     }
 }

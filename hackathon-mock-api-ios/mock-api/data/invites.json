@@ -1,0 +1,50 @@
+[
+  {
+    "fromUserId": "A34EAA51-EF1F-4AD6-9FBA-F5ABD597C232",
+    "fromDisplayName": "Guest-824",
+    "inviteLink": "wsapp://registry/08F0CDA2-FEC2-49ED-88CE-808A91B220F0",
+    "registryId": "08F0CDA2-FEC2-49ED-88CE-808A91B220F0",
+    "registryName": "Housewarming",
+    "toUserId": "8C70BC93-C6DB-4D8F-B5DC-34C0D064B106"
+  },
+  {
+    "fromUserId": "A34EAA51-EF1F-4AD6-9FBA-F5ABD597C232",
+    "fromDisplayName": "Guest-824",
+    "inviteLink": "wsapp://registry/A007284B-EFEA-470E-B761-B433E8616A06",
+    "registryId": "A007284B-EFEA-470E-B761-B433E8616A06",
+    "registryName": "Wedding",
+    "toUserId": "8C70BC93-C6DB-4D8F-B5DC-34C0D064B106"
+  },
+  {
+    "fromUserId": "011916E3-5A13-4DF0-A4A3-CBB1DE4AF451",
+    "fromDisplayName": "Guest-909",
+    "inviteLink": "wsapp://registry/471ACC74-AEA1-4F6F-AD40-5EBBB159AA85",
+    "registryId": "471ACC74-AEA1-4F6F-AD40-5EBBB159AA85",
+    "registryName": "Wedding",
+    "toUserId": "8C70BC93-C6DB-4D8F-B5DC-34C0D064B106"
+  },
+  {
+    "fromUserId": "1B970CAB-97DC-4CF4-8B1C-19CF7135DBD5",
+    "fromDisplayName": "Guest-631",
+    "inviteLink": "wsapp://registry/2374720A-D62C-4FAB-98E6-064E7F5B55C7",
+    "registryId": "2374720A-D62C-4FAB-98E6-064E7F5B55C7",
+    "registryName": "Housewarming",
+    "toUserId": "011916E3-5A13-4DF0-A4A3-CBB1DE4AF451"
+  },
+  {
+    "fromUserId": "011916E3-5A13-4DF0-A4A3-CBB1DE4AF451",
+    "fromDisplayName": "Guest-909",
+    "inviteLink": "wsapp://registry/2993E7B0-DFF6-4823-9E6F-11FB59CEDC9B",
+    "registryId": "2993E7B0-DFF6-4823-9E6F-11FB59CEDC9B",
+    "registryName": "Birthday",
+    "toUserId": "1B970CAB-97DC-4CF4-8B1C-19CF7135DBD5"
+  },
+  {
+    "fromUserId": "011916E3-5A13-4DF0-A4A3-CBB1DE4AF451",
+    "fromDisplayName": "Guest-909",
+    "inviteLink": "wsapp://registry/1ED6A5D2-A53C-4ED9-83A6-200314E1CE96",
+    "registryId": "1ED6A5D2-A53C-4ED9-83A6-200314E1CE96",
+    "registryName": "Holiday",
+    "toUserId": "1B970CAB-97DC-4CF4-8B1C-19CF7135DBD5"
+  }
+]

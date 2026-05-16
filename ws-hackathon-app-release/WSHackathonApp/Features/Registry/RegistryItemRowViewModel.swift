@@ -12,64 +12,84 @@ import Combine
 @MainActor
 final class RegistryItemRowViewModel: ObservableObject {
     
-    let item: RegistryItem
+    private var latestItem: RegistryItem {
+        registryRepo.currentRegistry?.items.first(where: { $0.id == itemId }) ?? initialItem
+    }
     
+    private let initialItem: RegistryItem
+    private let itemId: String
     private let registryRepo: RegistryRepository
     private let cartRepo: CartRepository
     private let tabBarVM: WSTabBarViewModel
+
+    private var cancellables = Set<AnyCancellable>()
 
     init(item: RegistryItem,
          registryRepo: RegistryRepository,
          cartRepo: CartRepository,
          tabbarVM: WSTabBarViewModel) {
-        self.item = item
+        self.initialItem = item
+        self.itemId = item.id
         self.registryRepo = registryRepo
         self.cartRepo = cartRepo
         self.tabBarVM = tabbarVM
+        
+        // Listen for repository changes to refresh the UI
+        registryRepo.objectWillChange
+            .sink { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
     }
     
     // MARK: - Display
     
-    var title: String { item.title }
+    var title: String { latestItem.title }
     
     var priceText: String {
-        "$\(item.price, default: "%.2f")"
+        "$\(latestItem.price, default: "%.2f")"
     }
     
     var quantityText: String {
-        "\(registryRepo.quantity(for: item))"
+        "\(latestItem.quantity)"
     }
     
     var imageURL: URL? {
-        guard let url = item.imageUrl else { return nil }
+        guard let url = latestItem.imageUrl else { return nil }
         return URL(string: AppConstants.API.imageBasePath + url)
     }
     
     // MARK: - Actions
     
     func increaseQty() {
-        registryRepo.increaseQty(item.id)
+        registryRepo.increaseQty(itemId)
     }
     
     func decreaseQty() {
-        registryRepo.decreaseQty(item.id)
+        registryRepo.decreaseQty(itemId)
     }
     
     func removeItem() {
-        registryRepo.removeItem(item.id)
+        registryRepo.removeItem(itemId)
     }
     
-    func addToCart() {
-        let product = ProductItem(
-            id: item.id,
-            title: item.title,
-            price: item.price,
-            path: item.imageUrl ?? ""
-        )
-        let quantityInRegistry = registryRepo.quantity(for: item)
-        
-        cartRepo.add(product: product, quantity: quantityInRegistry)
-        
-        tabBarVM.selectTab(.cart)
+    var upvoteCount: Int {
+        latestItem.upvotedBy.count
+    }
+    
+    var isUpvoted: Bool {
+        latestItem.upvotedBy.contains(SocketService.shared.currentDisplayName)
+    }
+    
+    var upvotedByText: String {
+        if latestItem.upvotedBy.isEmpty { return "" }
+        if latestItem.upvotedBy.count == 1 {
+            return "Liked by \(latestItem.upvotedBy[0])"
+        }
+        return "Liked by \(latestItem.upvotedBy[0]) and \(latestItem.upvotedBy.count - 1) others"
+    }
+    
+    func toggleUpvote() {
+        registryRepo.toggleUpvote(itemId)
     }
 }

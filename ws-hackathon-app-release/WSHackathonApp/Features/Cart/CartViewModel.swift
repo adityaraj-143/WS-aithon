@@ -42,4 +42,32 @@ final class CartViewModel: ObservableObject {
         repository?.increaseQuantity(productId: item.id)
     }
     
+    @Published private(set) var recommendations: [ProductItem] = []
+
+    func updateRecommendations(allProducts: [ProductItem]) {
+        let cartIds = Set(items.map { $0.id })
+        
+        let cartCategories = Set(allProducts.filter { cartIds.contains($0.id) }.compactMap { $0.productType })
+        
+        var suggested: [ProductItem] = []
+        var fallback: [ProductItem] = []
+        
+        for product in allProducts {
+            guard !cartIds.contains(product.id) else { continue }
+            
+            if let type = product.productType, cartCategories.contains(type) {
+                suggested.append(product)
+            } else {
+                fallback.append(product)
+            }
+        }
+        
+        let finalRecommendations = (suggested + fallback).prefix(6)
+        self.recommendations = Array(finalRecommendations)
+    }
+
+    func add(product: ProductItem) {
+        repository?.add(product: product)
+    }
+    
 }

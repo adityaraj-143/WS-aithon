@@ -2,14 +2,14 @@
   {
     "id": "2505456",
     "name": "Williams Sonoma End-Grain Cutting Board, Acacia, 15\" X 20\"",
-    "shortName": "Williams Sonoma End-Grain Cutting Board, Acacia, 15\" X 20\"",
+    "shortName": "Williams Sonoma End-Grain Cutting",
     "primaryGroupId": "williams-sonoma-acacia-cutting-board",
     "price": {
       "regularPrice": 129.95,
       "surcharge": 0,
       "retailPrice": 129.95,
       "sellingPrice": 129.95,
-      "monogramOrPersonalizationPrice": 17.0
+      "monogramOrPersonalizationPrice": 17
     },
     "properties": {
       "isMarketPlace": "false",
@@ -28,7 +28,7 @@
       "material": "acacia",
       "isShoppable": "true",
       "name": "Williams Sonoma End-Grain Cutting Board, Acacia, 15\" X 20\"",
-      "shortName": "Williams Sonoma End-Grain Cutting Board, Acacia, 15\" X 20\""
+      "shortName": "Williams Sonoma End-Grain Cutting"
     },
     "media": {
       "images": [
@@ -43,7 +43,29 @@
       ]
     },
     "availability": "ON_HAND",
-    "deliveryEstimate": "TRANSIT"
+    "deliveryEstimate": "TRANSIT",
+    "description": "A premium acacia cutting board for prep, serving cheese, and creating a warm tabletop presentation for casual hosting. Ideal for housewarming registries.",
+    "eventTags": [
+      "birthday",
+      "dinner",
+      "housewarming"
+    ],
+    "slotHints": [
+      "food prep",
+      "serveware"
+    ],
+    "styleTags": [
+      "warm",
+      "rustic",
+      "classic"
+    ],
+    "settingTags": [
+      "kitchen",
+      "tabletop"
+    ],
+    "essentialForEvents": [
+      "housewarming"
+    ]
   },
   {
     "id": "6121370",
@@ -55,7 +77,7 @@
       "surcharge": 0,
       "retailPrice": 10.95,
       "sellingPrice": 10.95,
-      "monogramOrPersonalizationPrice": 17.0
+      "monogramOrPersonalizationPrice": 17
     },
     "properties": {
       "isMarketPlace": "false",
@@ -87,19 +109,36 @@
       ]
     },
     "availability": "ON_HAND",
-    "deliveryEstimate": "TRANSIT"
+    "deliveryEstimate": "TRANSIT",
+    "description": "Maintenance oil that keeps wooden boards and serving pieces ready for hosting and long-term kitchen use.",
+    "eventTags": [
+      "housewarming",
+      "dinner"
+    ],
+    "slotHints": [
+      "homekeeping",
+      "food prep"
+    ],
+    "styleTags": [
+      "practical",
+      "minimal"
+    ],
+    "settingTags": [
+      "kitchen"
+    ],
+    "essentialForEvents": []
   },
   {
     "id": "6247040",
     "name": "Hold Everything Lidded Ceramic Bowl, Ashwood, 12\"",
-    "shortName": "Hold Everything Lidded Ceramic Bowl, Ashwood, 12\"",
+    "shortName": "Hold Everything Lidded Ceramic",
     "primaryGroupId": "hold-everything-lidded-ceramic-bowl",
     "price": {
       "regularPrice": 89.95,
       "surcharge": 0,
       "retailPrice": 89.95,
       "sellingPrice": 89.95,
-      "monogramOrPersonalizationPrice": 17.0
+      "monogramOrPersonalizationPrice": 17
     },
     "properties": {
       "isMarketPlace": "false",
@@ -117,7 +156,7 @@
       "material": "[wood-parent/wood, ceramic-parent/ceramic]",
       "isShoppable": "true",
       "name": "Hold Everything Lidded Ceramic Bowl, Ashwood, 12\"",
-      "shortName": "Hold Everything Lidded Ceramic Bowl, Ashwood, 12\""
+      "shortName": "Hold Everything Lidded Ceramic"
     },
     "media": {
       "images": [
@@ -132,19 +171,44 @@
       ]
     },
     "availability": "ON_HAND",
-    "deliveryEstimate": "TRANSIT"
+    "deliveryEstimate": "TRANSIT",
+    "description": "A lidded ceramic bowl that works for serving salads, sides, or snacks while keeping a polished tabletop feel.",
+    "eventTags": [
+      "birthday",
+      "dinner",
+      "brunch",
+      "housewarming"
+    ],
+    "slotHints": [
+      "serveware",
+      "tabletop"
+    ],
+    "styleTags": [
+      "cozy",
+      "warm",
+      "modern"
+    ],
+    "settingTags": [
+      "tabletop",
+      "dining"
+    ],
+    "essentialForEvents": [
+      "birthday",
+      "dinner",
+      "brunch"
+    ]
   },
   {
     "id": "1341411",
     "name": "Apilco Tradition Porcelain Cup & Saucer, Each",
-    "shortName": "Apilco Tradition Porcelain Cup & Saucer, Each",
+    "shortName": "Apilco Tradition Porcelain Cup",
     "primaryGroupId": "apilco-tradition-porcelain-cup-and-saucer",
     "price": {
       "regularPrice": 34.95,
       "surcharge": 0,
       "retailPrice": 34.95,
       "sellingPrice": 34.95,
-      "monogramOrPersonalizationPrice": 17.0
+      "monogramOrPersonalizationPrice": 17
     },
     "properties": {
       "isMarketPlace": "false",
@@ -163,7 +227,7 @@
       "material": "porcelain",
       "isShoppable": "true",
       "name": "Apilco Tradition Porcelain Cup & Saucer, Each",
-      "shortName": "Apilco Tradition Porcelain Cup & Saucer, Each"
+      "shortName": "Apilco Tradition Porcelain Cup"
     },
     "media": {
       "images": [
@@ -177,21 +241,43 @@
         }
       ]
     },
-    "availability": "NLA"
+    "availability": "NLA",
+    "description": "A classic porcelain cup and saucer set for coffee or tea service in elegant brunch and dinner settings.",
+    "eventTags": [
+      "brunch",
+      "dinner",
+      "wedding"
+    ],
+    "slotHints": [
+      "tabletop",
+      "coffee",
+      "drinkware"
+    ],
+    "styleTags": [
+      "elegant",
+      "classic",
+      "neutral"
+    ],
+    "settingTags": [
+      "tabletop",
+      "coffee station"
+    ],
+    "essentialForEvents": [
+      "brunch"
+    ]
   },
   {
     "id": "2453926",
     "name": "Staub Enameled Cast Iron Round Dutch Oven, 7-Qt., Basil",
-    "shortName": "Staub Enameled Cast Iron Round Dutch Oven, 7-Qt., Basil",
+    "shortName": "Staub Enameled Cast Iron",
     "primaryGroupId": "staub-round-cocotte",
     "price": {
-      "regularPrice": 470.0,
+      "regularPrice": 470,
       "surcharge": 0,
-      "retailPrice": 470.0,
+      "retailPrice": 470,
       "sellingPrice": 299.95,
-      "monogramOrPersonalizationPrice": 17.0
+      "monogramOrPersonalizationPrice": 17
     },
-    "freeShip": true,
     "properties": {
       "isMarketPlace": "false",
       "isSpecialOrder": "false",
@@ -211,7 +297,7 @@
       "material": "enameled-cast-iron",
       "isShoppable": "true",
       "name": "Staub Enameled Cast Iron Round Dutch Oven, 7-Qt., Basil",
-      "shortName": "Staub Enameled Cast Iron Round Dutch Oven, 7-Qt., Basil"
+      "shortName": "Staub Enameled Cast Iron"
     },
     "media": {
       "images": [
@@ -226,21 +312,43 @@
       ]
     },
     "availability": "ON_HAND",
-    "deliveryEstimate": "TRANSIT"
+    "deliveryEstimate": "TRANSIT",
+    "description": "A statement dutch oven for hearty meals, family dinners, and wedding registry essentials with a premium finish.",
+    "eventTags": [
+      "wedding",
+      "housewarming",
+      "dinner"
+    ],
+    "slotHints": [
+      "cookware"
+    ],
+    "styleTags": [
+      "luxury",
+      "classic",
+      "warm"
+    ],
+    "settingTags": [
+      "kitchen",
+      "stovetop"
+    ],
+    "essentialForEvents": [
+      "wedding",
+      "housewarming",
+      "dinner"
+    ]
   },
   {
     "id": "8381456",
     "name": "Cuisinart PerfecTemp Programmable Coffee Maker with Glass Carafe, 14-cup",
-    "shortName": "Cuisinart PerfecTemp Programmable Coffee Maker with Glass Carafe, 14-cup",
+    "shortName": "Cuisinart PerfecTemp Programmable Coffee",
     "primaryGroupId": "cuisinart-perfect-temp-14-cup-programmable-coffeemaker",
     "price": {
       "regularPrice": 119.95,
       "surcharge": 0,
       "retailPrice": 119.95,
       "sellingPrice": 119.95,
-      "monogramOrPersonalizationPrice": 17.0
+      "monogramOrPersonalizationPrice": 17
     },
-    "freeShip": true,
     "properties": {
       "isMarketPlace": "false",
       "isSpecialOrder": "false",
@@ -264,7 +372,7 @@
       "width": "7.75",
       "isShoppable": "true",
       "name": "Cuisinart PerfecTemp Programmable Coffee Maker with Glass Carafe, 14-cup",
-      "shortName": "Cuisinart PerfecTemp Programmable Coffee Maker with Glass Carafe, 14-cup"
+      "shortName": "Cuisinart PerfecTemp Programmable Coffee"
     },
     "media": {
       "images": [
@@ -279,19 +387,41 @@
       ]
     },
     "availability": "ON_HAND",
-    "deliveryEstimate": "TRANSIT"
+    "deliveryEstimate": "TRANSIT",
+    "description": "A programmable coffee maker for hosting brunch, setting up a morning beverage station, or rounding out a practical registry.",
+    "eventTags": [
+      "brunch",
+      "housewarming",
+      "wedding"
+    ],
+    "slotHints": [
+      "coffee",
+      "beverage"
+    ],
+    "styleTags": [
+      "modern",
+      "practical",
+      "minimal"
+    ],
+    "settingTags": [
+      "kitchen",
+      "coffee station"
+    ],
+    "essentialForEvents": [
+      "brunch"
+    ]
   },
   {
     "id": "8227593",
     "name": "Hold Everything Lazy Susan, Small, Walnut Finish, 10\"",
-    "shortName": "Hold Everything Lazy Susan, Small, Walnut Finish, 10\"",
+    "shortName": "Hold Everything Lazy Susan",
     "primaryGroupId": "hold-everything-lazy-susan",
     "price": {
       "regularPrice": 59.95,
       "surcharge": 0,
       "retailPrice": 59.95,
       "sellingPrice": 59.95,
-      "monogramOrPersonalizationPrice": 17.0
+      "monogramOrPersonalizationPrice": 17
     },
     "properties": {
       "isMarketPlace": "false",
@@ -310,7 +440,7 @@
       "material": "walnut-finish",
       "isShoppable": "true",
       "name": "Hold Everything Lazy Susan, Small, Walnut Finish, 10\"",
-      "shortName": "Hold Everything Lazy Susan, Small, Walnut Finish, 10\""
+      "shortName": "Hold Everything Lazy Susan"
     },
     "media": {
       "images": [
@@ -325,19 +455,40 @@
       ]
     },
     "availability": "BACK_ORDERED",
-    "deliveryEstimate": "TRANSIT"
+    "deliveryEstimate": "TRANSIT",
+    "description": "A walnut lazy Susan that helps organize condiments, desserts, and shared dishes for entertaining.",
+    "eventTags": [
+      "birthday",
+      "dinner",
+      "housewarming"
+    ],
+    "slotHints": [
+      "serveware",
+      "decor",
+      "homekeeping"
+    ],
+    "styleTags": [
+      "warm",
+      "rustic",
+      "cozy"
+    ],
+    "settingTags": [
+      "tabletop",
+      "countertop"
+    ],
+    "essentialForEvents": []
   },
   {
     "id": "5001660",
     "name": "Williams Sonoma Organic House Extra Virgin Olive Oil",
-    "shortName": "Williams Sonoma Organic House Extra Virgin Olive Oil",
+    "shortName": "Williams Sonoma Organic House",
     "primaryGroupId": "house-olive-oil",
     "price": {
       "regularPrice": 38.95,
       "surcharge": 0,
       "retailPrice": 38.95,
       "sellingPrice": 38.95,
-      "monogramOrPersonalizationPrice": 17.0
+      "monogramOrPersonalizationPrice": 17
     },
     "properties": {
       "isMarketPlace": "false",
@@ -354,7 +505,7 @@
       "allProductTypes": "oil",
       "isShoppable": "true",
       "name": "Williams Sonoma Organic House Extra Virgin Olive Oil",
-      "shortName": "Williams Sonoma Organic House Extra Virgin Olive Oil"
+      "shortName": "Williams Sonoma Organic House"
     },
     "media": {
       "images": [
@@ -369,19 +520,39 @@
       ]
     },
     "availability": "ON_HAND",
-    "deliveryEstimate": "TRANSIT"
+    "deliveryEstimate": "TRANSIT",
+    "description": "An organic olive oil pantry staple that complements dinner hosting, bread service, and thoughtful housewarming bundles.",
+    "eventTags": [
+      "dinner",
+      "housewarming",
+      "birthday"
+    ],
+    "slotHints": [
+      "pantry",
+      "food prep"
+    ],
+    "styleTags": [
+      "warm",
+      "practical",
+      "rustic"
+    ],
+    "settingTags": [
+      "kitchen",
+      "pantry"
+    ],
+    "essentialForEvents": []
   },
   {
     "id": "9670912",
     "name": "Dorset Martini Glasses, Set of 4",
-    "shortName": "Dorset Martini Glasses, Set of 4",
+    "shortName": "Dorset Martini Glasses Set",
     "primaryGroupId": "dorset-crystal-martini-glass",
     "price": {
       "regularPrice": 179.8,
       "surcharge": 0,
       "retailPrice": 179.8,
       "sellingPrice": 179.8,
-      "monogramOrPersonalizationPrice": 17.0
+      "monogramOrPersonalizationPrice": 17
     },
     "properties": {
       "isMarketPlace": "false",
@@ -401,7 +572,7 @@
       "material": "lead-free-crystal",
       "isShoppable": "true",
       "name": "Dorset Martini Glasses, Set of 4",
-      "shortName": "Dorset Martini Glasses, Set of 4"
+      "shortName": "Dorset Martini Glasses Set"
     },
     "media": {
       "images": [
@@ -416,21 +587,43 @@
       ]
     },
     "availability": "BACK_ORDERED",
-    "deliveryEstimate": "TRANSIT"
+    "deliveryEstimate": "TRANSIT",
+    "description": "Crystal martini glasses for elevated cocktail service, adult birthday entertaining, and elegant barware gifting.",
+    "eventTags": [
+      "birthday",
+      "anniversary",
+      "wedding"
+    ],
+    "slotHints": [
+      "drinkware",
+      "barware"
+    ],
+    "styleTags": [
+      "elegant",
+      "luxury",
+      "modern"
+    ],
+    "settingTags": [
+      "bar cart",
+      "tabletop"
+    ],
+    "essentialForEvents": [
+      "birthday",
+      "anniversary"
+    ]
   },
   {
     "id": "181543",
     "name": "Staub Enameled Cast Iron Traditional Deep Skillet, 8 1/2\", Citron",
-    "shortName": "Staub Enameled Cast Iron Traditional Deep Skillet, 8 1/2\", Citron",
+    "shortName": "Staub Enameled Cast Iron",
     "primaryGroupId": "staub-traditional-skillet",
     "price": {
-      "regularPrice": 180.0,
+      "regularPrice": 180,
       "surcharge": 0,
-      "retailPrice": 180.0,
-      "sellingPrice": 180.0,
-      "monogramOrPersonalizationPrice": 17.0
+      "retailPrice": 180,
+      "sellingPrice": 180,
+      "monogramOrPersonalizationPrice": 17
     },
-    "freeShip": true,
     "properties": {
       "isMarketPlace": "false",
       "isSpecialOrder": "false",
@@ -443,15 +636,12 @@
       "brand": "staub-parent/staub",
       "productType": "fry-pans-skillets",
       "canGiftWrap": "true",
-      "broiler-safe": "true",
-      "pickupServiceLevels": "[{\"pickupServiceLevel\":\"PICKUP_INTERNAL\",\"pickupInternal\":true}]",
       "collection": "staub-cast-iron",
       "allProductTypes": "fry-pans-skillets",
       "material": "enameled-cast-iron",
       "isShoppable": "true",
-      "shippingDestinationServiceCode": "[{\"destinationServiceCode\":\"UPSAP\",\"upsapEligible\":true}]",
       "name": "Staub Enameled Cast Iron Traditional Deep Skillet, 8 1/2\", Citron",
-      "shortName": "Staub Enameled Cast Iron Traditional Deep Skillet, 8 1/2\", Citron"
+      "shortName": "Staub Enameled Cast Iron"
     },
     "media": {
       "images": [
@@ -460,12 +650,3328 @@
           "path": "/img5m.jpg",
           "aspect": "q",
           "properties": {
-            "altText": "Staub Enameled Cast Iron Traditional Deep Skillet, 8 1/2\\\", Citron"
+            "altText": "Staub Enameled Cast Iron Traditional Deep Skillet, 8 1/2\", Citron"
           }
         }
       ]
     },
     "availability": "ON_HAND",
-    "deliveryEstimate": "TRANSIT"
+    "deliveryEstimate": "TRANSIT",
+    "description": "A colorful cast iron skillet for everyday cooking and complete registry packages focused on cookware essentials.",
+    "eventTags": [
+      "wedding",
+      "housewarming",
+      "dinner"
+    ],
+    "slotHints": [
+      "cookware"
+    ],
+    "styleTags": [
+      "warm",
+      "classic",
+      "premium"
+    ],
+    "settingTags": [
+      "kitchen",
+      "stovetop"
+    ],
+    "essentialForEvents": [
+      "housewarming",
+      "dinner"
+    ]
+  },
+  {
+    "id": "3001001",
+    "name": "Open Kitchen Stoneware Dinner Plates, Set of 4",
+    "shortName": "Open Kitchen Stoneware Dinner",
+    "primaryGroupId": "open-kitchen-stoneware-dinner-plates",
+    "price": {
+      "regularPrice": 69.95,
+      "surcharge": 0,
+      "retailPrice": 69.95,
+      "sellingPrice": 69.95,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "color": "white-parent/ivory",
+      "pattern": "tabletop",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "open-kitchen",
+      "productType": "dinner-plates",
+      "canGiftWrap": "true",
+      "collection": "open-kitchen-stoneware",
+      "allProductTypes": "dinner-plates",
+      "material": "stoneware",
+      "isShoppable": "true",
+      "name": "Open Kitchen Stoneware Dinner Plates, Set of 4",
+      "shortName": "Open Kitchen Stoneware Dinner"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/e4c4a38e90dccbe700d71fe6b4186c92.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Open Kitchen Stoneware Dinner Plates, Set of 4"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Everyday stoneware dinner plates that anchor a complete tabletop with a clean, versatile look for weddings, dinners, and housewarmings.",
+    "eventTags": [
+      "wedding",
+      "dinner",
+      "housewarming",
+      "brunch"
+    ],
+    "slotHints": [
+      "tabletop",
+      "serveware"
+    ],
+    "styleTags": [
+      "minimal",
+      "modern",
+      "neutral"
+    ],
+    "settingTags": [
+      "tabletop",
+      "dining"
+    ],
+    "essentialForEvents": [
+      "dinner",
+      "wedding",
+      "brunch"
+    ]
+  },
+  {
+    "id": "3001002",
+    "name": "Belgian Flax Linen Table Runner, Oatmeal",
+    "shortName": "Belgian Flax Linen Table",
+    "primaryGroupId": "belgian-flax-linen-table-runner",
+    "price": {
+      "regularPrice": 49.95,
+      "surcharge": 0,
+      "retailPrice": 49.95,
+      "sellingPrice": 49.95,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "color": "neutral-parent/oatmeal",
+      "pattern": "table-linens",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma-home",
+      "productType": "table-runner",
+      "canGiftWrap": "true",
+      "collection": "belgian-flax-linen",
+      "allProductTypes": "table-runner",
+      "material": "linen",
+      "isShoppable": "true",
+      "name": "Belgian Flax Linen Table Runner, Oatmeal",
+      "shortName": "Belgian Flax Linen Table"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/Linen_20table_20runner_20light_20natural_206.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Belgian Flax Linen Table Runner, Oatmeal"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "A soft linen runner that brings warmth and polish to birthday dinners, rustic brunches, and cozy entertaining tablescapes.",
+    "eventTags": [
+      "birthday",
+      "brunch",
+      "dinner",
+      "anniversary"
+    ],
+    "slotHints": [
+      "decor",
+      "tabletop"
+    ],
+    "styleTags": [
+      "cozy",
+      "rustic",
+      "natural",
+      "warm"
+    ],
+    "settingTags": [
+      "tabletop",
+      "dining"
+    ],
+    "essentialForEvents": []
+  },
+  {
+    "id": "3001003",
+    "name": "Schott Zwiesel Champagne Flutes, Set of 6",
+    "shortName": "Schott Zwiesel Champagne Flutes",
+    "primaryGroupId": "schott-zwiesel-champagne-flutes",
+    "price": {
+      "regularPrice": 96,
+      "surcharge": 0,
+      "retailPrice": 96,
+      "sellingPrice": 96,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "color": "clear",
+      "pattern": "glassware",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "schott-zwiesel",
+      "productType": "champagne-flutes",
+      "canGiftWrap": "true",
+      "collection": "schott-zwiesel",
+      "allProductTypes": "champagne-flutes",
+      "material": "tritancrystal",
+      "isShoppable": "true",
+      "name": "Schott Zwiesel Champagne Flutes, Set of 6",
+      "shortName": "Schott Zwiesel Champagne Flutes"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/schott-zwiesel-modo-crystal-champagne-flutes-set-of-4-o.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Schott Zwiesel Champagne Flutes, Set of 6"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Celebration-ready champagne flutes for weddings, anniversaries, and polished drink service with a refined sparkling presentation.",
+    "eventTags": [
+      "wedding",
+      "anniversary",
+      "birthday"
+    ],
+    "slotHints": [
+      "drinkware",
+      "barware",
+      "tabletop"
+    ],
+    "styleTags": [
+      "elegant",
+      "luxury",
+      "classic"
+    ],
+    "settingTags": [
+      "bar cart",
+      "tabletop"
+    ],
+    "essentialForEvents": [
+      "wedding",
+      "anniversary"
+    ]
+  },
+  {
+    "id": "3001004",
+    "name": "Marble Pedestal Cake Stand",
+    "shortName": "Marble Pedestal Cake Stand",
+    "primaryGroupId": "marble-pedestal-cake-stand",
+    "price": {
+      "regularPrice": 119.95,
+      "surcharge": 0,
+      "retailPrice": 119.95,
+      "sellingPrice": 119.95,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "color": "white-parent/white",
+      "pattern": "serveware",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma",
+      "productType": "cake-stands",
+      "canGiftWrap": "true",
+      "collection": "marble-entertaining",
+      "allProductTypes": "cake-stands",
+      "material": "marble",
+      "isShoppable": "true",
+      "name": "Marble Pedestal Cake Stand",
+      "shortName": "Marble Pedestal Cake Stand"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/6bc441b96c3dd69138e7f3d6946e88cf.png",
+          "aspect": "q",
+          "properties": {
+            "altText": "Marble Pedestal Cake Stand"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "A marble cake stand that doubles as serveware and decor for desserts, pastries, and elevated tabletop displays.",
+    "eventTags": [
+      "birthday",
+      "brunch",
+      "wedding",
+      "anniversary"
+    ],
+    "slotHints": [
+      "serveware",
+      "decor",
+      "tabletop"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "luxury"
+    ],
+    "settingTags": [
+      "tabletop",
+      "dessert station"
+    ],
+    "essentialForEvents": [
+      "birthday"
+    ]
+  },
+  {
+    "id": "3001005",
+    "name": "Fellow Stagg Electric Kettle, Matte Black",
+    "shortName": "Fellow Stagg Electric Kettle",
+    "primaryGroupId": "fellow-stagg-electric-kettle",
+    "price": {
+      "regularPrice": 165,
+      "surcharge": 0,
+      "retailPrice": 165,
+      "sellingPrice": 165,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "color": "black-parent/matte-black",
+      "pattern": "electrics",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "fellow",
+      "productType": "electric-kettle",
+      "canGiftWrap": "true",
+      "collection": "fellow-stagg",
+      "allProductTypes": "electric-kettle",
+      "material": "stainless-steel",
+      "isShoppable": "true",
+      "name": "Fellow Stagg Electric Kettle, Matte Black",
+      "shortName": "Fellow Stagg Electric Kettle"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/81GP5kDEJmL.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Fellow Stagg Electric Kettle, Matte Black"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "A sleek electric kettle for coffee, tea, and modern brunch setups that benefits registries built around daily beverage rituals.",
+    "eventTags": [
+      "brunch",
+      "housewarming",
+      "wedding"
+    ],
+    "slotHints": [
+      "coffee",
+      "beverage"
+    ],
+    "styleTags": [
+      "modern",
+      "minimal",
+      "premium"
+    ],
+    "settingTags": [
+      "kitchen",
+      "coffee station"
+    ],
+    "essentialForEvents": []
+  },
+  {
+    "id": "3001006",
+    "name": "Olivewood Serving Platter, Large",
+    "shortName": "Olivewood Serving Platter Large",
+    "primaryGroupId": "olivewood-serving-platter-large",
+    "price": {
+      "regularPrice": 84.95,
+      "surcharge": 0,
+      "retailPrice": 84.95,
+      "sellingPrice": 84.95,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "color": "brown-parent/olivewood",
+      "pattern": "serveware",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma",
+      "productType": "serving-platters",
+      "canGiftWrap": "true",
+      "collection": "olivewood-entertaining",
+      "allProductTypes": "serving-platters",
+      "material": "olivewood",
+      "isShoppable": "true",
+      "name": "Olivewood Serving Platter, Large",
+      "shortName": "Olivewood Serving Platter Large"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/81Spp8jAZQL.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Olivewood Serving Platter, Large"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "A large olivewood platter for appetizers, breads, and family-style serving with a natural statement look.",
+    "eventTags": [
+      "housewarming",
+      "birthday",
+      "dinner",
+      "brunch"
+    ],
+    "slotHints": [
+      "serveware",
+      "tabletop"
+    ],
+    "styleTags": [
+      "natural",
+      "rustic",
+      "warm"
+    ],
+    "settingTags": [
+      "tabletop",
+      "kitchen"
+    ],
+    "essentialForEvents": [
+      "housewarming",
+      "dinner"
+    ]
+  },
+  {
+    "id": "4001000",
+    "name": "Le Creuset Signature Braiser 3.5-Qt",
+    "shortName": "Le Creuset Signature Braiser",
+    "primaryGroupId": "le-creuset-signature-braiser-3.5-qt",
+    "price": {
+      "regularPrice": 310,
+      "surcharge": 0,
+      "retailPrice": 310,
+      "sellingPrice": 310,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "le-creuset",
+      "organic": "false",
+      "productType": "braiser",
+      "canGiftWrap": "true",
+      "allProductTypes": "braiser",
+      "material": "enameled-cast-iron",
+      "isShoppable": "true",
+      "name": "Le Creuset Signature Braiser 3.5-Qt",
+      "shortName": "Le Creuset Signature Braiser"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/le-creuset-signature-enameled-cast-iron-braiser-o.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Le Creuset Signature Braiser 3.5-Qt"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Iconic enameled cast iron braiser, perfect for wedding registries and housewarming gifts. An essential for stews and slow-cooked family dinners.",
+    "eventTags": [
+      "wedding",
+      "housewarming"
+    ],
+    "slotHints": [
+      "braiser"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "wedding"
+    ]
+  },
+  {
+    "id": "4001001",
+    "name": "Waterford Crystal Wine Decanter",
+    "shortName": "Waterford Crystal Wine Decanter",
+    "primaryGroupId": "waterford-crystal-wine-decanter",
+    "price": {
+      "regularPrice": 250,
+      "surcharge": 0,
+      "retailPrice": 250,
+      "sellingPrice": 250,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "waterford",
+      "organic": "false",
+      "productType": "decanter",
+      "canGiftWrap": "true",
+      "allProductTypes": "decanter",
+      "material": "crystal",
+      "isShoppable": "true",
+      "name": "Waterford Crystal Wine Decanter",
+      "shortName": "Waterford Crystal Wine Decanter"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/Ember-Mug-2-14-Oz-Smart-Mug-with-Temperature-Control-in-Sage-Green_eeecfc71-3243-490a-95ec-52e1126f4ef1.9a6b01976422afa6b7b97d09243a7859.jpeg.webp",
+          "aspect": "q",
+          "properties": {
+            "altText": "Waterford Crystal Wine Decanter"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Elegant crystal decanter designed to aerate your favorite wines. A luxurious gift for anniversaries and fine dining enthusiasts.",
+    "eventTags": [
+      "wedding",
+      "anniversary"
+    ],
+    "slotHints": [
+      "decanter"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "wedding"
+    ]
+  },
+  {
+    "id": "4001002",
+    "name": "Silver Plated Picture Frame 5x7",
+    "shortName": "Silver Plated Picture Frame",
+    "primaryGroupId": "silver-plated-picture-frame-5x7",
+    "price": {
+      "regularPrice": 45,
+      "surcharge": 0,
+      "retailPrice": 45,
+      "sellingPrice": 45,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma",
+      "organic": "false",
+      "productType": "frame",
+      "canGiftWrap": "true",
+      "allProductTypes": "frame",
+      "material": "silver-plated",
+      "isShoppable": "true",
+      "name": "Silver Plated Picture Frame 5x7",
+      "shortName": "Silver Plated Picture Frame"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/e4c4a38e90dccbe700d71fe6b4186c92.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Silver Plated Picture Frame 5x7"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Classic silver-plated picture frame, ideal for showcasing wedding, anniversary, or birthday memories with timeless style.",
+    "eventTags": [
+      "wedding",
+      "anniversary",
+      "birthday"
+    ],
+    "slotHints": [
+      "frame"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "wedding"
+    ]
+  },
+  {
+    "id": "4001003",
+    "name": "Monogrammed Egyptian Cotton Bath Towels",
+    "shortName": "Monogrammed Egyptian Cotton Bath",
+    "primaryGroupId": "monogrammed-egyptian-cotton-bath-towels",
+    "price": {
+      "regularPrice": 80,
+      "surcharge": 0,
+      "retailPrice": 80,
+      "sellingPrice": 80,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma-home",
+      "organic": "false",
+      "productType": "towels",
+      "canGiftWrap": "true",
+      "allProductTypes": "towels",
+      "material": "cotton",
+      "isShoppable": "true",
+      "name": "Monogrammed Egyptian Cotton Bath Towels",
+      "shortName": "Monogrammed Egyptian Cotton Bath"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/KitchenAid-Artisan-Series-5-qt-Stand-Mixer-Porcelain-White-with-Flat-Beater-Dough-Hook-Whip_cbd7d6d3-c7ec-4baf-8577-e734e6513e18.a706814f7d66050173b4111c10b48e91.jpeg.webp",
+          "aspect": "q",
+          "properties": {
+            "altText": "Monogrammed Egyptian Cotton Bath Towels"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Plush Egyptian cotton bath towels offering spa-like luxury. Highly recommended for housewarming bundles and wedding registries.",
+    "eventTags": [
+      "housewarming",
+      "wedding"
+    ],
+    "slotHints": [
+      "towels"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "housewarming"
+    ]
+  },
+  {
+    "id": "4001004",
+    "name": "KitchenAid Artisan Stand Mixer 5-Qt",
+    "shortName": "KitchenAid Artisan Stand Mixer",
+    "primaryGroupId": "kitchenaid-artisan-stand-mixer-5-qt",
+    "price": {
+      "regularPrice": 449,
+      "surcharge": 0,
+      "retailPrice": 449,
+      "sellingPrice": 449,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "kitchenaid",
+      "organic": "false",
+      "productType": "mixer",
+      "canGiftWrap": "true",
+      "allProductTypes": "mixer",
+      "material": "stainless-steel",
+      "isShoppable": "true",
+      "name": "KitchenAid Artisan Stand Mixer 5-Qt",
+      "shortName": "KitchenAid Artisan Stand Mixer"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/kitchenaid-artisan-series-5-quart-tilt-head-empire-red-stand-mixer.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "KitchenAid Artisan Stand Mixer 5-Qt"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "The legendary KitchenAid stand mixer, a staple for any avid baker. A top-tier wedding registry item and memorable birthday present.",
+    "eventTags": [
+      "wedding",
+      "birthday"
+    ],
+    "slotHints": [
+      "mixer"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "wedding"
+    ]
+  },
+  {
+    "id": "4001005",
+    "name": "Mulberry Silk Pillowcase Set",
+    "shortName": "Mulberry Silk Pillowcase Set",
+    "primaryGroupId": "mulberry-silk-pillowcase-set",
+    "price": {
+      "regularPrice": 95,
+      "surcharge": 0,
+      "retailPrice": 95,
+      "sellingPrice": 95,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "slip",
+      "organic": "false",
+      "productType": "bedding",
+      "canGiftWrap": "true",
+      "allProductTypes": "bedding",
+      "material": "silk",
+      "isShoppable": "true",
+      "name": "Mulberry Silk Pillowcase Set",
+      "shortName": "Mulberry Silk Pillowcase Set"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/Linen_20table_20runner_20light_20natural_206.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Mulberry Silk Pillowcase Set"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Hypoallergenic silk pillowcases that protect hair and skin. A thoughtful, luxurious gift for birthdays or anniversary celebrations.",
+    "eventTags": [
+      "anniversary",
+      "birthday"
+    ],
+    "slotHints": [
+      "bedding"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "anniversary"
+    ]
+  },
+  {
+    "id": "4001006",
+    "name": "Cashmere Fringed Throw Blanket",
+    "shortName": "Cashmere Fringed Throw Blanket",
+    "primaryGroupId": "cashmere-fringed-throw-blanket",
+    "price": {
+      "regularPrice": 299,
+      "surcharge": 0,
+      "retailPrice": 299,
+      "sellingPrice": 299,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma-home",
+      "organic": "false",
+      "productType": "throw",
+      "canGiftWrap": "true",
+      "allProductTypes": "throw",
+      "material": "cashmere",
+      "isShoppable": "true",
+      "name": "Cashmere Fringed Throw Blanket",
+      "shortName": "Cashmere Fringed Throw Blanket"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/Swissmar-Lugano-Cast-Iron-Fondue-Set-9pc-Cherry-included.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Cashmere Fringed Throw Blanket"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Ultra-soft cashmere throw blanket that adds cozy elegance to any living room. Perfect for housewarmings and anniversaries.",
+    "eventTags": [
+      "housewarming",
+      "anniversary"
+    ],
+    "slotHints": [
+      "throw"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "housewarming"
+    ]
+  },
+  {
+    "id": "4001007",
+    "name": "Royal Copenhagen Porcelain Teapot",
+    "shortName": "Royal Copenhagen Porcelain Teapot",
+    "primaryGroupId": "royal-copenhagen-porcelain-teapot",
+    "price": {
+      "regularPrice": 185,
+      "surcharge": 0,
+      "retailPrice": 185,
+      "sellingPrice": 185,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "royal-copenhagen",
+      "organic": "false",
+      "productType": "teapot",
+      "canGiftWrap": "true",
+      "allProductTypes": "teapot",
+      "material": "porcelain",
+      "isShoppable": "true",
+      "name": "Royal Copenhagen Porcelain Teapot",
+      "shortName": "Royal Copenhagen Porcelain Teapot"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/Swissmar-Sierra-11-Piece-Cast-Iron-Fondue-Set-Matte-White_9d0a19b6-cabe-43b2-9d5e-5e842aca5248.7ccb4f4ad2dd8bed9577ddd0c920d1e7.jpeg.webp",
+          "aspect": "q",
+          "properties": {
+            "altText": "Royal Copenhagen Porcelain Teapot"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Hand-painted porcelain teapot that brings refined elegance to tea time. A sophisticated gift for weddings and special birthdays.",
+    "eventTags": [
+      "wedding",
+      "birthday"
+    ],
+    "slotHints": [
+      "teapot"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "wedding"
+    ]
+  },
+  {
+    "id": "4001008",
+    "name": "Copper Plated Cocktail Shaker",
+    "shortName": "Copper Plated Cocktail Shaker",
+    "primaryGroupId": "copper-plated-cocktail-shaker",
+    "price": {
+      "regularPrice": 35,
+      "surcharge": 0,
+      "retailPrice": 35,
+      "sellingPrice": 35,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma",
+      "organic": "false",
+      "productType": "barware",
+      "canGiftWrap": "true",
+      "allProductTypes": "barware",
+      "material": "copper",
+      "isShoppable": "true",
+      "name": "Copper Plated Cocktail Shaker",
+      "shortName": "Copper Plated Cocktail Shaker"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/e4c4a38e90dccbe700d71fe6b4186c92.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Copper Plated Cocktail Shaker"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Sleek copper cocktail shaker for crafting professional-level drinks at home. Great for birthday parties and housewarming bar carts.",
+    "eventTags": [
+      "birthday",
+      "housewarming"
+    ],
+    "slotHints": [
+      "barware"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "birthday"
+    ]
+  },
+  {
+    "id": "4001009",
+    "name": "White Marble Cheese Board",
+    "shortName": "White Marble Cheese Board",
+    "primaryGroupId": "white-marble-cheese-board",
+    "price": {
+      "regularPrice": 65,
+      "surcharge": 0,
+      "retailPrice": 65,
+      "sellingPrice": 65,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma",
+      "organic": "false",
+      "productType": "serveware",
+      "canGiftWrap": "true",
+      "allProductTypes": "serveware",
+      "material": "marble",
+      "isShoppable": "true",
+      "name": "White Marble Cheese Board",
+      "shortName": "White Marble Cheese Board"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/img17m.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "White Marble Cheese Board"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "A beautiful, cool-surface marble cheese board perfect for charcuterie presentation. A must-have housewarming and registry item.",
+    "eventTags": [
+      "housewarming",
+      "wedding"
+    ],
+    "slotHints": [
+      "serveware"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "housewarming"
+    ]
+  },
+  {
+    "id": "4001010",
+    "name": "Fortessa Stainless Steel Flatware Set",
+    "shortName": "Fortessa Stainless Steel Flatware",
+    "primaryGroupId": "fortessa-stainless-steel-flatware-set",
+    "price": {
+      "regularPrice": 150,
+      "surcharge": 0,
+      "retailPrice": 150,
+      "sellingPrice": 150,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "fortessa",
+      "organic": "false",
+      "productType": "flatware",
+      "canGiftWrap": "true",
+      "allProductTypes": "flatware",
+      "material": "stainless-steel",
+      "isShoppable": "true",
+      "name": "Fortessa Stainless Steel Flatware Set",
+      "shortName": "Fortessa Stainless Steel Flatware"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/coffee-maker-12-cup-chrome-cuisinart-47fbf1eb-d2f5-47cc-99ec-7f79c4cabecf.png",
+          "aspect": "q",
+          "properties": {
+            "altText": "Fortessa Stainless Steel Flatware Set"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Modern, durable stainless steel flatware set for everyday meals or formal dinners. An essential wedding registry addition.",
+    "eventTags": [
+      "wedding",
+      "housewarming"
+    ],
+    "slotHints": [
+      "flatware"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "wedding"
+    ]
+  },
+  {
+    "id": "4001011",
+    "name": "Engraved Champagne Saber",
+    "shortName": "Engraved Champagne Saber",
+    "primaryGroupId": "engraved-champagne-saber",
+    "price": {
+      "regularPrice": 195,
+      "surcharge": 0,
+      "retailPrice": 195,
+      "sellingPrice": 195,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma",
+      "organic": "false",
+      "productType": "barware",
+      "canGiftWrap": "true",
+      "allProductTypes": "barware",
+      "material": "steel",
+      "isShoppable": "true",
+      "name": "Engraved Champagne Saber",
+      "shortName": "Engraved Champagne Saber"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/crate-and-barrel-acacia-end-grain-cutting-board.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Engraved Champagne Saber"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "A ceremonial champagne saber for dramatic celebrations. The ultimate unique gift for weddings and milestone anniversaries.",
+    "eventTags": [
+      "wedding",
+      "anniversary"
+    ],
+    "slotHints": [
+      "barware"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "wedding"
+    ]
+  },
+  {
+    "id": "4001012",
+    "name": "Artisan Hand-Thrown Pottery Vase",
+    "shortName": "Artisan Hand-Thrown Pottery Vase",
+    "primaryGroupId": "artisan-hand-thrown-pottery-vase",
+    "price": {
+      "regularPrice": 75,
+      "surcharge": 0,
+      "retailPrice": 75,
+      "sellingPrice": 75,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "local-artisan",
+      "organic": "false",
+      "productType": "decor",
+      "canGiftWrap": "true",
+      "allProductTypes": "decor",
+      "material": "ceramic",
+      "isShoppable": "true",
+      "name": "Artisan Hand-Thrown Pottery Vase",
+      "shortName": "Artisan Hand-Thrown Pottery Vase"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/e4c4a38e90dccbe700d71fe6b4186c92.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Artisan Hand-Thrown Pottery Vase"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "A rustic, hand-thrown ceramic vase that perfectly complements fresh floral arrangements for housewarming and birthday gifting.",
+    "eventTags": [
+      "housewarming",
+      "birthday"
+    ],
+    "slotHints": [
+      "decor"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "housewarming"
+    ]
+  },
+  {
+    "id": "4001013",
+    "name": "Personalized Wooden Keepsake Box",
+    "shortName": "Personalized Wooden Keepsake Box",
+    "primaryGroupId": "personalized-wooden-keepsake-box",
+    "price": {
+      "regularPrice": 110,
+      "surcharge": 0,
+      "retailPrice": 110,
+      "sellingPrice": 110,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma",
+      "organic": "false",
+      "productType": "decor",
+      "canGiftWrap": "true",
+      "allProductTypes": "decor",
+      "material": "wood",
+      "isShoppable": "true",
+      "name": "Personalized Wooden Keepsake Box",
+      "shortName": "Personalized Wooden Keepsake Box"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/il_1080xN.3999603227_8f61.jpg.avif",
+          "aspect": "q",
+          "properties": {
+            "altText": "Personalized Wooden Keepsake Box"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "A beautifully crafted wooden box for storing mementos. An intimate, personalized gift perfect for anniversaries or weddings.",
+    "eventTags": [
+      "anniversary",
+      "wedding"
+    ],
+    "slotHints": [
+      "decor"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "anniversary"
+    ]
+  },
+  {
+    "id": "4001014",
+    "name": "Ember Smart Temperature Control Mug",
+    "shortName": "Ember Smart Temperature Control",
+    "primaryGroupId": "ember-smart-temperature-control-mug",
+    "price": {
+      "regularPrice": 129,
+      "surcharge": 0,
+      "retailPrice": 129,
+      "sellingPrice": 129,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "ember",
+      "organic": "false",
+      "productType": "drinkware",
+      "canGiftWrap": "true",
+      "allProductTypes": "drinkware",
+      "material": "ceramic-coated",
+      "isShoppable": "true",
+      "name": "Ember Smart Temperature Control Mug",
+      "shortName": "Ember Smart Temperature Control"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/Ember-Mug-2-14-Oz-Smart-Mug-with-Temperature-Control-in-Sage-Green_eeecfc71-3243-490a-95ec-52e1126f4ef1.9a6b01976422afa6b7b97d09243a7859.jpeg.webp",
+          "aspect": "q",
+          "properties": {
+            "altText": "Ember Smart Temperature Control Mug"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Smart mug that keeps coffee or tea at the exact preferred temperature. A popular birthday and housewarming tech-home gift.",
+    "eventTags": [
+      "birthday",
+      "housewarming"
+    ],
+    "slotHints": [
+      "drinkware"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "birthday"
+    ]
+  },
+  {
+    "id": "4001015",
+    "name": "Riedel Crystal Whiskey Glasses Set",
+    "shortName": "Riedel Crystal Whiskey Glasses",
+    "primaryGroupId": "riedel-crystal-whiskey-glasses-set",
+    "price": {
+      "regularPrice": 60,
+      "surcharge": 0,
+      "retailPrice": 60,
+      "sellingPrice": 60,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "riedel",
+      "organic": "false",
+      "productType": "glassware",
+      "canGiftWrap": "true",
+      "allProductTypes": "glassware",
+      "material": "crystal",
+      "isShoppable": "true",
+      "name": "Riedel Crystal Whiskey Glasses Set",
+      "shortName": "Riedel Crystal Whiskey Glasses"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/img236m.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Riedel Crystal Whiskey Glasses Set"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Finely crafted crystal whiskey glasses designed to enhance complex aromas. Excellent for anniversary or birthday gifts.",
+    "eventTags": [
+      "anniversary",
+      "birthday"
+    ],
+    "slotHints": [
+      "glassware"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "anniversary"
+    ]
+  },
+  {
+    "id": "4001016",
+    "name": "Velvet Decorative Throw Pillows",
+    "shortName": "Velvet Decorative Throw Pillows",
+    "primaryGroupId": "velvet-decorative-throw-pillows",
+    "price": {
+      "regularPrice": 55,
+      "surcharge": 0,
+      "retailPrice": 55,
+      "sellingPrice": 55,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma-home",
+      "organic": "false",
+      "productType": "decor",
+      "canGiftWrap": "true",
+      "allProductTypes": "decor",
+      "material": "velvet",
+      "isShoppable": "true",
+      "name": "Velvet Decorative Throw Pillows",
+      "shortName": "Velvet Decorative Throw Pillows"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/il_794xN.3033340146_huv5.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Velvet Decorative Throw Pillows"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Luxurious velvet decorative pillows that instantly elevate living room aesthetics. A vibrant housewarming gift.",
+    "eventTags": [
+      "housewarming"
+    ],
+    "slotHints": [
+      "decor"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "housewarming"
+    ]
+  },
+  {
+    "id": "4001017",
+    "name": "Ultrasonic Aromatherapy Oil Diffuser",
+    "shortName": "Ultrasonic Aromatherapy Oil Diffuser",
+    "primaryGroupId": "ultrasonic-aromatherapy-oil-diffuser",
+    "price": {
+      "regularPrice": 45,
+      "surcharge": 0,
+      "retailPrice": 45,
+      "sellingPrice": 45,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma",
+      "organic": "false",
+      "productType": "decor",
+      "canGiftWrap": "true",
+      "allProductTypes": "decor",
+      "material": "ceramic",
+      "isShoppable": "true",
+      "name": "Ultrasonic Aromatherapy Oil Diffuser",
+      "shortName": "Ultrasonic Aromatherapy Oil Diffuser"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/img4m.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Ultrasonic Aromatherapy Oil Diffuser"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Ceramic oil diffuser that creates a calming, fragrant atmosphere. Ideal for wellness-focused birthday or housewarming gifts.",
+    "eventTags": [
+      "housewarming",
+      "birthday"
+    ],
+    "slotHints": [
+      "decor"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "housewarming"
+    ]
+  },
+  {
+    "id": "4001018",
+    "name": "Gold Rimmed Bone China Dinner Plates",
+    "shortName": "Gold Rimmed Bone China",
+    "primaryGroupId": "gold-rimmed-bone-china-dinner-plates",
+    "price": {
+      "regularPrice": 120,
+      "surcharge": 0,
+      "retailPrice": 120,
+      "sellingPrice": 120,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "wedgwood",
+      "organic": "false",
+      "productType": "dinnerware",
+      "canGiftWrap": "true",
+      "allProductTypes": "dinnerware",
+      "material": "bone-china",
+      "isShoppable": "true",
+      "name": "Gold Rimmed Bone China Dinner Plates",
+      "shortName": "Gold Rimmed Bone China"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/e4c4a38e90dccbe700d71fe6b4186c92.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Gold Rimmed Bone China Dinner Plates"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Elegant bone china dinner plates with a delicate gold rim. A classic, sophisticated choice for fine wedding dining.",
+    "eventTags": [
+      "wedding",
+      "anniversary"
+    ],
+    "slotHints": [
+      "dinnerware"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "wedding"
+    ]
+  },
+  {
+    "id": "4001019",
+    "name": "Woven Seagrass Storage Baskets",
+    "shortName": "Woven Seagrass Storage Baskets",
+    "primaryGroupId": "woven-seagrass-storage-baskets",
+    "price": {
+      "regularPrice": 85,
+      "surcharge": 0,
+      "retailPrice": 85,
+      "sellingPrice": 85,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma-home",
+      "organic": "false",
+      "productType": "storage",
+      "canGiftWrap": "true",
+      "allProductTypes": "storage",
+      "material": "seagrass",
+      "isShoppable": "true",
+      "name": "Woven Seagrass Storage Baskets",
+      "shortName": "Woven Seagrass Storage Baskets"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/img122m.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Woven Seagrass Storage Baskets"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Practical yet stylish woven seagrass baskets for home organization. A functional and beautiful housewarming gift.",
+    "eventTags": [
+      "housewarming"
+    ],
+    "slotHints": [
+      "storage"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "housewarming"
+    ]
+  },
+  {
+    "id": "4001020",
+    "name": "Swissmar Cast Iron Fondue Set",
+    "shortName": "Swissmar Cast Iron Fondue",
+    "primaryGroupId": "swissmar-cast-iron-fondue-set",
+    "price": {
+      "regularPrice": 115,
+      "surcharge": 0,
+      "retailPrice": 115,
+      "sellingPrice": 115,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "swissmar",
+      "organic": "false",
+      "productType": "cookware",
+      "canGiftWrap": "true",
+      "allProductTypes": "cookware",
+      "material": "cast-iron",
+      "isShoppable": "true",
+      "name": "Swissmar Cast Iron Fondue Set",
+      "shortName": "Swissmar Cast Iron Fondue"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/Swissmar-Lugano-Cast-Iron-Fondue-Set-9pc-Cherry-included.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Swissmar Cast Iron Fondue Set"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Classic enameled cast iron fondue set for interactive dinners. A fun, romantic gift for weddings and anniversaries.",
+    "eventTags": [
+      "wedding",
+      "anniversary"
+    ],
+    "slotHints": [
+      "cookware"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "wedding"
+    ]
+  },
+  {
+    "id": "4001021",
+    "name": "Simon Pearce Hand-Blown Glass Pitcher",
+    "shortName": "Simon Pearce Hand-Blown Glass",
+    "primaryGroupId": "simon-pearce-hand-blown-glass-pitcher",
+    "price": {
+      "regularPrice": 140,
+      "surcharge": 0,
+      "retailPrice": 140,
+      "sellingPrice": 140,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "simon-pearce",
+      "organic": "false",
+      "productType": "serveware",
+      "canGiftWrap": "true",
+      "allProductTypes": "serveware",
+      "material": "glass",
+      "isShoppable": "true",
+      "name": "Simon Pearce Hand-Blown Glass Pitcher",
+      "shortName": "Simon Pearce Hand-Blown Glass"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/img236m.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Simon Pearce Hand-Blown Glass Pitcher"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Exquisite hand-blown glass pitcher for serving water, juice, or cocktails. A stunning functional art piece for new homes.",
+    "eventTags": [
+      "wedding",
+      "housewarming"
+    ],
+    "slotHints": [
+      "serveware"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "wedding"
+    ]
+  },
+  {
+    "id": "4001022",
+    "name": "Macrame Woven Wall Hanging",
+    "shortName": "Macrame Woven Wall Hanging",
+    "primaryGroupId": "macrame-woven-wall-hanging",
+    "price": {
+      "regularPrice": 65,
+      "surcharge": 0,
+      "retailPrice": 65,
+      "sellingPrice": 65,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma-home",
+      "organic": "false",
+      "productType": "decor",
+      "canGiftWrap": "true",
+      "allProductTypes": "decor",
+      "material": "cotton",
+      "isShoppable": "true",
+      "name": "Macrame Woven Wall Hanging",
+      "shortName": "Macrame Woven Wall Hanging"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/img153m.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Macrame Woven Wall Hanging"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Boho-chic macrame wall hanging to add texture and warmth to bare walls. A trendy housewarming or birthday present.",
+    "eventTags": [
+      "housewarming",
+      "birthday"
+    ],
+    "slotHints": [
+      "decor"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "housewarming"
+    ]
+  },
+  {
+    "id": "4001023",
+    "name": "Vintage Brass Taper Candle Holders",
+    "shortName": "Vintage Brass Taper Candle",
+    "primaryGroupId": "vintage-brass-taper-candle-holders",
+    "price": {
+      "regularPrice": 70,
+      "surcharge": 0,
+      "retailPrice": 70,
+      "sellingPrice": 70,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma",
+      "organic": "false",
+      "productType": "decor",
+      "canGiftWrap": "true",
+      "allProductTypes": "decor",
+      "material": "brass",
+      "isShoppable": "true",
+      "name": "Vintage Brass Taper Candle Holders",
+      "shortName": "Vintage Brass Taper Candle"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/img17m.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Vintage Brass Taper Candle Holders"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Elegant brass candle holders that bring a romantic, vintage feel to dinner tables. Perfect for anniversaries and weddings.",
+    "eventTags": [
+      "anniversary",
+      "wedding"
+    ],
+    "slotHints": [
+      "decor"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "anniversary"
+    ]
+  },
+  {
+    "id": "4001024",
+    "name": "Monogrammed Linen Dinner Napkins",
+    "shortName": "Monogrammed Linen Dinner Napkins",
+    "primaryGroupId": "monogrammed-linen-dinner-napkins",
+    "price": {
+      "regularPrice": 48,
+      "surcharge": 0,
+      "retailPrice": 48,
+      "sellingPrice": 48,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma",
+      "organic": "false",
+      "productType": "table-linens",
+      "canGiftWrap": "true",
+      "allProductTypes": "table-linens",
+      "material": "linen",
+      "isShoppable": "true",
+      "name": "Monogrammed Linen Dinner Napkins",
+      "shortName": "Monogrammed Linen Dinner Napkins"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/img236m.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Monogrammed Linen Dinner Napkins"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Set of six pure linen napkins that can be monogrammed. A thoughtful, personalized touch for wedding registries and housewarmings.",
+    "eventTags": [
+      "housewarming",
+      "wedding"
+    ],
+    "slotHints": [
+      "table linens"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "housewarming"
+    ]
+  },
+  {
+    "id": "4001025",
+    "name": "Expandable Bamboo Bath Caddy",
+    "shortName": "Expandable Bamboo Bath Caddy",
+    "primaryGroupId": "expandable-bamboo-bath-caddy",
+    "price": {
+      "regularPrice": 55,
+      "surcharge": 0,
+      "retailPrice": 55,
+      "sellingPrice": 55,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma-home",
+      "organic": "false",
+      "productType": "bath",
+      "canGiftWrap": "true",
+      "allProductTypes": "bath",
+      "material": "bamboo",
+      "isShoppable": "true",
+      "name": "Expandable Bamboo Bath Caddy",
+      "shortName": "Expandable Bamboo Bath Caddy"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/img23m.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Expandable Bamboo Bath Caddy"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "A relaxing bamboo bath caddy featuring a book prop and wine glass holder. A luxurious self-care birthday or anniversary gift.",
+    "eventTags": [
+      "birthday",
+      "anniversary"
+    ],
+    "slotHints": [
+      "bath"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "birthday"
+    ]
+  },
+  {
+    "id": "4001026",
+    "name": "Natural Slate Coaster Set",
+    "shortName": "Natural Slate Coaster Set",
+    "primaryGroupId": "natural-slate-coaster-set",
+    "price": {
+      "regularPrice": 25,
+      "surcharge": 0,
+      "retailPrice": 25,
+      "sellingPrice": 25,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma",
+      "organic": "false",
+      "productType": "tabletop",
+      "canGiftWrap": "true",
+      "allProductTypes": "tabletop",
+      "material": "slate",
+      "isShoppable": "true",
+      "name": "Natural Slate Coaster Set",
+      "shortName": "Natural Slate Coaster Set"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/img27m.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Natural Slate Coaster Set"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Durable, rustic slate coasters that protect furniture while looking stylish. A great small housewarming or birthday add-on.",
+    "eventTags": [
+      "housewarming",
+      "birthday"
+    ],
+    "slotHints": [
+      "tabletop"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "housewarming"
+    ]
+  },
+  {
+    "id": "4001027",
+    "name": "Large Hand-Painted Ceramic Serving Bowl",
+    "shortName": "Large Hand-Painted Ceramic Serving",
+    "primaryGroupId": "large-hand-painted-ceramic-serving-bowl",
+    "price": {
+      "regularPrice": 90,
+      "surcharge": 0,
+      "retailPrice": 90,
+      "sellingPrice": 90,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma",
+      "organic": "false",
+      "productType": "serveware",
+      "canGiftWrap": "true",
+      "allProductTypes": "serveware",
+      "material": "ceramic",
+      "isShoppable": "true",
+      "name": "Large Hand-Painted Ceramic Serving Bowl",
+      "shortName": "Large Hand-Painted Ceramic Serving"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/img64m.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Large Hand-Painted Ceramic Serving Bowl"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "A vibrant, hand-painted ceramic bowl perfect for family-style salads or pasta. A registry favorite for new couples.",
+    "eventTags": [
+      "wedding",
+      "housewarming"
+    ],
+    "slotHints": [
+      "serveware"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "wedding"
+    ]
+  },
+  {
+    "id": "4001028",
+    "name": "Three-Tiered Porcelain Dessert Stand",
+    "shortName": "Three-Tiered Porcelain Dessert Stand",
+    "primaryGroupId": "three-tiered-porcelain-dessert-stand",
+    "price": {
+      "regularPrice": 85,
+      "surcharge": 0,
+      "retailPrice": 85,
+      "sellingPrice": 85,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma",
+      "organic": "false",
+      "productType": "serveware",
+      "canGiftWrap": "true",
+      "allProductTypes": "serveware",
+      "material": "porcelain",
+      "isShoppable": "true",
+      "name": "Three-Tiered Porcelain Dessert Stand",
+      "shortName": "Three-Tiered Porcelain Dessert Stand"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/img42m.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Three-Tiered Porcelain Dessert Stand"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Elegant tiered stand for displaying cupcakes, pastries, and appetizers at wedding receptions or birthday parties.",
+    "eventTags": [
+      "wedding",
+      "birthday"
+    ],
+    "slotHints": [
+      "serveware"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "wedding"
+    ]
+  },
+  {
+    "id": "4001029",
+    "name": "Coravin Timeless Electric Wine Opener",
+    "shortName": "Coravin Timeless Electric Wine",
+    "primaryGroupId": "coravin-timeless-electric-wine-opener",
+    "price": {
+      "regularPrice": 199,
+      "surcharge": 0,
+      "retailPrice": 199,
+      "sellingPrice": 199,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "coravin",
+      "organic": "false",
+      "productType": "barware",
+      "canGiftWrap": "true",
+      "allProductTypes": "barware",
+      "material": "stainless-steel",
+      "isShoppable": "true",
+      "name": "Coravin Timeless Electric Wine Opener",
+      "shortName": "Coravin Timeless Electric Wine"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/img4m.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Coravin Timeless Electric Wine Opener"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Advanced wine preservation system and electric opener. A premium gift for wine connoisseurs celebrating a birthday or anniversary.",
+    "eventTags": [
+      "anniversary",
+      "birthday"
+    ],
+    "slotHints": [
+      "barware"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "anniversary"
+    ]
+  },
+  {
+    "id": "4001030",
+    "name": "Personalized Welcome Doormat",
+    "shortName": "Personalized Welcome Doormat",
+    "primaryGroupId": "personalized-welcome-doormat",
+    "price": {
+      "regularPrice": 40,
+      "surcharge": 0,
+      "retailPrice": 40,
+      "sellingPrice": 40,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma-home",
+      "organic": "false",
+      "productType": "outdoor",
+      "canGiftWrap": "true",
+      "allProductTypes": "outdoor",
+      "material": "coir",
+      "isShoppable": "true",
+      "name": "Personalized Welcome Doormat",
+      "shortName": "Personalized Welcome Doormat"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/img5m.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Personalized Welcome Doormat"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Durable coir doormat personalized with the family name. The quintessential housewarming or newlywed wedding gift.",
+    "eventTags": [
+      "housewarming",
+      "wedding"
+    ],
+    "slotHints": [
+      "outdoor"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "housewarming"
+    ]
+  },
+  {
+    "id": "4001031",
+    "name": "Jo Malone Luxury Scented Candle",
+    "shortName": "Jo Malone Luxury Scented",
+    "primaryGroupId": "jo-malone-luxury-scented-candle",
+    "price": {
+      "regularPrice": 75,
+      "surcharge": 0,
+      "retailPrice": 75,
+      "sellingPrice": 75,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "jo-malone",
+      "organic": "false",
+      "productType": "decor",
+      "canGiftWrap": "true",
+      "allProductTypes": "decor",
+      "material": "wax",
+      "isShoppable": "true",
+      "name": "Jo Malone Luxury Scented Candle",
+      "shortName": "Jo Malone Luxury Scented"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/img64m.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Jo Malone Luxury Scented Candle"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "A beautifully fragranced luxury candle with a long burn time. A reliable, universally appreciated birthday or anniversary gift.",
+    "eventTags": [
+      "anniversary",
+      "birthday"
+    ],
+    "slotHints": [
+      "decor"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "anniversary"
+    ]
+  },
+  {
+    "id": "4001032",
+    "name": "Luigi Bormioli Crystal Cake Dome",
+    "shortName": "Luigi Bormioli Crystal Cake",
+    "primaryGroupId": "luigi-bormioli-crystal-cake-dome",
+    "price": {
+      "regularPrice": 110,
+      "surcharge": 0,
+      "retailPrice": 110,
+      "sellingPrice": 110,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "luigi-bormioli",
+      "organic": "false",
+      "productType": "serveware",
+      "canGiftWrap": "true",
+      "allProductTypes": "serveware",
+      "material": "crystal",
+      "isShoppable": "true",
+      "name": "Luigi Bormioli Crystal Cake Dome",
+      "shortName": "Luigi Bormioli Crystal Cake"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/img83m.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Luigi Bormioli Crystal Cake Dome"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Clear crystal cake dome that keeps baked goods fresh while providing a stunning tabletop display. Ideal for wedding registries.",
+    "eventTags": [
+      "wedding",
+      "housewarming"
+    ],
+    "slotHints": [
+      "serveware"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "wedding"
+    ]
+  },
+  {
+    "id": "4001033",
+    "name": "Vera Wang Silver Cake Server Set",
+    "shortName": "Vera Wang Silver Cake",
+    "primaryGroupId": "vera-wang-silver-cake-server-set",
+    "price": {
+      "regularPrice": 65,
+      "surcharge": 0,
+      "retailPrice": 65,
+      "sellingPrice": 65,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "vera-wang",
+      "organic": "false",
+      "productType": "serveware",
+      "canGiftWrap": "true",
+      "allProductTypes": "serveware",
+      "material": "silver-plated",
+      "isShoppable": "true",
+      "name": "Vera Wang Silver Cake Server Set",
+      "shortName": "Vera Wang Silver Cake"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/img95m.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Vera Wang Silver Cake Server Set"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Elegant silver cake knife and server set, perfectly designed for the wedding cake cutting ceremony and anniversaries.",
+    "eventTags": [
+      "wedding",
+      "anniversary"
+    ],
+    "slotHints": [
+      "serveware"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "wedding"
+    ]
+  },
+  {
+    "id": "4001034",
+    "name": "Custom Engraved Olive Wood Coasters",
+    "shortName": "Custom Engraved Olive Wood",
+    "primaryGroupId": "custom-engraved-olive-wood-coasters",
+    "price": {
+      "regularPrice": 35,
+      "surcharge": 0,
+      "retailPrice": 35,
+      "sellingPrice": 35,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma",
+      "organic": "false",
+      "productType": "tabletop",
+      "canGiftWrap": "true",
+      "allProductTypes": "tabletop",
+      "material": "olive-wood",
+      "isShoppable": "true",
+      "name": "Custom Engraved Olive Wood Coasters",
+      "shortName": "Custom Engraved Olive Wood"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/kitchenaid-artisan-series-5-quart-tilt-head-empire-red-stand-mixer.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Custom Engraved Olive Wood Coasters"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Warm olive wood coasters customized with initials. A thoughtful, rustic touch for housewarming and wedding presents.",
+    "eventTags": [
+      "housewarming",
+      "wedding"
+    ],
+    "slotHints": [
+      "tabletop"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "housewarming"
+    ]
+  },
+  {
+    "id": "4001035",
+    "name": "Porcelain Floral Appetizer Plates",
+    "shortName": "Porcelain Floral Appetizer Plates",
+    "primaryGroupId": "porcelain-floral-appetizer-plates",
+    "price": {
+      "regularPrice": 50,
+      "surcharge": 0,
+      "retailPrice": 50,
+      "sellingPrice": 50,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma",
+      "organic": "false",
+      "productType": "dinnerware",
+      "canGiftWrap": "true",
+      "allProductTypes": "dinnerware",
+      "material": "porcelain",
+      "isShoppable": "true",
+      "name": "Porcelain Floral Appetizer Plates",
+      "shortName": "Porcelain Floral Appetizer Plates"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/e4c4a38e90dccbe700d71fe6b4186c92.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Porcelain Floral Appetizer Plates"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Set of small porcelain plates featuring delicate floral patterns. Excellent for serving appetizers at birthday parties and gatherings.",
+    "eventTags": [
+      "birthday",
+      "housewarming"
+    ],
+    "slotHints": [
+      "dinnerware"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "birthday"
+    ]
+  },
+  {
+    "id": "4001036",
+    "name": "Rose Gold 5-Piece Barware Set",
+    "shortName": "Rose Gold 5-Piece Barware",
+    "primaryGroupId": "rose-gold-5-piece-barware-set",
+    "price": {
+      "regularPrice": 85,
+      "surcharge": 0,
+      "retailPrice": 85,
+      "sellingPrice": 85,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma",
+      "organic": "false",
+      "productType": "barware",
+      "canGiftWrap": "true",
+      "allProductTypes": "barware",
+      "material": "stainless-steel",
+      "isShoppable": "true",
+      "name": "Rose Gold 5-Piece Barware Set",
+      "shortName": "Rose Gold 5-Piece Barware"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/le-creuset-signature-enameled-cast-iron-braiser-o.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Rose Gold 5-Piece Barware Set"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Trendy rose gold finished bar tools including a shaker, jigger, and strainer. A stylish registry addition for cocktail lovers.",
+    "eventTags": [
+      "wedding",
+      "birthday"
+    ],
+    "slotHints": [
+      "barware"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "wedding"
+    ]
+  },
+  {
+    "id": "4001037",
+    "name": "Wicker Insulated Picnic Basket",
+    "shortName": "Wicker Insulated Picnic Basket",
+    "primaryGroupId": "wicker-insulated-picnic-basket",
+    "price": {
+      "regularPrice": 130,
+      "surcharge": 0,
+      "retailPrice": 130,
+      "sellingPrice": 130,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma",
+      "organic": "false",
+      "productType": "outdoor",
+      "canGiftWrap": "true",
+      "allProductTypes": "outdoor",
+      "material": "wicker",
+      "isShoppable": "true",
+      "name": "Wicker Insulated Picnic Basket",
+      "shortName": "Wicker Insulated Picnic Basket"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/marin-120-warm-natural-euroflax-linen-table-runner.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Wicker Insulated Picnic Basket"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Classic woven wicker picnic basket with modern insulated compartments. A romantic gift for anniversary or wedding outings.",
+    "eventTags": [
+      "anniversary",
+      "wedding"
+    ],
+    "slotHints": [
+      "outdoor"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "anniversary"
+    ]
+  },
+  {
+    "id": "4001038",
+    "name": "Handcrafted Acacia Wood Salad Bowl",
+    "shortName": "Handcrafted Acacia Wood Salad",
+    "primaryGroupId": "handcrafted-acacia-wood-salad-bowl",
+    "price": {
+      "regularPrice": 75,
+      "surcharge": 0,
+      "retailPrice": 75,
+      "sellingPrice": 75,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma",
+      "organic": "false",
+      "productType": "serveware",
+      "canGiftWrap": "true",
+      "allProductTypes": "serveware",
+      "material": "acacia",
+      "isShoppable": "true",
+      "name": "Handcrafted Acacia Wood Salad Bowl",
+      "shortName": "Handcrafted Acacia Wood Salad"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/img64m.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Handcrafted Acacia Wood Salad Bowl"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Large, beautifully grained acacia wood bowl specifically designed for tossing and serving salads at dinner parties.",
+    "eventTags": [
+      "housewarming",
+      "wedding"
+    ],
+    "slotHints": [
+      "serveware"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "housewarming"
+    ]
+  },
+  {
+    "id": "4001039",
+    "name": "Turkish Cotton Waffle Weave Robe",
+    "shortName": "Turkish Cotton Waffle Weave",
+    "primaryGroupId": "turkish-cotton-waffle-weave-robe",
+    "price": {
+      "regularPrice": 120,
+      "surcharge": 0,
+      "retailPrice": 120,
+      "sellingPrice": 120,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma-home",
+      "organic": "false",
+      "productType": "bath",
+      "canGiftWrap": "true",
+      "allProductTypes": "bath",
+      "material": "cotton",
+      "isShoppable": "true",
+      "name": "Turkish Cotton Waffle Weave Robe",
+      "shortName": "Turkish Cotton Waffle Weave"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/nm_2080053_100000_m.webp",
+          "aspect": "q",
+          "properties": {
+            "altText": "Turkish Cotton Waffle Weave Robe"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Lightweight and absorbent waffle weave robe providing resort-quality comfort. A highly desirable anniversary or birthday gift.",
+    "eventTags": [
+      "anniversary",
+      "birthday"
+    ],
+    "slotHints": [
+      "bath"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "anniversary"
+    ]
+  },
+  {
+    "id": "4001040",
+    "name": "Personalized Crystal Whiskey Decanter",
+    "shortName": "Personalized Crystal Whiskey Decanter",
+    "primaryGroupId": "personalized-crystal-whiskey-decanter",
+    "price": {
+      "regularPrice": 160,
+      "surcharge": 0,
+      "retailPrice": 160,
+      "sellingPrice": 160,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma",
+      "organic": "false",
+      "productType": "barware",
+      "canGiftWrap": "true",
+      "allProductTypes": "barware",
+      "material": "crystal",
+      "isShoppable": "true",
+      "name": "Personalized Crystal Whiskey Decanter",
+      "shortName": "Personalized Crystal Whiskey Decanter"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/schott-zwiesel-modo-crystal-champagne-flutes-set-of-4-o-2.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Personalized Crystal Whiskey Decanter"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "A heavy-based crystal whiskey decanter that can be etched with initials. A distinguished gift for weddings and milestones.",
+    "eventTags": [
+      "anniversary",
+      "wedding"
+    ],
+    "slotHints": [
+      "barware"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "anniversary"
+    ]
+  },
+  {
+    "id": "4001041",
+    "name": "Brass Geometric Terrarium",
+    "shortName": "Brass Geometric Terrarium",
+    "primaryGroupId": "brass-geometric-terrarium",
+    "price": {
+      "regularPrice": 45,
+      "surcharge": 0,
+      "retailPrice": 45,
+      "sellingPrice": 45,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma-home",
+      "organic": "false",
+      "productType": "decor",
+      "canGiftWrap": "true",
+      "allProductTypes": "decor",
+      "material": "glass-brass",
+      "isShoppable": "true",
+      "name": "Brass Geometric Terrarium",
+      "shortName": "Brass Geometric Terrarium"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/schott-zwiesel-modo-crystal-champagne-flutes-set-of-4-o.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Brass Geometric Terrarium"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Modern geometric glass terrarium with brass edges for displaying small indoor plants. A great housewarming accent piece.",
+    "eventTags": [
+      "housewarming",
+      "birthday"
+    ],
+    "slotHints": [
+      "decor"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "housewarming"
+    ]
+  },
+  {
+    "id": "4001042",
+    "name": "Double-Walled Stainless Steel Ice Bucket",
+    "shortName": "Double-Walled Stainless Steel Ice",
+    "primaryGroupId": "double-walled-stainless-steel-ice-bucket",
+    "price": {
+      "regularPrice": 95,
+      "surcharge": 0,
+      "retailPrice": 95,
+      "sellingPrice": 95,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma",
+      "organic": "false",
+      "productType": "barware",
+      "canGiftWrap": "true",
+      "allProductTypes": "barware",
+      "material": "stainless-steel",
+      "isShoppable": "true",
+      "name": "Double-Walled Stainless Steel Ice Bucket",
+      "shortName": "Double-Walled Stainless Steel Ice"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/staub-enameled-cast-iron-embossed-twist-dutch-oven-4-1-4-q-c.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Double-Walled Stainless Steel Ice Bucket"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Insulated stainless steel ice bucket that prevents sweating and keeps ice frozen longer during parties and receptions.",
+    "eventTags": [
+      "wedding",
+      "housewarming"
+    ],
+    "slotHints": [
+      "barware"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "wedding"
+    ]
+  },
+  {
+    "id": "4001043",
+    "name": "Glazed Ceramic Chip and Dip Set",
+    "shortName": "Glazed Ceramic Chip and",
+    "primaryGroupId": "glazed-ceramic-chip-and-dip-set",
+    "price": {
+      "regularPrice": 60,
+      "surcharge": 0,
+      "retailPrice": 60,
+      "sellingPrice": 60,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma",
+      "organic": "false",
+      "productType": "serveware",
+      "canGiftWrap": "true",
+      "allProductTypes": "serveware",
+      "material": "ceramic",
+      "isShoppable": "true",
+      "name": "Glazed Ceramic Chip and Dip Set",
+      "shortName": "Glazed Ceramic Chip and"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/6bc441b96c3dd69138e7f3d6946e88cf.png",
+          "aspect": "q",
+          "properties": {
+            "altText": "Glazed Ceramic Chip and Dip Set"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "A convenient two-piece ceramic serving dish for chips and dips, perfect for casual housewarming and birthday entertaining.",
+    "eventTags": [
+      "housewarming",
+      "birthday"
+    ],
+    "slotHints": [
+      "serveware"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "housewarming"
+    ]
+  },
+  {
+    "id": "4001044",
+    "name": "Vintage Cut-Glass Punch Bowl",
+    "shortName": "Vintage Cut-Glass Punch Bowl",
+    "primaryGroupId": "vintage-cut-glass-punch-bowl",
+    "price": {
+      "regularPrice": 180,
+      "surcharge": 0,
+      "retailPrice": 180,
+      "sellingPrice": 180,
+      "monogramOrPersonalizationPrice": 17
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma",
+      "organic": "false",
+      "productType": "serveware",
+      "canGiftWrap": "true",
+      "allProductTypes": "serveware",
+      "material": "glass",
+      "isShoppable": "true",
+      "name": "Vintage Cut-Glass Punch Bowl",
+      "shortName": "Vintage Cut-Glass Punch Bowl"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/img64m.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Vintage Cut-Glass Punch Bowl"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "A large, ornate cut-glass punch bowl with matching cups, designed to be the centerpiece of wedding and anniversary celebrations.",
+    "eventTags": [
+      "wedding",
+      "anniversary"
+    ],
+    "slotHints": [
+      "serveware"
+    ],
+    "styleTags": [
+      "elegant",
+      "modern",
+      "classic"
+    ],
+    "settingTags": [
+      "home",
+      "entertaining"
+    ],
+    "essentialForEvents": [
+      "wedding"
+    ]
   }
 ]

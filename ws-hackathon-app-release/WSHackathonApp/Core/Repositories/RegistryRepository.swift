@@ -11,43 +11,112 @@ import Foundation
 @MainActor
 final class RegistryRepository: ObservableObject {
     
-    @Published var currentRegistry: Registry?
+    @Published var registries: [Registry] = []
+    @Published var activeRegistryId: UUID?
+    
+    private var cancellables = Set<AnyCancellable>()
+    
+    init() {
+        loadFromDisk()
+        setupSocketListeners()
+    }
+    
+    private func saveToDisk() {
+        if let encoded = try? JSONEncoder().encode(registries) {
+            UserDefaults.standard.set(encoded, forKey: "saved_registries")
+        }
+    }
+    
+    private func loadFromDisk() {
+        if let data = UserDefaults.standard.data(forKey: "saved_registries"),
+           let decoded = try? JSONDecoder().decode([Registry].self, from: data) {
+            self.registries = decoded
+        }
+    }
+    
+    private func setupSocketListeners() {
+        NotificationCenter.default.addObserver(forName: .didReceiveRegistryUpdate, object: nil, queue: .main) { [weak self] notification in
+            guard let dict = notification.object as? [String: Any],
+                  let self = self else { return }
+            Task { @MainActor in
+                self.applyRemoteUpdate(dict)
+            }
+        }
+        
+        NotificationCenter.default.addObserver(forName: .didFetchUserRegistries, object: nil, queue: .main) { [weak self] notification in
+            guard let array = notification.object as? [[String: Any]],
+                  let self = self else { return }
+            Task { @MainActor in
+                self.applyBulkRemoteUpdate(array)
+            }
+        }
+    }
+    
+    var currentRegistry: Registry? {
+        get {
+            guard let id = activeRegistryId else { return nil }
+            return registries.first { $0.id == id }
+        }
+        set {
+            guard let newValue = newValue else { return }
+            if let index = registries.firstIndex(where: { $0.id == newValue.id }) {
+                registries[index] = newValue
+                saveToDisk()
+            }
+        }
+    }
     
     // MARK: - Create
     var isActiveRegistry: Bool {
-        currentRegistry != nil
+        activeRegistryId != nil
     }
     
-    func createRegistry(firstName: String,
+    func createRegistry(id: UUID? = nil,
+                        firstName: String,
                         lastName: String,
                         event: RegistryEvent,
-                        date: Date) {
+                        date: Date,
+                        budget: String?) {
         
-        currentRegistry = Registry(
-            id: UUID(),
+        let newRegistry = Registry(
+            id: id ?? UUID(),
             firstName: firstName,
             lastName: lastName,
             event: event,
             date: date,
-            items: []
+            budget: budget,
+            items: [],
+            collaboratorNames: [SocketService.shared.currentDisplayName]
         )
-    }
-    
-    // MARK: - Delete Registry
-    
-    func deleteRegistry() {
-        currentRegistry = nil
+        
+        registries.append(newRegistry)
+        activeRegistryId = newRegistry.id
+        saveToDisk()
+        
+        if id == nil {
+            // SYNC: Push the new registry to the server only if it's brand new
+            syncRegistry(newRegistry)
+        }
+        
+        // Joining room for the registry
+        SocketService.shared.joinRoom(registryId: newRegistry.id.uuidString)
     }
     
     // MARK: - Add Product
     
     func addProduct(_ product: ProductItem) {
-        guard var registry = currentRegistry else { return }
+        guard let registry = currentRegistry else { return }
+        addProduct(product, to: registry.id)
+    }
+    
+    func addProduct(_ product: ProductItem, to registryId: UUID) {
+        guard let index = registries.firstIndex(where: { $0.id == registryId }) else { return }
+        var registry = registries[index]
         
         let price = product.price ?? 0.0
         
-        if let index = registry.items.firstIndex(where: { $0.id == product.id }) {
-            registry.items[index].quantity += 1
+        if let itemIndex = registry.items.firstIndex(where: { $0.id == product.id }) {
+            registry.items[itemIndex].quantity += 1
         } else {
             registry.items.append(
                 RegistryItem(
@@ -60,19 +129,16 @@ final class RegistryRepository: ObservableObject {
             )
         }
         
-        currentRegistry = registry
-    }
-    
-    // MARK: - Remove Item
-    
-    func removeItem(_ productId: String) {
-        guard var registry = currentRegistry else { return }
+        registries[index] = registry
+        if activeRegistryId == registryId {
+            currentRegistry = registry
+        }
         
-        registry.items.removeAll { $0.id == productId }
-        currentRegistry = registry
+        // SYNC: Push to other users
+        syncRegistry(registry)
     }
     
-    // MARK: - Update Quantity
+    // MARK: - Quantity Updates
     
     func increaseQty(_ productId: String) {
         guard var registry = currentRegistry else { return }
@@ -80,12 +146,12 @@ final class RegistryRepository: ObservableObject {
         if let index = registry.items.firstIndex(where: { $0.id == productId }) {
             registry.items[index].quantity += 1
             currentRegistry = registry
+            syncRegistry(registry)
         }
     }
     
     func decreaseQty(_ productId: String) {
         guard var registry = currentRegistry else { return }
-        
         guard let index = registry.items.firstIndex(where: { $0.id == productId }) else { return }
         
         if registry.items[index].quantity > 1 {
@@ -95,6 +161,165 @@ final class RegistryRepository: ObservableObject {
         }
         
         currentRegistry = registry
+        syncRegistry(registry)
+    }
+    
+    func removeItem(_ productId: String) {
+        guard var registry = currentRegistry else { return }
+        registry.items.removeAll { $0.id == productId }
+        currentRegistry = registry
+        syncRegistry(registry)
+    }
+    
+    func toggleUpvote(_ productId: String) {
+        guard var registry = currentRegistry else { return }
+        guard let index = registry.items.firstIndex(where: { $0.id == productId }) else { return }
+        
+        let userName = SocketService.shared.currentDisplayName
+        var item = registry.items[index]
+        
+        if item.upvotedBy.contains(userName) {
+            item.upvotedBy.removeAll { $0 == userName }
+        } else {
+            item.upvotedBy.append(userName)
+        }
+        
+        registry.items[index] = item
+        currentRegistry = registry
+        syncRegistry(registry)
+    }
+    
+    // MARK: - Sync Helpers
+    
+    private func syncRegistry(_ registry: Registry) {
+        // Convert to dict for socket
+        let itemsDict = registry.items.map { item -> [String: Any] in
+            return [
+                "id": item.id,
+                "title": item.title,
+                "price": item.price,
+                "imageUrl": item.imageUrl ?? "",
+                "quantity": item.quantity,
+                "upvotedBy": item.upvotedBy
+            ]
+        }
+        
+        let registryDict: [String: Any] = [
+            "id": registry.id.uuidString,
+            "firstName": registry.firstName,
+            "lastName": registry.lastName,
+            "event": registry.event.rawValue,
+            "date": registry.date.timeIntervalSince1970,
+            "budget": registry.budget ?? "",
+            "items": itemsDict,
+            "collaboratorNames": registry.collaboratorNames
+        ]
+        
+        SocketService.shared.syncRegistry(id: registry.id.uuidString, data: registryDict)
+    }
+    
+    private func applyRemoteUpdate(_ dict: [String: Any]) {
+        guard let idString = dict["id"] as? String,
+              let id = UUID(uuidString: idString) else { return }
+        
+        // Find if we have this registry
+        if let index = registries.firstIndex(where: { $0.id == id }) {
+            var registry = registries[index]
+            
+            // Update items
+            if let itemsArray = dict["items"] as? [[String: Any]] {
+                registry.items = itemsArray.compactMap { itemDict -> RegistryItem? in
+                    guard let itemId = itemDict["id"] as? String,
+                          let title = itemDict["title"] as? String,
+                          let price = itemDict["price"] as? Double,
+                          let qty = itemDict["quantity"] as? Int else { return nil }
+                    
+                    return RegistryItem(
+                        id: itemId,
+                        title: title,
+                        price: price,
+                        imageUrl: itemDict["imageUrl"] as? String,
+                        quantity: qty,
+                        upvotedBy: itemDict["upvotedBy"] as? [String] ?? []
+                    )
+                }
+            }
+            
+            // Update metadata if available
+            if let eventRaw = dict["event"] as? String, let event = RegistryEvent(rawValue: eventRaw) {
+                registry.event = event
+            }
+            if let timeInterval = dict["date"] as? TimeInterval {
+                registry.date = Date(timeIntervalSince1970: timeInterval)
+            }
+            if let budget = dict["budget"] as? String {
+                registry.budget = budget
+            }
+            if let collaborators = dict["collaboratorNames"] as? [String] {
+                registry.collaboratorNames = collaborators
+            }
+            
+            registries[index] = registry
+            if activeRegistryId == id {
+                currentRegistry = registry
+            }
+            saveToDisk()
+        } else {
+            // New registry we didn't have locally (e.g. joined via invite on another device)
+            if let registry = parseRegistry(from: dict) {
+                registries.append(registry)
+                saveToDisk()
+            }
+        }
+    }
+    
+    private func applyBulkRemoteUpdate(_ array: [[String: Any]]) {
+        for dict in array {
+            self.applyRemoteUpdate(dict)
+        }
+    }
+    
+    private func parseRegistry(from dict: [String: Any]) -> Registry? {
+        guard let idString = dict["id"] as? String,
+              let id = UUID(uuidString: idString),
+              let firstName = dict["firstName"] as? String,
+              let lastName = dict["lastName"] as? String else { return nil }
+        
+        var items: [RegistryItem] = []
+        if let itemsArray = dict["items"] as? [[String: Any]] {
+            items = itemsArray.compactMap { itemDict -> RegistryItem? in
+                guard let itemId = itemDict["id"] as? String,
+                      let title = itemDict["title"] as? String,
+                      let price = itemDict["price"] as? Double,
+                      let qty = itemDict["quantity"] as? Int else { return nil }
+                
+                return RegistryItem(
+                    id: itemId,
+                    title: title,
+                    price: price,
+                    imageUrl: itemDict["imageUrl"] as? String,
+                    quantity: qty,
+                    upvotedBy: itemDict["upvotedBy"] as? [String] ?? []
+                )
+            }
+        }
+        
+        let eventRaw = dict["event"] as? String ?? ""
+        let event = RegistryEvent(rawValue: eventRaw) ?? .wedding
+        let date = (dict["date"] as? TimeInterval).map { Date(timeIntervalSince1970: $0) } ?? Date()
+        let budget = dict["budget"] as? String
+        let collaborators = dict["collaboratorNames"] as? [String] ?? []
+        
+        return Registry(
+            id: id,
+            firstName: firstName,
+            lastName: lastName,
+            event: event,
+            date: date,
+            budget: budget,
+            items: items,
+            collaboratorNames: collaborators
+        )
     }
     
     func quantity(for registryItem: RegistryItem) -> Int {

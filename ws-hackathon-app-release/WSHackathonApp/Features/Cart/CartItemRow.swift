@@ -8,61 +8,63 @@
 import SwiftUI
 
 struct CartItemRow: View {
-    
+
     let item: CartItem
     let onAdd: () -> Void
     let onRemove: () -> Void
-    
+
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            let url = item.imageURL
-            // MARK: - Image
-            CustomAsyncImage(url: url)
-                .frame(width: 80, height: 80)
-                .cornerRadius(8)
-                .clipped()
-            
-            // MARK: - Info
-            VStack(alignment: .leading, spacing: 6) {
-                
+        HStack(spacing: 14) {
+            // ─── Image ───────────────────────────────────────
+            CustomAsyncImage(url: item.imageURL)
+                .frame(width: 72, height: 72)
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+
+            // ─── Info ────────────────────────────────────────
+            VStack(alignment: .leading, spacing: 4) {
                 Text(item.title)
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
+                    .font(.system(size: 15, weight: .medium))
+                    .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
                     .lineLimit(2)
-                
+
                 Text("$\(item.price, specifier: "%.2f")")
-                    .font(.subheadline)
-                    .foregroundColor(.black)
-                
-                Spacer()
-                
-                // MARK: - Quantity Controls
-                HStack(spacing: 12) {
+                    .font(.system(size: 13))
+                    .foregroundColor(Color(red: 0.45, green: 0.45, blue: 0.45))
+
+                Spacer(minLength: 0)
+
+                // Stepper
+                HStack(spacing: 14) {
                     Button(action: onRemove) {
-                        Image(systemName: "minus.circle.fill")
+                        Image(systemName: "minus")
+                            .font(.system(size: 12, weight: .bold))
                     }
-                    
+
                     Text("\(item.quantity)")
-                        .fontWeight(.medium)
-                    
+                        .font(.system(size: 14, weight: .semibold).monospacedDigit())
+                        .frame(minWidth: 18)
+
                     Button(action: onAdd) {
-                        Image(systemName: "plus.circle.fill")
+                        Image(systemName: "plus")
+                            .font(.system(size: 12, weight: .bold))
                     }
                 }
-                .font(.title3)
-                .foregroundColor(.black)
+                .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
+                .background(Color(red: 0.92, green: 0.91, blue: 0.88))
+                .clipShape(Capsule())
             }
-            
-            Spacer()
-            
-            // MARK: - Total Price per item
+
+            Spacer(minLength: 0)
+
+            // ─── Line Total ──────────────────────────────────
             Text("$\(item.price * Double(item.quantity), specifier: "%.2f")")
-                .font(.subheadline)
-                .fontWeight(.semibold)
+                .font(.system(size: 16, weight: .semibold, design: .serif))
+                .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
         }
-        .padding()
+        .padding(16)
         .background(Color.white)
-        .cornerRadius(12)
-        .shadow(color: Color(.systemGray4), radius: 2, x: 0, y: 1)
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 }
