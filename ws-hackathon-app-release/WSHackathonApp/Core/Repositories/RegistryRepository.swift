@@ -131,6 +131,15 @@ final class RegistryRepository: ObservableObject {
         syncRegistry(registry)
     }
     
+    // MARK: - Remove Item
+    
+    func removeItem(_ productId: String) {
+        guard var registry = currentRegistry else { return }
+        registry.items.removeAll { $0.id == productId }
+        currentRegistry = registry
+        syncRegistry(registry)
+    }
+    
     // MARK: - Voting
     
     func upvoteItem(_ productId: String) {
