@@ -24,7 +24,6 @@ struct RegistrySuccessView: View {
                 .font(.headline)
             
             Button("Start Browsing") {
-                tabBarVM.resetRegistryFlow()
                 tabBarVM.selectTab(.home)
             }
         }

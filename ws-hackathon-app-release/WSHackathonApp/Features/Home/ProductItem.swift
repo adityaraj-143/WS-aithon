@@ -12,12 +12,7 @@ struct ProductItem: Identifiable, Hashable {
     let price: Double?
     let retailPrice: Double?
     let path: String?
-    let description: String?
-    let eventTags: [String]
-    let slotHints: [String]
-    let styleTags: [String]
-    let settingTags: [String]
-    let essentialForEvents: [String]
+
     let color: String?
     
     // Detailed fields
@@ -27,12 +22,17 @@ struct ProductItem: Identifiable, Hashable {
     let deliveryEstimate: String?
     let material: String?
     let collection: String?
+    let semanticDescription: String?
+    let eventTags: [String]
+    let slotHints: [String]
+    let styleTags: [String]
+    let settingTags: [String]
+    let essentialForEvents: [String]
     
     // New fields for UI design
     let productType: String?
     let canGiftWrap: Bool
     let isFreeShipping: Bool
-    let color: String?
     
     var imageURL: URL? {
         if let imageUrl = path {
@@ -80,6 +80,12 @@ extension ProductItem {
         self.deliveryEstimate = dto.deliveryEstimate
         self.material = dto.properties?.material
         self.collection = dto.properties?.collection
+        self.semanticDescription = dto.description
+        self.eventTags = dto.eventTags ?? []
+        self.slotHints = dto.slotHints ?? []
+        self.styleTags = dto.styleTags ?? []
+        self.settingTags = dto.settingTags ?? []
+        self.essentialForEvents = dto.essentialForEvents ?? []
         
         self.productType = dto.properties?.productType
         self.canGiftWrap = (dto.properties?.canGiftWrap?.lowercased() == "true")
@@ -104,5 +110,4 @@ extension ProductItem {
         }
     }
 }
-
 

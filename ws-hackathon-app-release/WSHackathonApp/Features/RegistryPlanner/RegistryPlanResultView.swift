@@ -9,27 +9,37 @@ import SwiftUI
 
 struct RegistryPlanResultView: View {
 
-    let plan: RegistryPlan
+    let response: PlannedRegistryResponse
+    let canAddToRegistry: Bool
     let onAddAll: () -> Void
     let onAddItem: (ProductItem) -> Void
+
+    private var plan: RegistryPlan { response.registryPlan }
 
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-
-                // MARK: Budget Summary Card
                 budgetCard
 
-                // MARK: Product List
-                VStack(spacing: 12) {
-                    ForEach(plan.items) { scored in
-                        PlannerProductRow(
-                            scored: scored,
-                            onAdd: { onAddItem(scored.product) }
-                        )
-                    }
+                if !plan.missingEssentials.isEmpty {
+                    missingEssentialsCard
                 }
-                .padding(.horizontal, 16)
+
+                resultSection(
+                    title: "Curated Kit",
+                    subtitle: "The planner-selected set that covers the event essentials first.",
+                    products: plan.items,
+                    emptyMessage: "The planner could not build a complete kit for this prompt.",
+                    addButtonLabel: "Add curated kit item"
+                )
+
+                resultSection(
+                    title: "Browseable Matches",
+                    subtitle: "Relevant products from semantic search so you can explore beyond the final kit.",
+                    products: response.browseProducts,
+                    emptyMessage: "No browseable semantic matches were returned.",
+                    addButtonLabel: "Add browse result"
+                )
 
                 Spacer(minLength: 24)
             }
@@ -89,6 +99,35 @@ struct RegistryPlanResultView: View {
                     )
                 }
 
+                HStack(spacing: 0) {
+                    budgetStat(
+                        label: "Coverage",
+                        value: "\(Int((plan.coverageScore * 100).rounded()))%",
+                        color: plan.coverageScore >= 1 ? Color(hex: "06d6a0") : Color(hex: "ffd166")
+                    )
+                    Divider().frame(height: 40)
+                    budgetStat(
+                        label: "Essentials",
+                        value: String(format: "$%.2f", plan.budgetBreakdown.essentialsCost),
+                        color: .primary
+                    )
+                    Divider().frame(height: 40)
+                    budgetStat(
+                        label: "Optional",
+                        value: String(format: "$%.2f", plan.budgetBreakdown.optionalCost),
+                        color: .secondary
+                    )
+                }
+
+                detailPills
+
+                if !canAddToRegistry {
+                    Text("Create a registry first to add planner results.")
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+
                 Button(action: onAddAll) {
                     Label("Add All to Registry", systemImage: "plus.circle.fill")
                         .font(.subheadline)
@@ -99,6 +138,8 @@ struct RegistryPlanResultView: View {
                         .foregroundColor(.white)
                         .cornerRadius(10)
                 }
+                .disabled(!canAddToRegistry || plan.items.isEmpty)
+                .opacity((!canAddToRegistry || plan.items.isEmpty) ? 0.55 : 1)
             }
             .padding(16)
         }
@@ -119,12 +160,120 @@ struct RegistryPlanResultView: View {
         }
         .frame(maxWidth: .infinity)
     }
+
+    private var detailPills: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                if let eventType = response.intent.eventType {
+                    infoPill("Event: \(eventType.capitalized)")
+                }
+
+                if response.intent.hasBudget {
+                    infoPill("Budget: \(response.intent.budgetDisplay)")
+                }
+
+                ForEach(response.intent.styleHints, id: \.self) { style in
+                    infoPill(style.capitalized)
+                }
+
+                if !response.intent.ownedKeywords.isEmpty {
+                    infoPill("Owns: \(response.intent.ownedKeywords.joined(separator: ", "))")
+                }
+
+                if !response.intent.excludedKeywords.isEmpty {
+                    infoPill("Excludes: \(response.intent.excludedKeywords.joined(separator: ", "))")
+                }
+            }
+        }
+    }
+
+    private func infoPill(_ text: String) -> some View {
+        Text(text)
+            .font(.caption)
+            .foregroundColor(.secondary)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(Color(.systemGray6))
+            .cornerRadius(999)
+    }
+
+    private var missingEssentialsCard: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label("Missing essentials", systemImage: "exclamationmark.circle")
+                .font(.headline)
+                .foregroundColor(Color(hex: "e94560"))
+
+            Text("These slots could not be covered within the current prompt and budget.")
+                .font(.footnote)
+                .foregroundColor(.secondary)
+
+            HStack(spacing: 8) {
+                ForEach(plan.missingEssentials, id: \.self) { slot in
+                    Text(slot.capitalized)
+                        .font(.caption)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
+                        .background(Color(hex: "e94560").opacity(0.12))
+                        .foregroundColor(Color(hex: "e94560"))
+                        .cornerRadius(999)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(16)
+        .background(Color(.systemBackground))
+        .cornerRadius(16)
+        .shadow(color: Color(.systemGray3).opacity(0.25), radius: 8, x: 0, y: 4)
+        .padding(.horizontal, 16)
+    }
+
+    private func resultSection(
+        title: String,
+        subtitle: String,
+        products: [ScoredProduct],
+        emptyMessage: String,
+        addButtonLabel: String
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.headline)
+                Text(subtitle)
+                    .font(.footnote)
+                    .foregroundColor(.secondary)
+            }
+
+            if products.isEmpty {
+                Text(emptyMessage)
+                    .font(.footnote)
+                    .foregroundColor(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(16)
+                    .background(Color(.systemBackground))
+                    .cornerRadius(14)
+            } else {
+                VStack(spacing: 12) {
+                    ForEach(products) { scored in
+                        PlannerProductRow(
+                            scored: scored,
+                            canAddToRegistry: canAddToRegistry,
+                            addButtonLabel: addButtonLabel,
+                            onAdd: { onAddItem(scored.product) }
+                        )
+                    }
+                }
+            }
+        }
+        .padding(.horizontal, 16)
+    }
 }
 
 // MARK: - Individual product row
 
 private struct PlannerProductRow: View {
     let scored: ScoredProduct
+    let canAddToRegistry: Bool
+    let addButtonLabel: String
     let onAdd: () -> Void
 
     var body: some View {
@@ -181,6 +330,9 @@ private struct PlannerProductRow: View {
                     .font(.title2)
                     .foregroundColor(Color(hex: "e94560"))
             }
+            .disabled(!canAddToRegistry)
+            .accessibilityLabel(addButtonLabel)
+            .opacity(canAddToRegistry ? 1 : 0.45)
         }
         .padding(12)
         .background(Color(.systemBackground))
@@ -196,5 +348,4 @@ private struct PlannerProductRow: View {
         }
     }
 }
-
 

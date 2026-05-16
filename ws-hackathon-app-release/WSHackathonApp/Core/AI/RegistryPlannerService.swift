@@ -52,7 +52,7 @@ struct RegistryEventTemplate {
     }
 }
 
-final class RegistryPlannerService {
+final class RegistryPlannerService: @unchecked Sendable {
     private let vectorStore: ProductVectorStore
     private let parser: PromptParser
     private let planBuilder: RegistryPlanBuilder
@@ -116,7 +116,20 @@ final class RegistryPlannerService {
 
     private func matches(keyword: String, product: ProductItem) -> Bool {
         let normalizedKeyword = normalize(keyword)
-        let searchable = [product.title, product.description ?? ""] + product.slotHints + product.eventTags + product.styleTags
+        var searchable = [
+            product.title,
+            product.shortDescription ?? "",
+            product.semanticDescription ?? "",
+            product.collection ?? "",
+            product.brand ?? "",
+            product.material ?? "",
+            product.productType ?? ""
+        ]
+        searchable.append(contentsOf: product.slotHints)
+        searchable.append(contentsOf: product.settingTags)
+        searchable.append(contentsOf: product.eventTags)
+        searchable.append(contentsOf: product.styleTags)
+
         return searchable.contains { normalize($0).contains(normalizedKeyword) }
     }
 

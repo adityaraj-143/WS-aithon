@@ -527,5 +527,317 @@
     "styleTags": ["warm", "classic", "premium"],
     "settingTags": ["kitchen", "stovetop"],
     "essentialForEvents": ["housewarming", "dinner"]
+  },
+  {
+    "id": "3001001",
+    "name": "Open Kitchen Stoneware Dinner Plates, Set of 4",
+    "shortName": "Open Kitchen Stoneware Dinner Plates, Set of 4",
+    "primaryGroupId": "open-kitchen-stoneware-dinner-plates",
+    "price": {
+      "regularPrice": 69.95,
+      "surcharge": 0,
+      "retailPrice": 69.95,
+      "sellingPrice": 69.95,
+      "monogramOrPersonalizationPrice": 17.0
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "color": "white-parent/ivory",
+      "pattern": "tabletop",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "open-kitchen",
+      "productType": "dinner-plates",
+      "canGiftWrap": "true",
+      "collection": "open-kitchen-stoneware",
+      "allProductTypes": "dinner-plates",
+      "material": "stoneware",
+      "isShoppable": "true",
+      "name": "Open Kitchen Stoneware Dinner Plates, Set of 4",
+      "shortName": "Open Kitchen Stoneware Dinner Plates, Set of 4"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/img301m.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Open Kitchen Stoneware Dinner Plates, Set of 4"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Everyday stoneware dinner plates that anchor a complete tabletop with a clean, versatile look for weddings, dinners, and housewarmings.",
+    "eventTags": ["wedding", "dinner", "housewarming", "brunch"],
+    "slotHints": ["tabletop", "serveware"],
+    "styleTags": ["minimal", "modern", "neutral"],
+    "settingTags": ["tabletop", "dining"],
+    "essentialForEvents": ["dinner", "wedding", "brunch"]
+  },
+  {
+    "id": "3001002",
+    "name": "Belgian Flax Linen Table Runner, Oatmeal",
+    "shortName": "Belgian Flax Linen Table Runner, Oatmeal",
+    "primaryGroupId": "belgian-flax-linen-table-runner",
+    "price": {
+      "regularPrice": 49.95,
+      "surcharge": 0,
+      "retailPrice": 49.95,
+      "sellingPrice": 49.95,
+      "monogramOrPersonalizationPrice": 17.0
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "color": "neutral-parent/oatmeal",
+      "pattern": "table-linens",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma-home",
+      "productType": "table-runner",
+      "canGiftWrap": "true",
+      "collection": "belgian-flax-linen",
+      "allProductTypes": "table-runner",
+      "material": "linen",
+      "isShoppable": "true",
+      "name": "Belgian Flax Linen Table Runner, Oatmeal",
+      "shortName": "Belgian Flax Linen Table Runner, Oatmeal"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/img302m.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Belgian Flax Linen Table Runner, Oatmeal"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "A soft linen runner that brings warmth and polish to birthday dinners, rustic brunches, and cozy entertaining tablescapes.",
+    "eventTags": ["birthday", "brunch", "dinner", "anniversary"],
+    "slotHints": ["decor", "tabletop"],
+    "styleTags": ["cozy", "rustic", "natural", "warm"],
+    "settingTags": ["tabletop", "dining"],
+    "essentialForEvents": []
+  },
+  {
+    "id": "3001003",
+    "name": "Schott Zwiesel Champagne Flutes, Set of 6",
+    "shortName": "Schott Zwiesel Champagne Flutes, Set of 6",
+    "primaryGroupId": "schott-zwiesel-champagne-flutes",
+    "price": {
+      "regularPrice": 96.0,
+      "surcharge": 0,
+      "retailPrice": 96.0,
+      "sellingPrice": 96.0,
+      "monogramOrPersonalizationPrice": 17.0
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "color": "clear",
+      "pattern": "glassware",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "schott-zwiesel",
+      "productType": "champagne-flutes",
+      "canGiftWrap": "true",
+      "collection": "schott-zwiesel",
+      "allProductTypes": "champagne-flutes",
+      "material": "tritan-crystal",
+      "isShoppable": "true",
+      "name": "Schott Zwiesel Champagne Flutes, Set of 6",
+      "shortName": "Schott Zwiesel Champagne Flutes, Set of 6"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/img303m.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Schott Zwiesel Champagne Flutes, Set of 6"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "Celebration-ready champagne flutes for weddings, anniversaries, and polished drink service with a refined sparkling presentation.",
+    "eventTags": ["wedding", "anniversary", "birthday"],
+    "slotHints": ["drinkware", "barware", "tabletop"],
+    "styleTags": ["elegant", "luxury", "classic"],
+    "settingTags": ["bar cart", "tabletop"],
+    "essentialForEvents": ["wedding", "anniversary"]
+  },
+  {
+    "id": "3001004",
+    "name": "Marble Pedestal Cake Stand",
+    "shortName": "Marble Pedestal Cake Stand",
+    "primaryGroupId": "marble-pedestal-cake-stand",
+    "price": {
+      "regularPrice": 119.95,
+      "surcharge": 0,
+      "retailPrice": 119.95,
+      "sellingPrice": 119.95,
+      "monogramOrPersonalizationPrice": 17.0
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "color": "white-parent/white",
+      "pattern": "serveware",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma",
+      "productType": "cake-stands",
+      "canGiftWrap": "true",
+      "collection": "marble-entertaining",
+      "allProductTypes": "cake-stands",
+      "material": "marble",
+      "isShoppable": "true",
+      "name": "Marble Pedestal Cake Stand",
+      "shortName": "Marble Pedestal Cake Stand"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/img304m.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Marble Pedestal Cake Stand"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "A marble cake stand that doubles as serveware and decor for desserts, pastries, and elevated tabletop displays.",
+    "eventTags": ["birthday", "brunch", "wedding", "anniversary"],
+    "slotHints": ["serveware", "decor", "tabletop"],
+    "styleTags": ["elegant", "modern", "luxury"],
+    "settingTags": ["tabletop", "dessert station"],
+    "essentialForEvents": ["birthday"]
+  },
+  {
+    "id": "3001005",
+    "name": "Fellow Stagg Electric Kettle, Matte Black",
+    "shortName": "Fellow Stagg Electric Kettle, Matte Black",
+    "primaryGroupId": "fellow-stagg-electric-kettle",
+    "price": {
+      "regularPrice": 165.0,
+      "surcharge": 0,
+      "retailPrice": 165.0,
+      "sellingPrice": 165.0,
+      "monogramOrPersonalizationPrice": 17.0
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "color": "black-parent/matte-black",
+      "pattern": "electrics",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "fellow",
+      "productType": "electric-kettle",
+      "canGiftWrap": "true",
+      "collection": "fellow-stagg",
+      "allProductTypes": "electric-kettle",
+      "material": "stainless-steel",
+      "isShoppable": "true",
+      "name": "Fellow Stagg Electric Kettle, Matte Black",
+      "shortName": "Fellow Stagg Electric Kettle, Matte Black"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/img305m.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Fellow Stagg Electric Kettle, Matte Black"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "A sleek electric kettle for coffee, tea, and modern brunch setups that benefits registries built around daily beverage rituals.",
+    "eventTags": ["brunch", "housewarming", "wedding"],
+    "slotHints": ["coffee", "beverage"],
+    "styleTags": ["modern", "minimal", "premium"],
+    "settingTags": ["kitchen", "coffee station"],
+    "essentialForEvents": []
+  },
+  {
+    "id": "3001006",
+    "name": "Olivewood Serving Platter, Large",
+    "shortName": "Olivewood Serving Platter, Large",
+    "primaryGroupId": "olivewood-serving-platter-large",
+    "price": {
+      "regularPrice": 84.95,
+      "surcharge": 0,
+      "retailPrice": 84.95,
+      "sellingPrice": 84.95,
+      "monogramOrPersonalizationPrice": 17.0
+    },
+    "properties": {
+      "isMarketPlace": "false",
+      "isSpecialOrder": "false",
+      "color": "brown-parent/olivewood",
+      "pattern": "serveware",
+      "isFood": "false",
+      "isFurniture": "false",
+      "spiritType": "williams-sonoma",
+      "hasUtilityNeeds": "true",
+      "brand": "williams-sonoma",
+      "productType": "serving-platters",
+      "canGiftWrap": "true",
+      "collection": "olivewood-entertaining",
+      "allProductTypes": "serving-platters",
+      "material": "olivewood",
+      "isShoppable": "true",
+      "name": "Olivewood Serving Platter, Large",
+      "shortName": "Olivewood Serving Platter, Large"
+    },
+    "media": {
+      "images": [
+        {
+          "type": "prodimage",
+          "path": "/img306m.jpg",
+          "aspect": "q",
+          "properties": {
+            "altText": "Olivewood Serving Platter, Large"
+          }
+        }
+      ]
+    },
+    "availability": "ON_HAND",
+    "deliveryEstimate": "TRANSIT",
+    "description": "A large olivewood platter for appetizers, breads, and family-style serving with a natural statement look.",
+    "eventTags": ["housewarming", "birthday", "dinner", "brunch"],
+    "slotHints": ["serveware", "tabletop"],
+    "styleTags": ["natural", "rustic", "warm"],
+    "settingTags": ["tabletop", "kitchen"],
+    "essentialForEvents": ["housewarming", "dinner"]
   }
 ]

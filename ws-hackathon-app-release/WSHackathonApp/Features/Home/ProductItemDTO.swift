@@ -18,6 +18,12 @@ struct ProductItemDTO: Identifiable, Codable {
     let availability: String?
     let deliveryEstimate: String?
     let freeShip: Bool?
+    let description: String?
+    let eventTags: [String]?
+    let slotHints: [String]?
+    let styleTags: [String]?
+    let settingTags: [String]?
+    let essentialForEvents: [String]?
 }
 
 struct ProductPrice: Codable {
