@@ -85,8 +85,10 @@ struct RegistryDetailView: View {
                                             .font(.system(size: 44, weight: .regular, design: .serif))
                                             .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
                                         Text("amount used so far")
-                                            .font(.system(size: 16))
+                                            .font(.system(size: 10, weight: .bold))
+                                            .tracking(1.0)
                                             .foregroundColor(.gray)
+                                            .textCase(.uppercase)
                                     }
                                     Spacer()
                                 }
@@ -139,10 +141,12 @@ struct RegistryDetailView: View {
                                             )
                                         )
                                         .padding(.horizontal, 24)
+                                        .padding(.vertical, 12)
                                         
                                         Divider()
                                             .background(Color(white: 0.9))
                                             .padding(.horizontal, 24)
+                                            .padding(.vertical, 8)
                                     }
                                 }
                             }

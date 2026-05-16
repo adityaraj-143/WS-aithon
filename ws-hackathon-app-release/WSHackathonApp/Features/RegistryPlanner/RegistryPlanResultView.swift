@@ -16,6 +16,10 @@ struct RegistryPlanResultView: View {
     let planningContext: RegistryPlanningContext?
 
     @EnvironmentObject var registryRepo: RegistryRepository
+    @EnvironmentObject var cartRepo: CartRepository
+    @EnvironmentObject var tabBarVM: WSTabBarViewModel
+    @State private var showSelectedItems = false
+    
     private var plan: RegistryPlan { response.registryPlan }
 
     var body: some View {
@@ -57,11 +61,11 @@ struct RegistryPlanResultView: View {
     private var heroSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text(planningContext?.registryName ?? "Registry")
-                .font(.system(size: 48, weight: .bold, design: .serif))
+                .font(.system(size: 36, weight: .regular, design: .serif))
                 .foregroundColor(.primary)
 
             Text("Planning your \(planningContext?.event.title.lowercased() ?? "event") registry for intimate gatherings and timeless rituals.")
-                .font(.system(size: 16))
+                .font(.system(size: 14))
                 .foregroundColor(.secondary)
                 .lineSpacing(4)
 
@@ -71,9 +75,9 @@ struct RegistryPlanResultView: View {
                 let allHints = ([eventType] + hints).filter { !$0.isEmpty }
                 
                 Text(allHints.joined(separator: "  ·  "))
-                    .font(.system(size: 11, weight: .bold))
-                    .kerning(1)
-                    .foregroundColor(.secondary)
+                    .font(.system(size: 10, weight: .bold))
+                    .kerning(1.0)
+                    .foregroundColor(Color(red: 0.46, green: 0.50, blue: 0.44))
             }
         }
         .padding(.horizontal, 24)
@@ -188,8 +192,17 @@ struct RegistryPlanResultView: View {
             let browseSelectedCount = response.browseProducts.filter { isProductInRegistry($0.product) }.count
             let totalSelected = curatedCount + browseSelectedCount
             
-            Text("\(totalSelected) Items Selected")
-                .font(.system(size: 14, weight: .bold))
+            Button {
+                showSelectedItems = true
+            } label: {
+                HStack(spacing: 4) {
+                    Text("\(totalSelected) Items Selected")
+                        .font(.system(size: 14, weight: .bold))
+                    Image(systemName: "chevron.up")
+                        .font(.system(size: 10, weight: .bold))
+                }
+                .foregroundColor(.primary)
+            }
             
             Spacer()
             
@@ -202,16 +215,21 @@ struct RegistryPlanResultView: View {
                     .background(Color(hex: "757D6B"))
                     .clipShape(Capsule())
             }
-            .disabled(!canAddToRegistry || plan.items.isEmpty)
-            .opacity((!canAddToRegistry || plan.items.isEmpty) ? 0.6 : 1)
         }
-        .padding(.horizontal, 24)
+        .padding(.horizontal, 20)
         .padding(.vertical, 16)
         .background(Color.white)
         .clipShape(Capsule())
-        .shadow(color: Color.black.opacity(0.1), radius: 20, x: 0, y: 10)
-        .padding(.horizontal, 16)
-        .padding(.bottom, 16)
+        .shadow(color: Color.black.opacity(0.1), radius: 15, x: 0, y: 10)
+        .padding(.horizontal, 24)
+        .padding(.bottom, 30)
+        .sheet(isPresented: $showSelectedItems) {
+            SelectedItemsSheet(
+                plan: plan,
+                browseProducts: response.browseProducts,
+                isProductInRegistry: isProductInRegistry
+            )
+        }
     }
 }
 
@@ -291,6 +309,105 @@ private struct PlannerProductCard: View {
             }
             .padding(.horizontal, 4)
         }
+    }
+}
+
+// MARK: - Selected Items Sheet
+
+struct SelectedItemsSheet: View {
+    @Environment(\.dismiss) var dismiss
+    let plan: RegistryPlan
+    let browseProducts: [ScoredProduct]
+    let isProductInRegistry: (ProductItem) -> Bool
+    
+    var selectedBrowseProducts: [ScoredProduct] {
+        browseProducts.filter { isProductInRegistry($0.product) }
+    }
+    
+    var body: some View {
+        NavigationView {
+            ZStack {
+                Color(hex: "F9F8F6").ignoresSafeArea()
+                
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 24) {
+                        Text("Selected Items")
+                            .font(.system(size: 32, weight: .regular, design: .serif))
+                            .padding(.top, 24)
+                        
+                        VStack(spacing: 0) {
+                            // Curated Items
+                            ForEach(plan.items) { scored in
+                                SimpleProductRow(scored: scored)
+                                Divider().padding(.vertical, 8)
+                            }
+                            
+                            // Selected Browse Products
+                            ForEach(selectedBrowseProducts) { scored in
+                                SimpleProductRow(scored: scored)
+                                Divider().padding(.vertical, 8)
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 24)
+                }
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") { dismiss() }
+                        .fontWeight(.bold)
+                        .foregroundColor(.primary)
+                }
+            }
+        }
+    }
+}
+
+struct SimpleProductRow: View {
+    let scored: ScoredProduct
+    
+    var body: some View {
+        HStack(alignment: .top, spacing: 16) {
+            // Image
+            AsyncImage(url: scored.product.imageURL) { phase in
+                if let img = phase.image {
+                    img.resizable().scaledToFill()
+                } else {
+                    Color(.systemGray5)
+                }
+            }
+            .frame(width: 80, height: 80)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            
+            // Details
+            VStack(alignment: .leading, spacing: 4) {
+                Text((scored.product.brand ?? "ESSENTIALS").uppercased())
+                    .font(.system(size: 10, weight: .bold))
+                    .kerning(1)
+                    .foregroundColor(.secondary)
+                
+                Text(scored.product.title)
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(.primary)
+                    .lineLimit(2)
+                
+                if let price = scored.product.price {
+                    Text("$\(price, specifier: "%.2f")")
+                        .font(.system(size: 14))
+                        .foregroundColor(Color(red: 0.54, green: 0.40, blue: 0.31))
+                }
+            }
+            
+            Spacer()
+            
+            // Match badge
+            Text("\(scored.matchPercent)%")
+                .font(.system(size: 10, weight: .bold))
+                .foregroundColor(.secondary)
+                .padding(.top, 4)
+        }
+        .padding(.vertical, 8)
     }
 }
 

@@ -47,13 +47,6 @@ struct RegistryPlannerView: View {
                             .foregroundColor(.primary)
                     }
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button { viewModel.clear() } label: {
-                        Image(systemName: "arrow.counterclockwise")
-                            .font(.system(size: 16, weight: .medium))
-                            .foregroundColor(.primary)
-                    }
-                }
             }
         }
         .task {

@@ -110,14 +110,17 @@ struct CreateRegistryView: View {
                     Button {
                         handleCreation()
                     } label: {
-                        Text(viewModel.isAIEnabled ? "Generate Registry" : "Create Registry")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 20)
-                            .background(viewModel.isValid ? Color(red: 0.46, green: 0.50, blue: 0.44) : Color.gray.opacity(0.5))
-                            .clipShape(Capsule())
-                            .shadow(color: viewModel.isValid ? Color(red: 0.46, green: 0.50, blue: 0.44).opacity(0.3) : Color.clear, radius: 10, x: 0, y: 5)
+                        HStack(spacing: 8) {
+                            Image(systemName: "plus")
+                            Text(viewModel.isAIEnabled ? "Generate Registry" : "Create Registry")
+                        }
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 20)
+                        .background(viewModel.isValid ? Color(red: 0.46, green: 0.50, blue: 0.44) : Color(white: 0.75))
+                        .clipShape(Capsule())
+                        .shadow(color: viewModel.isValid ? Color(red: 0.46, green: 0.50, blue: 0.44).opacity(0.3) : Color.clear, radius: 10, x: 0, y: 5)
                     }
                     .disabled(!viewModel.isValid)
                     .padding(.horizontal, 24)
