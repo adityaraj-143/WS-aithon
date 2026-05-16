@@ -11,7 +11,9 @@ struct RegistryDetailView: View {
     @EnvironmentObject var cartRepo: CartRepository
     @EnvironmentObject var tabBarVM: WSTabBarViewModel
     @StateObject private var viewModel = RegistryDetailViewModel()
-    @State private var showInviteSheet = false
+    @State private var showInviteAlert = false
+    @State private var guestName = ""
+    @State private var showSuccessToast = false
     
     var body: some View {
         ZStack {
@@ -38,7 +40,7 @@ struct RegistryDetailView: View {
                                 Spacer()
                                 
                                 Button(action: {
-                                    showInviteSheet = true
+                                    showInviteAlert = true
                                 }) {
                                     HStack(spacing: 4) {
                                         Image(systemName: "person.badge.plus")
@@ -154,8 +156,42 @@ struct RegistryDetailView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .sheet(isPresented: $showInviteSheet) {
-            RegistryInviteView(registry: registryRepo.currentRegistry)
+        .overlay(
+            VStack {
+                if showSuccessToast {
+                    Text("Invite sent to \(guestName)!")
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 24)
+                        .padding(.vertical, 12)
+                        .background(Color.green)
+                        .cornerRadius(25)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                        .padding(.top, 20)
+                    Spacer()
+                }
+            }
+        )
+        .alert("Invite Guest", isPresented: $showInviteAlert) {
+            TextField("Guest Name (e.g. Guest-123)", text: $guestName)
+                .textInputAutocapitalization(.never)
+            Button("Send") {
+                let success = SocketService.shared.sendInvite(toDisplayName: guestName, registry: registryRepo.currentRegistry)
+                if success {
+                    withAnimation {
+                        showSuccessToast = true
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                        withAnimation { 
+                            showSuccessToast = false
+                            guestName = ""
+                        }
+                    }
+                }
+            }
+            Button("Cancel", role: .cancel) { guestName = "" }
+        } message: {
+            Text("Enter the exact display name of the guest you want to invite to this registry.")
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
