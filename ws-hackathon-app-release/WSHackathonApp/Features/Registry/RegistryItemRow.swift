@@ -16,56 +16,87 @@ struct RegistryItemRow: View {
     }
 
     var body: some View {
-        HStack(spacing: 14) {
-
-            // ─── Image ───────────────────────────────────────
-            CustomAsyncImage(url: viewModel.imageURL)
-                .frame(width: 72, height: 72)
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-
-            // ─── Info ────────────────────────────────────────
+        HStack(alignment: .top, spacing: 16) {
+            
+            // Image
+            ZStack {
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(Color.white)
+                    .frame(width: 80, height: 80)
+                
+                if viewModel.imageURL != nil {
+                    CustomAsyncImage(url: viewModel.imageURL)
+                        .frame(width: 80, height: 80)
+                        .cornerRadius(16)
+                }
+            }
+            
+            // Text Details
             VStack(alignment: .leading, spacing: 4) {
+                Text("BRAND")
+                    .font(.system(size: 10, weight: .bold))
+                    .tracking(1.0)
+                    .foregroundColor(.gray)
+                
                 Text(viewModel.title)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(Color.wsTitle)
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
                     .lineLimit(2)
 
                 Text(viewModel.priceText)
-                    .font(.caption.weight(.medium))
-                    .foregroundStyle(Color.wsBrand)
-
-                Spacer(minLength: 0)
-
-                StepperPill(
-                    count: Int(viewModel.quantityText) ?? 0,
-                    onIncrement: viewModel.increaseQty,
-                    onDecrement: viewModel.decreaseQty
-                )
+                    .font(.system(size: 14))
+                    .foregroundColor(Color(red: 0.54, green: 0.40, blue: 0.31)) // Brownish price
             }
-
-            Spacer(minLength: 0)
-
-            // ─── Actions ─────────────────────────────────────
-            VStack(spacing: 14) {
-                Button(action: viewModel.addToCart) {
-                    Image(systemName: "cart.fill.badge.plus")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(Color.wsBrand)
-                        .frame(width: 36, height: 36)
-                        .background(Color.wsBrandLight)
+            .padding(.top, 4)
+            
+            Spacer(minLength: 8)
+            
+            // Actions
+            VStack(alignment: .trailing, spacing: 0) {
+                Menu {
+//                    Button(action: viewModel.addToCart) {
+//                        Label("Add to Cart", systemImage: "cart.badge.plus")
+//                    }
+                    Button(role: .destructive, action: viewModel.removeItem) {
+                        Label("Remove Item", systemImage: "trash")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .foregroundColor(.gray)
+                        .frame(width: 32, height: 32)
+                        .background(Color.white)
                         .clipShape(Circle())
+                        .overlay(Circle().stroke(Color(white: 0.9), lineWidth: 1))
                 }
-
-                Button(action: viewModel.removeItem) {
-                    Image(systemName: "trash.fill")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(Color.wsDestructive)
-                        .frame(width: 36, height: 36)
-                        .background(Color.wsDestructive.opacity(0.1))
-                        .clipShape(Circle())
+                
+                Spacer()
+                
+                HStack(spacing: 12) {
+                    Button(action: viewModel.decreaseQty) {
+                        Image(systemName: "minus")
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundColor(.gray)
+                    }
+                    
+                    Text(viewModel.quantityText)
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                        .frame(minWidth: 14, alignment: .center)
+                    
+                    Button(action: viewModel.increaseQty) {
+                        Image(systemName: "plus")
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundColor(.gray)
+                    }
                 }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 8)
+                .background(Color.white)
+                .clipShape(Capsule())
+                .overlay(Capsule().stroke(Color(white: 0.9), lineWidth: 1))
             }
         }
-        .wsCard()
+        .frame(height: 80)
+        .padding(.vertical, 8)
     }
 }

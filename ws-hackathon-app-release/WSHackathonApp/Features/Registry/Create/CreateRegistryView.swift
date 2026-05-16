@@ -12,117 +12,190 @@ struct CreateRegistryView: View {
     @StateObject private var viewModel = CreateRegistryViewModel()
     @EnvironmentObject var tabBarVM: WSTabBarViewModel
     @EnvironmentObject var registryRepo: RegistryRepository
-
-    @State private var navigateToSuccess = false
-
+    @Environment(\.dismiss) var dismiss
+    
+    @State private var showSuccessAlert = false
+    
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: 28) {
-
-                // ─── Header ──────────────────────────────────
-                VStack(spacing: 8) {
-                    Image(systemName: "gift.fill")
-                        .font(.system(size: 44))
-                        .foregroundStyle(Color.wsBrand)
-                        .padding(.bottom, 4)
-
-                    Text(AppStrings.Registry.createYourRegistry)
-                        .font(.title.weight(.bold))
-                        .foregroundStyle(Color.wsTitle)
-                        .multilineTextAlignment(.center)
-
-                    Text("Set up your registry in seconds")
-                        .font(.subheadline)
-                        .foregroundStyle(Color.wsBody)
+        ZStack {
+            Color(red: 0.96, green: 0.95, blue: 0.93)
+                .ignoresSafeArea()
+            
+            VStack(alignment: .leading, spacing: 0) {
+                // Header
+                HStack {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                            .frame(width: 44, height: 44)
+                            .background(.ultraThinMaterial)
+                            .clipShape(Circle())
+                            .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
+                    }
+                    Spacer()
                 }
-                .padding(.top, 24)
-
-                // ─── Form ────────────────────────────────────
-                VStack(spacing: 16) {
-                    formField(
-                        label: AppStrings.Registry.firstName,
-                        icon: "person.fill",
-                        text: $viewModel.firstName
-                    )
-
-                    formField(
-                        label: AppStrings.Registry.lastName,
-                        icon: "person.fill",
-                        text: $viewModel.lastName
-                    )
-
-                    // Event picker
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text(AppStrings.Registry.event)
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(Color.wsBody)
-
-                        HStack {
-                            Image(systemName: "calendar.badge.clock")
-                                .foregroundStyle(Color.wsCaption)
-                            Picker(AppStrings.Registry.event, selection: $viewModel.selectedEvent) {
-                                ForEach(RegistryEvent.allCases) { event in
-                                    Text(event.title).tag(event)
+                .padding(.horizontal, 24)
+                .padding(.top, 16)
+                
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 0) {
+                        // Titles
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Create Registry")
+                                .font(.system(size: 36, weight: .regular, design: .serif))
+                                .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                            
+                            Text("Plan and organize your perfect collection.")
+                                .font(.system(size: 16))
+                                .foregroundColor(Color.gray)
+                        }
+                        .padding(.top, 16)
+                        .padding(.bottom, 40)
+                        
+                        // Form Fields
+                        VStack(alignment: .leading, spacing: 24) {
+                            // Registry Name
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("REGISTRY NAME")
+                                    .font(.system(size: 12, weight: .bold))
+                                    .tracking(1.0)
+                                    .foregroundColor(Color.gray)
+                                
+                                TextField("e.g., Summer House Renovation", text: $viewModel.registryName)
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 16)
+                                    .background(Color.white)
+                                    .cornerRadius(12)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .stroke(Color(white: 0.9), lineWidth: 1)
+                                    )
+                            }
+                            
+                            // Event Type
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("EVENT TYPE")
+                                    .font(.system(size: 12, weight: .bold))
+                                    .tracking(1.0)
+                                    .foregroundColor(Color.gray)
+                                
+                                Menu {
+                                    Picker("Event Type", selection: $viewModel.selectedEvent) {
+                                        ForEach(RegistryEvent.allCases) { event in
+                                            Text(event.title).tag(event)
+                                        }
+                                    }
+                                } label: {
+                                    HStack {
+                                        Text(viewModel.selectedEvent.title)
+                                            .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                                        Spacer()
+                                        Image(systemName: "chevron.down")
+                                            .foregroundColor(.gray)
+                                    }
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 16)
+                                    .background(Color.white)
+                                    .cornerRadius(12)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .stroke(Color(white: 0.9), lineWidth: 1)
+                                    )
                                 }
                             }
-                            .pickerStyle(.menu)
-                            .tint(Color.wsTitle)
-                            Spacer()
+                            
+                            // Event Date
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("EVENT DATE")
+                                    .font(.system(size: 12, weight: .bold))
+                                    .tracking(1.0)
+                                    .foregroundColor(Color.gray)
+                                
+                                HStack {
+                                    DatePicker("", selection: $viewModel.date, displayedComponents: .date)
+                                        .labelsHidden()
+                                    Spacer()
+                                    Image(systemName: "calendar")
+                                        .foregroundColor(.gray)
+                                }
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 10)
+                                .background(Color.white)
+                                .cornerRadius(12)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Color(white: 0.9), lineWidth: 1)
+                                )
+                            }
+                            
+                            // Budget (Optional)
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("BUDGET (OPTIONAL)")
+                                    .font(.system(size: 12, weight: .bold))
+                                    .tracking(1.0)
+                                    .foregroundColor(Color.gray)
+                                
+                                HStack {
+                                    Text("$")
+                                        .foregroundColor(.gray)
+                                    TextField("0.00", text: $viewModel.budget)
+                                        .keyboardType(.decimalPad)
+                                }
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 16)
+                                .background(Color.white)
+                                .cornerRadius(12)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Color(white: 0.9), lineWidth: 1)
+                                )
+                            }
                         }
-                        .padding(12)
-                        .background(Color.wsElevated)
-                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                     }
-
-                    // Date picker
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text(AppStrings.Registry.eventDate)
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(Color.wsBody)
-
-                        HStack {
-                            Image(systemName: "calendar")
-                                .foregroundStyle(Color.wsCaption)
-                            DatePicker(
-                                "",
-                                selection: $viewModel.date,
-                                in: Date()...,
-                                displayedComponents: .date
-                            )
-                            .datePickerStyle(.compact)
-                            .tint(Color.wsBrand)
-                        }
-                        .padding(12)
-                        .background(Color.wsElevated)
-                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .padding(.horizontal, 24)
+                }
+                
+                // Bottom Bar
+                VStack(spacing: 0) {
+                    Divider()
+                        .background(Color(white: 0.9))
+                    
+                    Button(action: {
+                        registryRepo.createRegistry(
+                            firstName: viewModel.registryName,
+                            lastName: "",
+                            event: viewModel.selectedEvent,
+                            date: viewModel.date,
+                            budget: viewModel.budget.isEmpty ? nil : viewModel.budget
+                        )
+                        showSuccessAlert = true
+                    }) {
+                        Text("Create Registry")
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 16)
+                            .background(viewModel.isValid ? Color(red: 0.46, green: 0.50, blue: 0.44) : Color.gray.opacity(0.5)) // Olive green when valid
+                            .clipShape(Capsule())
                     }
+                    .disabled(!viewModel.isValid)
+                    .padding(.horizontal, 24)
+                    .padding(.top, 16)
+                    .padding(.bottom, 32)
                 }
-                .wsCard(cornerRadius: 20, padding: 20)
-                .padding(.horizontal, 20)
-
-                // ─── Create Button ───────────────────────────
-                Button {
-                    registryRepo.createRegistry(
-                        firstName: viewModel.firstName,
-                        lastName: viewModel.lastName,
-                        event: viewModel.selectedEvent,
-                        date: viewModel.date
-                    )
-                    navigateToSuccess = true
-                } label: {
-                    Text(AppStrings.Registry.createButton)
-                }
-                .buttonStyle(WSPrimaryButtonStyle(isEnabled: viewModel.isValid))
-                .disabled(!viewModel.isValid)
-                .padding(.horizontal, 20)
-
-                Spacer(minLength: 40)
+                .background(Color(red: 0.96, green: 0.95, blue: 0.93))
             }
         }
-        .background(Color.wsBackground.ignoresSafeArea())
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationDestination(isPresented: $navigateToSuccess) {
-            RegistrySuccessView()
+        .navigationBarHidden(true)
+        .alert("Registry Created", isPresented: $showSuccessAlert) {
+            Button("Browse Items") {
+                tabBarVM.resetRegistryFlow()
+            }
+        } message: {
+            Text("Your registry '\(viewModel.registryName)' has been successfully created.")
         }
     }
 

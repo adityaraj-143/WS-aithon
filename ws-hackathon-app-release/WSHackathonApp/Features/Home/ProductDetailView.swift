@@ -2,263 +2,399 @@
 //  ProductDetailView.swift
 //  WSHackathonApp
 //
+//  Created by Antigravity on 15/05/26.
+//
 
 import SwiftUI
 
 struct ProductDetailView: View {
-
-    let product: ProductItem
-    let quantity: Int
-    let registryQuantity: Int
-    let onAdd: () -> Void
-    let onRemove: () -> Void
-    let onAddToRegistry: () -> Void
-    let onRemoveFromRegistry: () -> Void
-
-    @State private var imageScale: CGFloat = 1.0
-
+    @StateObject var viewModel: ProductDetailViewModel
+    @EnvironmentObject var cartRepository: CartRepository
+    @EnvironmentObject var registryRepository: RegistryRepository
+    @EnvironmentObject var tabBarVM: WSTabBarViewModel
+    @Environment(\.dismiss) var dismiss
+    
+    private let bgColor = Color(red: 245/255, green: 243/255, blue: 237/255)
+    
+    @State private var showRegistrySheet = false
+    @State private var selectedRegistryIds: Set<UUID> = []
+    
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: 0) {
-
-                // ─── Product Image ───────────────────────────
-                productImageSection
-
-                // ─── Product Info ────────────────────────────
-                VStack(alignment: .leading, spacing: 20) {
-
-                    // Title + Price
-                    titlePriceSection
-
-                    Divider()
-
-                    // Highlights
-                    highlightsSection
-
-                    Divider()
-
-                    // Delivery Estimate
-                    deliverySection
-
-                    Divider()
-
-                    // Description
-                    descriptionSection
-                }
-                .padding(.horizontal, 20)
-                .padding(.top, 20)
-                .padding(.bottom, 120)
-            }
-        }
-        .background(Color.wsBackground.ignoresSafeArea())
-        .overlay(alignment: .bottom) { actionBar }
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-// MARK: - Sub-views
-
-private extension ProductDetailView {
-
-    // ─── Image Hero ──────────────────────────────────────────────
-    var productImageSection: some View {
-        AsyncImage(url: product.imageURL) { phase in
-            switch phase {
-            case .success(let image):
-                image
-                    .resizable()
-                    .scaledToFill()
-                    .scaleEffect(imageScale)
-                    .gesture(
-                        MagnifyGesture()
-                            .onChanged { value in
-                                imageScale = value.magnification
+        ZStack(alignment: .top) {
+            bgColor.ignoresSafeArea()
+            
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 0) {
+                    // Large Image Header
+                    GeometryReader { geo in
+                        AsyncImage(url: viewModel.product.imageURL) { phase in
+                            if let image = phase.image {
+                                image.resizable().scaledToFill()
+                            } else {
+                                Color(.systemGray5)
                             }
-                            .onEnded { _ in
-                                withAnimation(.spring) { imageScale = 1.0 }
+                        }
+                        .frame(width: geo.size.width, height: geo.size.height)
+                        .clipped()
+                    }
+                    .frame(height: 400)
+                    
+                    // Bottom Sheet Style Detail Info
+                    VStack(alignment: .leading, spacing: 24) {
+                        
+                        // Brand & Title & Price
+                        VStack(alignment: .leading, spacing: 10) {
+                            if let brand = viewModel.product.brand {
+                                Text(brand.uppercased())
+                                    .font(.system(size: 11, weight: .bold))
+                                    .tracking(2)
+                                    .foregroundColor(Color(red: 0.5, green: 0.5, blue: 0.5))
                             }
-                    )
-            case .failure:
-                ZStack {
-                    Color.wsElevated
-                    Image(systemName: "photo")
-                        .font(.system(size: 48))
-                        .foregroundStyle(Color.wsCaption)
-                }
-            default:
-                ZStack {
-                    Color.wsElevated
-                    ProgressView()
-                        .controlSize(.large)
-                        .tint(Color.wsBrand)
-                }
-            }
-        }
-        .frame(maxWidth: .infinity)
-        .frame(height: 320)
-        .clipped()
-        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-        .shadow(color: .black.opacity(0.06), radius: 10, x: 0, y: 4)
-        .padding(.horizontal, 20)
-        .padding(.top, 8)
-    }
-
-    // ─── Title + Price ───────────────────────────────────────────
-    var titlePriceSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text(product.title)
-                .font(.title3.weight(.bold))
-                .foregroundStyle(Color.wsTitle)
-                .fixedSize(horizontal: false, vertical: true)
-
-            if let price = product.price {
-                HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    Text(price, format: .currency(code: "USD"))
-                        .font(.title2.weight(.heavy))
-                        .foregroundStyle(Color.wsBrand)
-
-                    if price > 50 {
-                        Text("Free Shipping")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(Color.wsSuccess)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 3)
-                            .background(Color.wsSuccess.opacity(0.1))
-                            .clipShape(Capsule())
+                            
+                            Text(viewModel.product.title)
+                                .font(.system(size: 26, weight: .regular, design: .serif))
+                                .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                                .fixedSize(horizontal: false, vertical: true)
+                            
+                            HStack(alignment: .firstTextBaseline, spacing: 12) {
+                                Text(viewModel.product.price?.formatted(.currency(code: "USD")) ?? "$0.00")
+                                    .font(.system(size: 22, weight: .regular, design: .serif))
+                                    .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                                
+                                if let retail = viewModel.product.retailPrice, let price = viewModel.product.price, retail > price {
+                                    Text(retail.formatted(.currency(code: "USD")))
+                                        .font(.system(size: 15, weight: .regular, design: .serif))
+                                        .foregroundColor(Color(red: 0.5, green: 0.5, blue: 0.5))
+                                        .strikethrough()
+                                }
+                            }
+                        }
+                        .padding(.top, 30)
+                        
+                        // Pills HStack wrapping
+                        HStack(spacing: 10) {
+                            if viewModel.product.availability != "NLA" {
+                                pill("IN STOCK")
+                            }
+                            if viewModel.product.isFreeShipping {
+                                pill("FREE SHIPPING")
+                            }
+                            if viewModel.product.canGiftWrap {
+                                pill("GIFT WRAP AVAILABLE")
+                            }
+                        }
+                        
+                        Divider()
+                            .background(Color(red: 0.9, green: 0.9, blue: 0.9))
+                            .padding(.vertical, 8)
+                        
+                        // Specifications Grid
+                        LazyVGrid(columns: [GridItem(.flexible(), alignment: .leading), GridItem(.flexible(), alignment: .leading)], spacing: 24) {
+                            if let material = viewModel.product.material {
+                                specBox(title: "MATERIAL", value: material)
+                            }
+                            if let type = viewModel.product.productType {
+                                specBox(title: "PRODUCT TYPE", value: type)
+                            }
+                            if let collection = viewModel.product.collection {
+                                specBox(title: "COLLECTION", value: collection)
+                            }
+                            if let color = viewModel.product.color {
+                                specBox(title: "COLOR", value: color)
+                            }
+                        }
+                        
+                        Spacer(minLength: 24)
                     }
+                    .padding(.horizontal, 24)
+                    .background(bgColor)
+                    .clipShape(CustomCorners(corners: [.topLeft, .topRight], radius: 24))
+                    .offset(y: -24) // Overlap the image slightly
+                    .padding(.bottom, -24) // Counteract offset for scroll view
                 }
             }
-
-            // Rating stars (mock)
-            HStack(spacing: 3) {
-                ForEach(0..<5, id: \.self) { index in
-                    Image(systemName: index < 4 ? "star.fill" : "star.leadinghalf.filled")
-                        .font(.caption2)
-                        .foregroundStyle(.orange)
+            
+            // Custom Back Button
+            HStack {
+                Button(action: { dismiss() }) {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundColor(.black)
+                        .frame(width: 40, height: 40)
+                        .background(Color.white)
+                        .clipShape(Circle())
+                        .shadow(color: .black.opacity(0.1), radius: 4)
                 }
-                Text("4.5")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(Color.wsBody)
-                Text("(128 reviews)")
-                    .font(.caption)
-                    .foregroundStyle(Color.wsCaption)
-            }
-        }
-    }
-
-    // ─── Highlights ──────────────────────────────────────────────
-    var highlightsSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Highlights")
-                .font(.headline.weight(.bold))
-                .foregroundStyle(Color.wsTitle)
-
-            highlightRow(icon: "shippingbox.fill", color: .wsBrand,
-                         text: "Ships from Williams Sonoma warehouse")
-            highlightRow(icon: "arrow.triangle.2.circlepath", color: .orange,
-                         text: "Easy 30-day returns & exchanges")
-            highlightRow(icon: "shield.checkered", color: .green,
-                         text: "Quality guaranteed · Premium materials")
-            highlightRow(icon: "gift.fill", color: .purple,
-                         text: "Gift wrapping available")
-        }
-    }
-
-    func highlightRow(icon: String, color: Color, text: String) -> some View {
-        HStack(spacing: 12) {
-            Image(systemName: icon)
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(color)
-                .frame(width: 32, height: 32)
-                .background(color.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-
-            Text(text)
-                .font(.subheadline)
-                .foregroundStyle(Color.wsBody)
-        }
-    }
-
-    // ─── Delivery ────────────────────────────────────────────────
-    var deliverySection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("Delivery")
-                .font(.headline.weight(.bold))
-                .foregroundStyle(Color.wsTitle)
-
-            HStack(spacing: 12) {
-                Image(systemName: "truck.box.fill")
-                    .font(.system(size: 20))
-                    .foregroundStyle(Color.wsBrand)
-
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Standard Delivery")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(Color.wsTitle)
-                    Text("Estimated arrival in 5–7 business days")
-                        .font(.caption)
-                        .foregroundStyle(Color.wsBody)
-                }
-            }
-            .wsCard(cornerRadius: 12, padding: 14)
-        }
-    }
-
-    // ─── Description ─────────────────────────────────────────────
-    var descriptionSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("About this product")
-                .font(.headline.weight(.bold))
-                .foregroundStyle(Color.wsTitle)
-
-            Text("Crafted with care by Williams Sonoma artisans, this product combines premium materials with exceptional design. Perfect for entertaining or everyday use, it makes a thoughtful gift for any occasion.")
-                .font(.subheadline)
-                .foregroundStyle(Color.wsBody)
-                .lineSpacing(4)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-    }
-
-    // ─── Bottom Action Bar ───────────────────────────────────────
-    var actionBar: some View {
-        VStack(spacing: 0) {
-            Divider()
-            HStack(spacing: 14) {
-
-                // Registry toggle
-                Button(action: registryQuantity == 0 ? onAddToRegistry : onRemoveFromRegistry) {
-                    Image(systemName: registryQuantity == 0 ? "gift" : "gift.fill")
-                        .font(.system(size: 18, weight: .semibold))
-                        .foregroundStyle(registryQuantity == 0 ? Color.wsBrand : .white)
-                        .frame(width: 48, height: 48)
-                        .background(registryQuantity == 0 ? Color.wsBrandLight : Color.wsBrand)
-                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                }
-
-                // Cart button / stepper
-                if quantity == 0 {
-                    Button(action: onAdd) {
-                        Label("Add to Cart", systemImage: "cart.badge.plus")
-                    }
-                    .buttonStyle(WSPrimaryButtonStyle())
-                } else {
-                    HStack {
-                        StepperPill(
-                            count: quantity,
-                            onIncrement: onAdd,
-                            onDecrement: onRemove
-                        )
-                        Spacer()
-                        Text("In Cart")
-                            .font(.subheadline.weight(.bold))
-                            .foregroundStyle(Color.wsBrand)
-                    }
-                    .frame(maxWidth: .infinity)
-                }
+                Spacer()
             }
             .padding(.horizontal, 20)
-            .padding(.vertical, 14)
-            .background(Color.wsCard.ignoresSafeArea(edges: .bottom))
+            .padding(.top, 20)
+        }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            bottomActionBar
+        }
+        .navigationBarHidden(true)
+        .onAppear {
+            viewModel.bind(cartRepository: cartRepository, registryRepository: registryRepository)
+            if let activeId = registryRepository.activeRegistryId {
+                selectedRegistryIds.insert(activeId)
+            }
+        }
+        .sheet(isPresented: $showRegistrySheet) {
+            RegistrySelectionSheet(
+                product: viewModel.product,
+                registries: registryRepository.registries,
+                selectedIds: $selectedRegistryIds,
+                onSave: {
+                    for id in selectedRegistryIds {
+                        registryRepository.addProduct(viewModel.product, to: id)
+                    }
+                    showRegistrySheet = false
+                },
+                onCreateNew: {
+                    showRegistrySheet = false
+                    tabBarVM.selectTab(.registry)
+                }
+            )
+            .presentationDetents([.fraction(0.85)])
+            .presentationDragIndicator(.visible)
+        }
+    }
+    
+    private var bottomActionBar: some View {
+        Button(action: {
+            showRegistrySheet = true
+        }) {
+            HStack {
+                Image(systemName: "plus")
+                Text("Add to Repository")
+            }
+            .font(.system(size: 15, weight: .medium))
+            .foregroundColor(.white)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 16)
+            .background(Color(red: 115/255, green: 125/255, blue: 105/255))
+            .clipShape(Capsule())
+        }
+        .padding(.horizontal, 20)
+        .padding(.top, 16)
+        .padding(.bottom, 12)
+        .background(
+            LinearGradient(
+                colors: [bgColor.opacity(0), bgColor, bgColor],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        )
+    }
+    
+    private func pill(_ text: String) -> some View {
+        Text(text)
+            .font(.system(size: 10, weight: .bold))
+            .tracking(0.5)
+            .foregroundColor(Color(red: 0.3, green: 0.3, blue: 0.3))
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(Color(red: 0.92, green: 0.91, blue: 0.88))
+            .clipShape(Capsule())
+    }
+    
+    private func specBox(title: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(title)
+                .font(.system(size: 10, weight: .bold))
+                .tracking(1)
+                .foregroundColor(Color(red: 0.5, green: 0.5, blue: 0.5))
+            Text(value)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 }
+
+// MARK: - Registry Selection Sheet
+struct RegistrySelectionSheet: View {
+    let product: ProductItem
+    let registries: [Registry]
+    @Binding var selectedIds: Set<UUID>
+    let onSave: () -> Void
+    let onCreateNew: () -> Void
+    
+    @Environment(\.dismiss) var dismiss
+    
+    private let bgColor = Color(red: 245/255, green: 243/255, blue: 237/255)
+    
+    var body: some View {
+        ZStack(alignment: .top) {
+            bgColor.ignoresSafeArea()
+            
+            VStack(alignment: .leading, spacing: 0) {
+                // Header
+                HStack {
+                    Text("Save to Repository")
+                        .font(.system(size: 24, weight: .regular, design: .serif))
+                        .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                    Spacer()
+                    Button(action: { dismiss() }) {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundColor(.black)
+                            .frame(width: 30, height: 30)
+                            .background(Color.black.opacity(0.05))
+                            .clipShape(Circle())
+                    }
+                }
+                .padding(.horizontal, 24)
+                .padding(.top, 30)
+                .padding(.bottom, 24)
+                
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 16) {
+                        ForEach(registries) { registry in
+                            registryRow(registry)
+                        }
+                        
+                        // Create New
+                        Button(action: onCreateNew) {
+                            HStack {
+                                Spacer()
+                                Image(systemName: "plus")
+                                Text("Create New Repository")
+                                    .font(.system(size: 15, weight: .medium))
+                                Spacer()
+                            }
+                            .foregroundColor(Color(red: 115/255, green: 125/255, blue: 105/255))
+                            .padding(.vertical, 18)
+                            .background(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .strokeBorder(
+                                        style: StrokeStyle(lineWidth: 1, dash: [6, 4])
+                                    )
+                                    .foregroundColor(Color(red: 0.7, green: 0.7, blue: 0.7))
+                            )
+                        }
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 120) // space for bottom button
+                }
+            }
+            
+            // Bottom Save Button
+            VStack {
+                Spacer()
+                Button(action: onSave) {
+                    Text(saveButtonTitle)
+                        .font(.system(size: 15, weight: .medium))
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 18)
+                        .background(Color(red: 115/255, green: 125/255, blue: 105/255))
+                        .clipShape(Capsule())
+                }
+                .disabled(selectedIds.isEmpty)
+                .opacity(selectedIds.isEmpty ? 0.5 : 1.0)
+                .padding(.horizontal, 24)
+                .padding(.bottom, 20)
+                .background(
+                    LinearGradient(
+                        colors: [bgColor.opacity(0), bgColor, bgColor],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                    .frame(height: 100)
+                    .offset(y: 10)
+                )
+            }
+        }
+    }
+    
+    private var saveButtonTitle: String {
+        if selectedIds.isEmpty {
+            return "Select a Repository"
+        } else if selectedIds.count == 1, let id = selectedIds.first, let reg = registries.first(where: { $0.id == id }) {
+            return "Save to \(reg.displayName)"
+        } else {
+            return "Save to Multiple Repositories"
+        }
+    }
+    
+    private func registryRow(_ registry: Registry) -> some View {
+        let isSelected = selectedIds.contains(registry.id)
+        
+        return Button(action: {
+            if isSelected {
+                selectedIds.remove(registry.id)
+            } else {
+                selectedIds.insert(registry.id)
+            }
+        }) {
+            HStack(spacing: 16) {
+                // Folder Icon Box
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(Color(red: 0.92, green: 0.9, blue: 0.88))
+                        .frame(width: 48, height: 48)
+                    Image(systemName: "folder")
+                        .font(.system(size: 20))
+                        .foregroundColor(Color(red: 0.5, green: 0.5, blue: 0.5))
+                }
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(registry.displayName)
+                        .font(.system(size: 15, weight: .medium))
+                        .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                    
+                    Text("\(registry.items.count) Items • 1 Collaborators")
+                        .font(.system(size: 13))
+                        .foregroundColor(Color(red: 0.5, green: 0.5, blue: 0.5))
+                }
+                
+                Spacer()
+                
+                // Radio/Check circle
+                ZStack {
+                    Circle()
+                        .stroke(isSelected ? Color.clear : Color(red: 0.8, green: 0.8, blue: 0.8), lineWidth: 1)
+                        .frame(width: 24, height: 24)
+                    
+                    if isSelected {
+                        Circle()
+                            .fill(Color(red: 115/255, green: 125/255, blue: 105/255))
+                            .frame(width: 24, height: 24)
+                        Image(systemName: "checkmark")
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundColor(.white)
+                    }
+                }
+            }
+            .padding(16)
+            .background(
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(isSelected ? Color(red: 0.9, green: 0.9, blue: 0.86) : Color.white)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(isSelected ? Color(red: 115/255, green: 125/255, blue: 105/255) : Color(red: 0.9, green: 0.9, blue: 0.9), lineWidth: 1)
+            )
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+}
+
+// Shape helper for specific corners
+struct CustomCorners: Shape {
+    var corners: UIRectCorner
+    var radius: CGFloat
+    
+    func path(in rect: CGRect) -> Path {
+        let path = UIBezierPath(
+            roundedRect: rect,
+            byRoundingCorners: corners,
+            cornerRadii: CGSize(width: radius, height: radius)
+        )
+        return Path(path.cgPath)
+    }
+}
+
+

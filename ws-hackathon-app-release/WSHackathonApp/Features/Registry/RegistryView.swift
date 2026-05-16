@@ -10,6 +10,7 @@ import SwiftUI
 enum RegistryRoute: Hashable {
     case create
     case success
+    case detail
 }
 
 struct RegistryView: View {
@@ -23,46 +24,46 @@ struct RegistryView: View {
 
     var body: some View {
         NavigationStack(path: $tabBarVM.registryPath) {
-            ScrollView(showsIndicators: false) {
-                VStack(spacing: 0) {
-
-                    // ─── Banner ──────────────────────────────────
-                    bannerImage
-
-                    // ─── Content ─────────────────────────────────
-                    VStack(spacing: 20) {
-                        if viewModel.hasRegistry {
-                            registryHeader
-                            budgetTrackerCard
-                            groupGiftingCard
-
-                            if viewModel.hasItems {
-                                registryItemsList
-                            } else {
-                                emptyItemsView
-                            }
-
-                            trendingItemsSection
-                        } else {
-                            registryCard
-                            instructionCard
-                        }
+            
+            ZStack {
+                Color(red: 0.96, green: 0.95, blue: 0.93)
+                    .ignoresSafeArea()
+                
+                VStack(alignment: .leading, spacing: 0) {
+                    
+                    // Header
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Registries")
+                            .font(.system(size: 40, weight: .regular, design: .serif))
+                            .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                        
+                        Text("Your curated planning collections")
+                            .font(.system(size: 16, weight: .regular, design: .default))
+                            .foregroundColor(Color.gray)
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.top, 24)
+                    .padding(.bottom, 32)
+                    
+                    if viewModel.hasRegistry {
+                        populatedStateView
+                    } else {
+                        emptyStateView
                     }
                     .padding(.top, 20)
                     .padding(.bottom, 32)
                 }
             }
-            .background(Color.wsBackground.ignoresSafeArea())
-            .navigationTitle(AppStrings.Registry.title)
-            .navigationBarTitleDisplayMode(.large)
-
-            // MARK: - Navigation
+            .navigationBarHidden(true)
             .navigationDestination(for: RegistryRoute.self) { route in
                 switch route {
                 case .create:
                     CreateRegistryView()
                 case .success:
                     RegistrySuccessView()
+                    
+                case .detail:
+                    RegistryDetailView()
                 }
             }
         }
@@ -83,81 +84,122 @@ struct RegistryView: View {
 // MARK: - Components
 
 private extension RegistryView {
-
-    // ─── Banner ──────────────────────────────────────────────────
-    var bannerImage: some View {
-        GeometryReader { geo in
-            Image(AppImages.Registry.header)
-                .resizable()
-                .scaledToFill()
-                .frame(width: geo.size.width, height: 200)
-                .clipped()
-                .overlay(
-                    LinearGradient(
-                        colors: [.clear, Color.wsBackground.opacity(0.8)],
-                        startPoint: .center,
-                        endPoint: .bottom
+    
+    var emptyStateView: some View {
+        VStack(spacing: 24) {
+            Spacer()
+            
+            // Icon
+            ZStack {
+                RoundedRectangle(cornerRadius: 24)
+                    .fill(Color.white)
+                    .frame(width: 96, height: 96)
+                
+                Image(systemName: "folder.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 44, height: 44)
+                    .foregroundColor(Color(white: 0.8))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 4)
+                            .stroke(Color(white: 0.8), lineWidth: 2)
+                            .frame(width: 24, height: 16)
+                            .offset(y: 4)
                     )
-                )
-        }
-        .frame(height: 200)
-    }
-
-    // ─── Create Registry CTA ─────────────────────────────────────
-    var registryCard: some View {
-        Button {
-            tabBarVM.registryPath.append(.create)
-        } label: {
-            HStack(spacing: 14) {
-                ZStack {
-                    Color.wsBrandLight
-                    Image(systemName: "plus")
-                        .font(.system(size: 18, weight: .bold))
-                        .foregroundStyle(Color.wsBrand)
-                }
-                .frame(width: 44, height: 44)
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(AppStrings.Registry.create)
-                        .font(.headline.weight(.bold))
-                        .foregroundStyle(Color.wsTitle)
-                    Text("Start your wish list today")
-                        .font(.caption)
-                        .foregroundStyle(Color.wsBody)
-                }
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(Color.wsCaption)
             }
+            
+            VStack(spacing: 12) {
+                Text("No Registries Yet")
+                    .font(.system(size: 28, weight: .regular, design: .serif))
+                    .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                
+                Text("Create collections for weddings,\ngifting, housewarmings, and more.")
+                    .font(.system(size: 16))
+                    .foregroundColor(Color.gray)
+                    .multilineTextAlignment(.center)
+            }
+            
+            Button {
+                tabBarVM.registryPath.append(.create)
+            } label: {
+                HStack(spacing: 8) {
+                    Image(systemName: "plus")
+                        .font(.system(size: 18, weight: .medium))
+                    Text("Create New Registry")
+                        .font(.system(size: 16, weight: .medium))
+                }
+                .foregroundColor(.white)
+                .padding(.vertical, 16)
+                .padding(.horizontal, 24)
+                .background(Color(red: 0.46, green: 0.50, blue: 0.44)) // Olive green
+                .clipShape(Capsule())
+            }
+            .padding(.top, 16)
+            
+            Spacer()
         }
-        .buttonStyle(.plain)
-        .wsCard()
-        .padding(.horizontal, 20)
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 24)
     }
-
-    // ─── Instructions ────────────────────────────────────────────
-    var instructionCard: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            Text(AppStrings.Registry.topReasons)
-                .font(.caption.weight(.bold))
-                .foregroundStyle(Color.wsCaption)
-                .tracking(1)
-
-            ForEach(Array(viewModel.instructions.enumerated()), id: \.element.id) { index, item in
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack(spacing: 10) {
-                        Text("\(index + 1)")
-                            .font(.caption2.weight(.black))
-                            .foregroundStyle(.white)
-                            .frame(width: 22, height: 22)
-                            .background(Color.wsBrand)
-                            .clipShape(Circle())
-
-                        Text(item.title)
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(Color.wsTitle)
+    
+    var populatedStateView: some View {
+        ZStack(alignment: .bottomTrailing) {
+            ScrollView {
+                VStack(spacing: 16) {
+                    ForEach(viewModel.registries) { registry in
+                        Button(action: {
+                            registryRepo.activeRegistryId = registry.id
+                            tabBarVM.registryPath.append(.detail)
+                        }) {
+                            registryCard(
+                                title: registry.displayName,
+                                type: registry.event.rawValue.uppercased() + " EVENT",
+                                date: registry.date.formatted(date: .abbreviated, time: .omitted),
+                                itemsCount: "\(registry.items.count) Items",
+                                budget: registry.budget
+                            )
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    }
+                    
+                }
+                .padding(.horizontal, 24)
+                .padding(.bottom, 100)
+            }
+            
+            // Floating Action Button
+            Button {
+                tabBarVM.registryPath.append(.create)
+            } label: {
+                Image(systemName: "plus")
+                    .font(.system(size: 24, weight: .medium))
+                    .foregroundColor(.white)
+                    .frame(width: 64, height: 64)
+                    .background(Color(red: 0.46, green: 0.50, blue: 0.44))
+                    .clipShape(Circle())
+                    .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
+            }
+            .padding(24)
+        }
+    }
+    
+    func registryCard(title: String, type: String, date: String, itemsCount: String, budget: String? = nil) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(title)
+                        .font(.system(size: 22, weight: .regular, design: .serif))
+                        .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                    
+                    Text(type)
+                        .font(.system(size: 12, weight: .bold))
+                        .tracking(1.0)
+                        .foregroundColor(Color(red: 0.46, green: 0.50, blue: 0.44)) // Olive green text
+                    
+                    if let budget = budget, !budget.isEmpty {
+                        Text("Budget: $\(budget)")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundColor(Color.gray)
                     }
 
                     Text(item.description)
@@ -169,169 +211,38 @@ private extension RegistryView {
                 if index != viewModel.instructions.count - 1 {
                     Divider().padding(.leading, 32)
                 }
-            }
-        }
-        .wsCard()
-        .padding(.horizontal, 20)
-    }
-
-    var emptyItemsView: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "tray")
-                .font(.system(size: 32))
-                .foregroundStyle(Color.wsCaption)
-            Text(AppStrings.Registry.noItemsAdded)
-                .font(.subheadline)
-                .foregroundStyle(Color.wsBody)
-        }
-        .frame(maxWidth: .infinity)
-        .wsCard(cornerRadius: 16, padding: 24)
-        .padding(.horizontal, 20)
-    }
-
-    // ─── Registry Header ─────────────────────────────────────────
-    var registryHeader: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(viewModel.displayTitle)
-                .font(.headline.weight(.bold))
-                .foregroundStyle(Color.wsTitle)
-
-            Text(viewModel.displayDate)
-                .font(.subheadline)
-                .foregroundStyle(Color.wsBody)
-
-            Button(role: .destructive) {
-                showingDeleteAlert = true
-            } label: {
-                Label("Delete Registry", systemImage: "trash")
-                    .font(.caption.weight(.medium))
-            }
-            .padding(.top, 4)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .wsCard()
-        .padding(.horizontal, 20)
-    }
-
-    // ─── Registry Items ──────────────────────────────────────────
-    var registryItemsList: some View {
-        VStack(spacing: 12) {
-            WSSectionHeader(
-                title: "Your Items",
-                trailing: "\(viewModel.items.count) items"
-            )
-            .padding(.horizontal, 20)
-
-            LazyVStack(spacing: 12) {
-                ForEach(viewModel.items) { item in
-                    RegistryItemRow(
-                        viewModel: RegistryItemRowViewModel(
-                            item: item,
-                            registryRepo: registryRepo,
-                            cartRepo: cartRepo,
-                            tabbarVM: tabBarVM
-                        )
-                    )
-                }
-            }
-            .padding(.horizontal, 20)
-        }
-    }
-
-    // ─── Budget Tracker ──────────────────────────────────────────
-    var budgetTrackerCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text("Registry Goal")
-                    .font(.headline.weight(.bold))
-                    .foregroundStyle(Color.wsTitle)
+                
                 Spacer()
-                Text("$1,500 / $2,000")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(Color.wsBody)
+                
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(Color.gray)
+                    .padding(.top, 4)
             }
-
-            ProgressView(value: 0.75)
-                .tint(Color.wsBrand)
-                .scaleEffect(x: 1, y: 2.5, anchor: .center)
-                .clipShape(Capsule())
-
-            Text("75% Funded")
-                .font(.caption.weight(.medium))
-                .foregroundStyle(Color.wsBrand)
-        }
-        .wsCard()
-        .padding(.horizontal, 20)
-    }
-
-    // ─── Group Gifting ───────────────────────────────────────────
-    var groupGiftingCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Contributors")
-                .font(.headline.weight(.bold))
-                .foregroundStyle(Color.wsTitle)
-
-            HStack(spacing: -10) {
-                ForEach(0..<5, id: \.self) { _ in
-                    Circle()
-                        .fill(Color.wsElevated)
-                        .frame(width: 40, height: 40)
-                        .overlay(
-                            Image(systemName: "person.fill")
-                                .font(.caption)
-                                .foregroundStyle(Color.wsCaption)
-                        )
-                        .overlay(Circle().stroke(Color.wsCard, lineWidth: 2))
+            .padding(24)
+            
+            Divider()
+                .padding(.horizontal, 24)
+            
+            HStack {
+                HStack(spacing: 8) {
+                    Image(systemName: "calendar")
+                        .foregroundColor(Color.gray)
+                    Text(date)
+                        .font(.system(size: 16))
+                        .foregroundColor(Color.gray)
                 }
-
-                Circle()
-                    .fill(Color.wsBrand)
-                    .frame(width: 40, height: 40)
-                    .overlay(
-                        Text("+3")
-                            .font(.caption.weight(.bold))
-                            .foregroundStyle(.white)
-                    )
-                    .overlay(Circle().stroke(Color.wsCard, lineWidth: 2))
+                
+                Spacer()
+                
+                Text(itemsCount)
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
             }
+            .padding(24)
         }
-        .wsCard()
-        .padding(.horizontal, 20)
-    }
-
-    // ─── Trending Items ──────────────────────────────────────────
-    var trendingItemsSection: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            WSSectionHeader(title: "Trending for Weddings")
-                .padding(.horizontal, 20)
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 14) {
-                    ForEach(0..<4, id: \.self) { index in
-                        VStack(alignment: .leading, spacing: 6) {
-                            ZStack {
-                                Color.wsElevated
-                                Image(systemName: "gift.fill")
-                                    .font(.title2)
-                                    .foregroundStyle(Color.wsBrand.opacity(0.5))
-                            }
-                            .frame(width: 120, height: 120)
-                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-
-                            Text("Popular Item \(index + 1)")
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(Color.wsTitle)
-                                .lineLimit(1)
-
-                            Text("$99.99")
-                                .font(.caption2.weight(.medium))
-                                .foregroundStyle(Color.wsBody)
-                        }
-                        .frame(width: 120)
-                    }
-                }
-                .padding(.horizontal, 20)
-            }
-        }
+        .background(Color.white)
+        .cornerRadius(20)
+        .shadow(color: Color.black.opacity(0.02), radius: 10, x: 0, y: 4)
     }
 }

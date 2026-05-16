@@ -10,12 +10,12 @@ import Combine
 
 @MainActor
 final class CreateRegistryViewModel: ObservableObject {
-    @Published var firstName: String = ""
-    @Published var lastName: String = ""
-    @Published var selectedEvent: RegistryEvent = .birthday
+    @Published var registryName: String = ""
+    @Published var selectedEvent: RegistryEvent = .wedding
     @Published var date: Date = Date()
+    @Published var budget: String = ""
     
     var isValid: Bool {
-        !firstName.isEmpty && !lastName.isEmpty
+        !registryName.isEmpty
     }
 }

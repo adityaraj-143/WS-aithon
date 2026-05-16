@@ -15,92 +15,89 @@ struct ProductCardView: View {
     let onRemove: () -> Void
     let onAddToRegistry: () -> Void
     let onRemoveFromRegistry: () -> Void
-
+    let onSelect: () -> Void
+    
     var body: some View {
-        HStack(alignment: .top, spacing: 14) {
-
-            // ─── Product Image ───────────────────────────────
-            productImage
-
-            // ─── Info + Actions ──────────────────────────────
-            VStack(alignment: .leading, spacing: 6) {
-                Text(product.title)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(Color.wsTitle)
-                    .lineLimit(2)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                if let price = product.price {
-                    Text(price, format: .currency(code: "USD"))
-                        .font(.headline.weight(.bold))
-                        .foregroundStyle(Color.wsBrand)
-                }
-
-                Spacer(minLength: 4)
-
-                // ─── Cart Control ────────────────────────────
-                HStack(spacing: 10) {
-                    if quantity == 0 {
-                        Button(action: onAdd) {
-                            Label("Add", systemImage: "cart.badge.plus")
-                                .font(.caption.weight(.bold))
-                                .foregroundStyle(.white)
-                                .padding(.horizontal, 14)
-                                .padding(.vertical, 8)
-                                .background(Color.wsBrand)
-                                .clipShape(Capsule())
-                        }
+        // ✅ FIX: VStack aligned to .top so it never floats or grows unexpectedly
+        VStack(alignment: .leading, spacing: 0) {
+            
+            // MARK: - Image Section
+            ZStack(alignment: .top) {
+                AsyncImage(url: product.imageURL) { phase in
+                    if let image = phase.image {
+                        image
+                            .resizable()
+                            .scaledToFill()
                     } else {
-                        StepperPill(
-                            count: quantity,
-                            onIncrement: onAdd,
-                            onDecrement: onRemove
-                        )
+                        Color(red: 0.95, green: 0.95, blue: 0.95)
                     }
-
+                }
+                .frame(maxWidth: .infinity)
+                // ✅ FIX: Reduced from 200 to 160 so text section has breathing room
+                .frame(height: 160)
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .clipped()
+                .onTapGesture(perform: onSelect)
+                
+                HStack(alignment: .top) {
+                    statusPill
                     Spacer()
-
-                    // ─── Registry Toggle ──────────────────────
-                    Button(action: registryQuantity == 0 ? onAddToRegistry : onRemoveFromRegistry) {
-                        Image(systemName: registryQuantity == 0 ? "gift" : "gift.fill")
-                            .font(.system(size: 15, weight: .semibold))
-                            .foregroundStyle(registryQuantity == 0 ? Color.wsBrand : .white)
-                            .frame(width: 34, height: 34)
-                            .background(registryQuantity == 0
-                                        ? Color.wsBrandLight
-                                        : Color.wsBrand)
-                            .clipShape(Circle())
-                    }
                 }
+                .padding(10)
             }
+            
+            // MARK: - Text Section
+            // ✅ FIX: Wrap in a fixed-min-height container so short titles
+            //         don't cause the card to report less height than its neighbour
+            VStack(alignment: .leading, spacing: 4) {
+                if let brand = product.brand {
+                    Text(brand.uppercased())
+                        .font(.system(size: 10, weight: .bold))
+                        .tracking(1)
+                        .foregroundColor(Color(red: 0.5, green: 0.5, blue: 0.5))
+                        .lineLimit(1)
+                }
+                
+                Text(product.title)
+                    .font(.system(size: 15, weight: .medium))
+                    .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                    .fixedSize(horizontal: false, vertical: true)
+                    .multilineTextAlignment(.leading)
+                    .frame(minHeight: 40, alignment: .topLeading)
+                
+                Text(product.price?.formatted(.currency(code: "USD")) ?? "$0.00")
+                    .font(.system(size: 14, weight: .regular))
+                    .foregroundColor(Color(red: 0.4, green: 0.35, blue: 0.3))
+            }
+            .padding(.top, 10)
+            .padding(.horizontal, 4)
+            .padding(.bottom, 8)
         }
-        .wsCard()
+        // ✅ FIX: Card background + rounded corners so it looks self-contained
+        .background(Color(red: 245/255, green: 243/255, blue: 237/255))
+        .cornerRadius(16)
     }
-
-    // ─── Image View ──────────────────────────────────────────────
-    private var productImage: some View {
-        AsyncImage(url: product.imageURL) { phase in
-            switch phase {
-            case .success(let image):
-                image
-                    .resizable()
-                    .scaledToFill()
-            case .failure:
-                ZStack {
-                    Color.wsElevated
-                    Image(systemName: "photo")
-                        .font(.title3)
-                        .foregroundStyle(Color.wsCaption)
-                }
-            default:
-                ZStack {
-                    Color.wsElevated
-                    ProgressView()
-                        .tint(Color.wsBrand)
-                }
-            }
+    
+    @ViewBuilder
+    private var statusPill: some View {
+        let status = getStatus()
+        Text(status)
+            .font(.system(size: 10, weight: .bold))
+            .tracking(0.5)
+            .foregroundColor(.black)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(Color.white)
+            .clipShape(Capsule())
+    }
+    
+    private func getStatus() -> String {
+        if let retail = product.retailPrice, let price = product.price, retail > price {
+            return "SALE"
+        } else if product.availability == "BACK_ORDERED" {
+            return "FEW LEFT"
+        } else {
+            return "IN STOCK"
         }
-        .frame(width: 100, height: 110)
-        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 }

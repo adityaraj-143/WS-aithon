@@ -8,148 +8,137 @@
 import SwiftUI
 
 struct HomeView: View {
-
-    @State private var showRegistryAlert = false
     @StateObject private var viewModel = HomeViewModel()
 
     @EnvironmentObject var cartRepository: CartRepository
     @EnvironmentObject var registryRepository: RegistryRepository
     @EnvironmentObject var tabBarVM: WSTabBarViewModel
-
+    
+    private let bgColor = Color(red: 245/255, green: 243/255, blue: 237/255)
+    
     var body: some View {
-        NavigationStack {
-            ScrollView(showsIndicators: false) {
-                VStack(spacing: 0) {
-
-                    // ─── Hero Section ───────────────────────────────
-                    heroSection
-                        .padding(.bottom, 8)
-
-                    // ─── Search ─────────────────────────────────────
+        NavigationStack(path: $tabBarVM.homePath) {
+            ZStack {
+                bgColor.ignoresSafeArea()
+                
+                VStack(alignment: .leading, spacing: 0) {
+                    headerView
                     searchBar
-                        .padding(.horizontal, 20)
-                        .padding(.bottom, 16)
-
-                    // ─── Content ────────────────────────────────────
+                    filterCategories
+                    
                     if viewModel.isLoading {
                         loadingView
-                    } else if let error = viewModel.errorMessage {
-                        errorView(error)
+                    } else if viewModel.filteredProducts.isEmpty && !viewModel.searchText.isEmpty {
+                        emptySearchView
                     } else {
-                        productGrid
+                        productsGrid
                     }
                 }
-                .padding(.bottom, 24)
             }
-            .background(Color.wsBackground.ignoresSafeArea())
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationDestination(for: ProductItem.self) { product in
-                ProductDetailView(
-                    product: product,
-                    quantity: viewModel.quantity(for: product),
-                    registryQuantity: viewModel.registryQuantity(for: product),
-                    onAdd: { viewModel.addToCart(product) },
-                    onRemove: { viewModel.removeFromCart(product) },
-                    onAddToRegistry: {
-                        if viewModel.canAddToRegistry(product) {
-                            viewModel.addToRegistry(product)
-                        } else {
-                            showRegistryAlert = true
-                        }
-                    },
-                    onRemoveFromRegistry: { viewModel.removeFromRegistry(product) }
-                )
+            .navigationBarHidden(true)
+            .navigationDestination(for: HomeRoute.self) { route in
+                switch route {
+                case .detail(let product):
+                    ProductDetailView(viewModel: ProductDetailViewModel(product: product))
+                }
             }
             .onAppear {
                 Task {
-                    viewModel.bind(
-                        cartRepository: cartRepository,
-                        registryRepository: registryRepository
-                    )
+                    viewModel.bind(cartRepository: cartRepository, registryRepository: registryRepository)
                     await viewModel.fetchProducts()
                 }
-            }
-            .alert("Create a Registry", isPresented: $showRegistryAlert) {
-                Button("OK", role: .cancel) { }
-            } message: {
-                Text("Please navigate to the Registry tab using the bottom bar to create a registry first.")
             }
         }
     }
 }
 
-// MARK: - Sub-views
-
+// MARK: - HomeView Components
 private extension HomeView {
-
-    // ─── Hero ────────────────────────────────────────────────────────
-    var heroSection: some View {
-        VStack(spacing: 6) {
-            Text("Ready to Shop!")
-                .font(.system(size: 34, weight: .black))
-                .foregroundStyle(Color.wsTitle)
-                .frame(maxWidth: .infinity, alignment: .leading)
-
-            Text("Williams Sonoma · Curated for you")
-                .font(.subheadline.weight(.medium))
-                .foregroundStyle(Color.wsBody)
-                .frame(maxWidth: .infinity, alignment: .leading)
+    
+    var headerView: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("Home")
+                .font(.system(size: 34, weight: .regular, design: .serif))
+                .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+            
+            Text("Curated kitchen and dining essentials")
+                .font(.system(size: 15))
+                .foregroundColor(Color(red: 0.45, green: 0.45, blue: 0.45))
         }
         .padding(.horizontal, 20)
-        .padding(.top, 12)
+        .padding(.top, 20)
+        .padding(.bottom, 16)
     }
-
-    // ─── Search ──────────────────────────────────────────────────────
+    
     var searchBar: some View {
-        HStack(spacing: 10) {
+        HStack {
             Image(systemName: "magnifyingglass")
-                .font(.system(size: 16, weight: .medium))
-                .foregroundStyle(Color.wsCaption)
-
-            TextField(AppStrings.Home.searchPlaceHolder, text: $viewModel.searchText)
-                .font(.body)
-                .foregroundStyle(Color.wsTitle)
+                .foregroundColor(Color(red: 0.4, green: 0.4, blue: 0.4))
+                .font(.system(size: 18))
+            
+            TextField("Search products, brands...", text: $viewModel.searchText)
+                .font(.system(size: 15))
+                .foregroundColor(.black)
+                .autocorrectionDisabled()
+            
+            if !viewModel.searchText.isEmpty {
+                Button(action: { viewModel.searchText = "" }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(Color(red: 0.7, green: 0.7, blue: 0.7))
+                }
+            }
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 11)
-        .background(Color.wsCard)
-        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(Color.white)
+        .clipShape(Capsule())
+        .overlay(Capsule().stroke(Color(red: 0.9, green: 0.9, blue: 0.9), lineWidth: 1))
+        .padding(.horizontal, 20)
+        .padding(.bottom, 20)
     }
-
-    // ─── Loading ─────────────────────────────────────────────────────
-    var loadingView: some View {
-        VStack(spacing: 16) {
-            Spacer(minLength: 80)
-            ProgressView()
-                .controlSize(.large)
-                .tint(Color.wsBrand)
-            Text("Loading products…")
-                .font(.subheadline)
-                .foregroundStyle(Color.wsCaption)
-            Spacer(minLength: 80)
+    
+    var filterCategories: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 12) {
+                ForEach(viewModel.categories, id: \.self) { category in
+                    Button(action: {
+                        withAnimation {
+                            viewModel.selectedCategory = category
+                        }
+                    }) {
+                        filterPill(title: category, isSelected: viewModel.selectedCategory == category)
+                    }
+                }
+            }
+            .padding(.horizontal, 20)
         }
-        .frame(maxWidth: .infinity)
+        .padding(.bottom, 24)
     }
-
-    func errorView(_ message: String) -> some View {
-        VStack(spacing: 12) {
-            Spacer(minLength: 60)
-            Image(systemName: "wifi.exclamationmark")
-                .font(.system(size: 40))
-                .foregroundStyle(Color.wsCaption)
-            Text(message)
-                .font(.subheadline)
-                .foregroundStyle(Color.wsBody)
-            Spacer(minLength: 60)
-        }
-        .frame(maxWidth: .infinity)
+    
+    func filterPill(title: String, isSelected: Bool) -> some View {
+        Text(title)
+            .font(.system(size: 14, weight: .medium))
+            .foregroundColor(isSelected ? .white : Color(red: 0.2, green: 0.2, blue: 0.2))
+            .padding(.horizontal, 20)
+            .padding(.vertical, 8)
+            .background(isSelected ? Color(red: 0.15, green: 0.15, blue: 0.15) : Color.white)
+            .clipShape(Capsule())
+            .overlay(
+                Capsule().stroke(isSelected ? Color.clear : Color(red: 0.9, green: 0.9, blue: 0.9), lineWidth: 1)
+            )
     }
-
-    // ─── Product Grid ────────────────────────────────────────────────
-    var productGrid: some View {
-        LazyVStack(spacing: 14) {
-            ForEach(viewModel.filteredProducts) { product in
-                NavigationLink(value: product) {
+    
+    var productsGrid: some View {
+        ScrollView(showsIndicators: false) {
+            LazyVGrid(
+                columns: [
+                    GridItem(.flexible(), spacing: 12),
+                    GridItem(.flexible(), spacing: 12)
+                ],
+                alignment: .leading,
+                spacing: 16
+            ) {
+                ForEach(viewModel.filteredProducts) { product in
                     ProductCardView(
                         product: product,
                         quantity: viewModel.quantity(for: product),
@@ -160,15 +149,42 @@ private extension HomeView {
                             if viewModel.canAddToRegistry(product) {
                                 viewModel.addToRegistry(product)
                             } else {
-                                showRegistryAlert = true
+                                tabBarVM.selectTab(.registry)
                             }
                         },
-                        onRemoveFromRegistry: { viewModel.removeFromRegistry(product) }
+                        onRemoveFromRegistry: { viewModel.removeFromRegistry(product) },
+                        onSelect: {
+                            tabBarVM.navigateToDetail(product)
+                        }
                     )
+                    .frame(maxWidth: .infinity, alignment: .top)
                 }
-                .buttonStyle(.plain)
             }
+            .padding(.horizontal, 16)
+            .padding(.bottom, 30)
         }
-        .padding(.horizontal, 20)
+    }
+    
+    var loadingView: some View {
+        VStack {
+            Spacer()
+            ProgressView()
+                .scaleEffect(1.2)
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
+    }
+    
+    var emptySearchView: some View {
+        VStack(spacing: 8) {
+            Spacer()
+            Image(systemName: "magnifyingglass")
+                .font(.system(size: 32))
+                .foregroundColor(.secondary)
+            Text("No results found")
+                .font(.system(size: 16, weight: .medium))
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
     }
 }

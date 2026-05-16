@@ -11,43 +11,70 @@ import Foundation
 @MainActor
 final class RegistryRepository: ObservableObject {
     
-    @Published var currentRegistry: Registry?
+    @Published var registries: [Registry] = []
+    @Published var activeRegistryId: UUID?
+    
+    var currentRegistry: Registry? {
+        get {
+            guard let id = activeRegistryId else { return nil }
+            return registries.first { $0.id == id }
+        }
+        set {
+            guard let newValue = newValue else { return }
+            if let index = registries.firstIndex(where: { $0.id == newValue.id }) {
+                registries[index] = newValue
+            }
+        }
+    }
     
     // MARK: - Create
     var isActiveRegistry: Bool {
-        currentRegistry != nil
+        activeRegistryId != nil
     }
     
     func createRegistry(firstName: String,
                         lastName: String,
                         event: RegistryEvent,
-                        date: Date) {
+                        date: Date,
+                        budget: String?) {
         
-        currentRegistry = Registry(
+        let newRegistry = Registry(
             id: UUID(),
             firstName: firstName,
             lastName: lastName,
             event: event,
             date: date,
+            budget: budget,
             items: []
         )
+        
+        registries.append(newRegistry)
+        activeRegistryId = newRegistry.id
     }
     
     // MARK: - Delete Registry
     
     func deleteRegistry() {
-        currentRegistry = nil
+        guard let id = activeRegistryId else { return }
+        registries.removeAll { $0.id == id }
+        activeRegistryId = registries.last?.id
     }
     
     // MARK: - Add Product
     
     func addProduct(_ product: ProductItem) {
-        guard var registry = currentRegistry else { return }
+        guard let registry = currentRegistry else { return }
+        addProduct(product, to: registry.id)
+    }
+    
+    func addProduct(_ product: ProductItem, to registryId: UUID) {
+        guard let index = registries.firstIndex(where: { $0.id == registryId }) else { return }
+        var registry = registries[index]
         
         let price = product.price ?? 0.0
         
-        if let index = registry.items.firstIndex(where: { $0.id == product.id }) {
-            registry.items[index].quantity += 1
+        if let itemIndex = registry.items.firstIndex(where: { $0.id == product.id }) {
+            registry.items[itemIndex].quantity += 1
         } else {
             registry.items.append(
                 RegistryItem(
@@ -60,7 +87,10 @@ final class RegistryRepository: ObservableObject {
             )
         }
         
-        currentRegistry = registry
+        registries[index] = registry
+        if activeRegistryId == registryId {
+            currentRegistry = registry
+        }
     }
     
     // MARK: - Remove Item

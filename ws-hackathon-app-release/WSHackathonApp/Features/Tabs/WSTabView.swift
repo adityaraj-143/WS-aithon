@@ -20,8 +20,6 @@ struct WSTabView: View {
                         Label(tab.title, systemImage: tab.icon)
                     }
                     .tag(tab)
-                    .badge(tab == .cart && viewModel.cartItemCount > 0
-                           ? viewModel.cartItemCount : 0)
             }
         }
         .tint(Color.wsBrand) // Branded tint on the native tab bar
@@ -34,11 +32,10 @@ struct WSTabView: View {
             HomeView()
         case .registry:
             RegistryView()
-        case .cart:
-            CartView()
         }
     }
 }
+
 
 #Preview {
     WSTabView()
