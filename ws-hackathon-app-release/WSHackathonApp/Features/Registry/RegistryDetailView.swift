@@ -15,6 +15,26 @@ struct RegistryDetailView: View {
     @State private var guestName = ""
     @State private var showSuccessToast = false
     
+    private var totalSpent: Double {
+        guard let registry = registryRepo.currentRegistry else { return 0 }
+        return registry.items.reduce(0) { $0 + ($1.price * Double($1.quantity)) }
+    }
+    
+    private var budgetAmount: Double {
+        guard let registry = registryRepo.currentRegistry,
+              let budgetStr = registry.budget,
+              let amount = Double(budgetStr.filter { "0123456789.".contains($0) }) else { return 0 }
+        return amount
+    }
+    
+    private var percentLeft: Int {
+        let budget = budgetAmount
+        guard budget > 0 else { return 100 }
+        let spent = totalSpent
+        let used = (spent / budget) * 100
+        return max(0, 100 - Int(used))
+    }
+    
     var body: some View {
         ZStack {
             Color(red: 0.96, green: 0.95, blue: 0.93)
@@ -32,33 +52,14 @@ struct RegistryDetailView: View {
                                 .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
                             
                             HStack(spacing: 8) {
-                                Text(registry.event.rawValue.uppercased() + " EVENT")
+                                Text("\(registry.event.rawValue) EVENT • \(registry.date.formatted(date: .abbreviated, time: .omitted))")
                                     .font(.system(size: 10, weight: .bold))
                                     .tracking(1.0)
                                     .foregroundColor(Color(red: 0.46, green: 0.50, blue: 0.44))
+                                    .textCase(.uppercase)
                                 
                                 Spacer()
-                                
-                                Button(action: {
-                                    showInviteAlert = true
-                                }) {
-                                    HStack(spacing: 4) {
-                                        Image(systemName: "person.badge.plus")
-                                        Text("Invite")
-                                    }
-                                    .font(.system(size: 14, weight: .semibold))
-                                    .foregroundColor(.blue)
-                                    .padding(.horizontal, 12)
-                                    .padding(.vertical, 6)
-                                    .background(Color.blue.opacity(0.1))
-                                    .cornerRadius(12)
-                                }
                             }
-                                    .foregroundColor(.gray)
-                                
-                                Text(registry.date.formatted(date: .abbreviated, time: .omitted))
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.gray)
                                 
                                 if !registry.collaboratorNames.isEmpty {
                                     HStack(spacing: 4) {
@@ -75,36 +76,46 @@ struct RegistryDetailView: View {
                         .padding(.horizontal, 24)
                         .padding(.top, 24)
                         
-                        // Budget Progress (Mocked)
+                        // Budget Progress
                         if let budget = registry.budget, !budget.isEmpty {
-                            VStack(spacing: 12) {
+                            VStack(alignment: .leading, spacing: 16) {
                                 HStack(alignment: .bottom) {
-                                    Text("$0") // Mock spent value
-                                        .font(.system(size: 16, weight: .bold))
-                                        .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("$\(Int(totalSpent))")
+                                            .font(.system(size: 44, weight: .regular, design: .serif))
+                                            .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                                        Text("amount used so far")
+                                            .font(.system(size: 16))
+                                            .foregroundColor(.gray)
+                                    }
                                     Spacer()
-                                    Text("of $\(budget) planned")
-                                        .font(.system(size: 14))
-                                        .foregroundColor(.gray)
                                 }
                                 
                                 GeometryReader { geometry in
                                     ZStack(alignment: .leading) {
                                         Capsule()
                                             .fill(Color(white: 0.9))
-                                            .frame(height: 4)
+                                            .frame(height: 8)
                                         
                                         Capsule()
                                             .fill(Color(red: 0.46, green: 0.50, blue: 0.44))
-                                            .frame(width: geometry.size.width * 0.0, height: 4) // Mock progress
+                                            .frame(width: geometry.size.width * min(1.0, (budgetAmount > 0 ? (totalSpent / budgetAmount) : 0)), height: 8)
                                     }
                                 }
-                                .frame(height: 4)
+                                .frame(height: 8)
+                                
+                                HStack {
+                                    Text("Budget: $\(budget)")
+                                        .font(.system(size: 12, weight: .bold))
+                                        .foregroundColor(.gray)
+                                    
+                                    Spacer()
+                                    
+                                    Text("\(percentLeft)% LEFT")
+                                        .font(.system(size: 12, weight: .bold))
+                                        .foregroundColor(.gray)
+                                }
                             }
-                            .padding(24)
-                            .background(Color.white)
-                            .cornerRadius(12)
-                            .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color(white: 0.9), lineWidth: 1))
                             .padding(.horizontal, 24)
                             .padding(.top, 24)
                         }
@@ -160,6 +171,7 @@ struct RegistryDetailView: View {
                                 .padding(.top, 16)
                             }
                         }
+                        .padding(.top, 64)
                     }
                 }
             else {
@@ -216,17 +228,12 @@ struct RegistryDetailView: View {
             
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 HStack(spacing: 16) {
-                    Button(action: { /* Add people */ }) {
-                        Image(systemName: "person.2.fill")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
-                    }
-                    
-                    Button(action: { /* Share */ }) {
-                        Image(systemName: "square.and.arrow.up")
+                    Button(action: { showInviteAlert = true }) {
+                        Image(systemName: "person.badge.plus")
                             .font(.system(size: 18, weight: .semibold))
                             .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
                     }
+                    
                 }
             }
         }

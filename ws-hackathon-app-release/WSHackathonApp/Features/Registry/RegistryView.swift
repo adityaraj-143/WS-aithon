@@ -16,7 +16,7 @@ struct RegistryView: View {
     @StateObject private var socketService = SocketService.shared
     @State private var showCreateSheet = false
     @State private var showPlannerSheet = false
-    @State private var showDetailSheet = false
+    @State private var showDetail = false
     @State private var pendingPlanningContext: RegistryPlanningContext?
 
     var body: some View {
@@ -56,22 +56,27 @@ struct RegistryView: View {
                 }
             }
             .navigationBarHidden(true)
+            .navigationDestination(isPresented: $showDetail) {
+                RegistryDetailView()
+                    .environmentObject(registryRepo)
+                    .environmentObject(cartRepo)
+            }
+            .navigationDestination(isPresented: $showCreateSheet) {
+                CreateRegistryView(
+                    onCancel: { showCreateSheet = false },
+                    onCreateWithAI: { context in
+                        pendingPlanningContext = context
+                        showCreateSheet = false
+                        showPlannerSheet = true
+                    }
+                )
+                .environmentObject(registryRepo)
+                .environmentObject(homeVM)
+            }
         }
         .onAppear {
             viewModel.bind(repository: registryRepo)
             Task { await homeVM.fetchProducts() }
-        }
-        .sheet(isPresented: $showCreateSheet) {
-            CreateRegistryView(
-                onCancel: { showCreateSheet = false },
-                onCreateWithAI: { context in
-                    pendingPlanningContext = context
-                    showCreateSheet = false
-                    showPlannerSheet = true
-                }
-            )
-            .environmentObject(registryRepo)
-            .environmentObject(homeVM)
         }
         .sheet(isPresented: $showPlannerSheet, onDismiss: {
             pendingPlanningContext = nil
@@ -82,15 +87,10 @@ struct RegistryView: View {
                 onClose: { showPlannerSheet = false },
                 onAddAllComplete: {
                     showPlannerSheet = false
-                    showDetailSheet = true
+                    showDetail = true
                 }
             )
             .environmentObject(registryRepo)
-        }
-        .sheet(isPresented: $showDetailSheet) {
-            RegistryDetailView()
-                .environmentObject(registryRepo)
-                .environmentObject(cartRepo)
         }
     }
 }
@@ -186,27 +186,58 @@ private extension RegistryView {
                 }
             } else {
                 registryRepo.activeRegistryId = uuid
-                showDetailSheet = true
+                showDetail = true
             }
         }
         socketService.acceptInvite(invite)
     }
 
     var emptyStateView: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: 32) {
             Spacer()
-
-            Text("No Registries Yet")
-                .font(.system(size: 28, weight: .regular, design: .serif))
-
-            Button("Create Registry with AI") {
-                showCreateSheet = true
+            
+            ZStack {
+                RoundedRectangle(cornerRadius: 32)
+                    .fill(Color(white: 0.97))
+                    .frame(width: 120, height: 120)
+                
+                Image(systemName: "folder")
+                    .font(.system(size: 44, weight: .light))
+                    .foregroundColor(.gray.opacity(0.6))
             }
-            .padding()
-
+            
+            VStack(spacing: 12) {
+                Text("No Registries Yet")
+                    .font(.system(size: 32, weight: .regular, design: .serif))
+                    .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                
+                Text("Create collections for weddings,\ngifting, housewarmings, and more.")
+                    .font(.system(size: 16))
+                    .foregroundColor(.gray)
+                    .multilineTextAlignment(.center)
+                    .lineSpacing(4)
+            }
+            
+            Button {
+                showCreateSheet = true
+            } label: {
+                HStack(spacing: 8) {
+                    Image(systemName: "plus")
+                    Text("Create New Registry")
+                }
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundColor(.white)
+                .padding(.horizontal, 32)
+                .padding(.vertical, 16)
+                .background(Color(red: 0.46, green: 0.50, blue: 0.44))
+                .clipShape(Capsule())
+            }
+            .padding(.top, 8)
+            
+            Spacer()
             Spacer()
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.horizontal, 24)
     }
 
@@ -217,7 +248,7 @@ private extension RegistryView {
                     ForEach(viewModel.registries) { registry in
                         Button {
                             registryRepo.activeRegistryId = registry.id
-                            showDetailSheet = true
+                            showDetail = true
                         } label: {
                             registryCard(
                                 title: registry.displayName,
@@ -237,11 +268,11 @@ private extension RegistryView {
             Button {
                 showCreateSheet = true
             } label: {
-                Image(systemName: "sparkles")
+                Image(systemName: "plus")
                     .font(.title2)
                     .foregroundColor(.white)
                     .frame(width: 64, height: 64)
-                    .background(Color(red: 0.91, green: 0.27, blue: 0.38))
+                    .background(Color(red: 0.46, green: 0.50, blue: 0.44))
                     .clipShape(Circle())
             }
             .padding()
