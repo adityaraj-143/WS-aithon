@@ -13,339 +13,401 @@ struct RegistryPlanResultView: View {
     let canAddToRegistry: Bool
     let onAddAll: () -> Void
     let onAddItem: (ProductItem) -> Void
+    let planningContext: RegistryPlanningContext?
 
+    @EnvironmentObject var registryRepo: RegistryRepository
+    @EnvironmentObject var cartRepo: CartRepository
+    @EnvironmentObject var tabBarVM: WSTabBarViewModel
+    @State private var showSelectedItems = false
+    
     private var plan: RegistryPlan { response.registryPlan }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 16) {
-                budgetCard
+        ZStack(alignment: .bottom) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 32) {
+                    heroSection
 
-                if !plan.missingEssentials.isEmpty {
-                    missingEssentialsCard
-                }
+                    statsGrid
 
-                resultSection(
-                    title: "Curated Kit",
-                    subtitle: "The planner-selected set that covers the event essentials first.",
-                    products: plan.items,
-                    emptyMessage: "The planner could not build a complete kit for this prompt.",
-                    addButtonLabel: "Add curated kit item"
-                )
-
-                resultSection(
-                    title: "Browseable Matches",
-                    subtitle: "Relevant products from semantic search so you can explore beyond the final kit.",
-                    products: response.browseProducts,
-                    emptyMessage: "No browseable semantic matches were returned.",
-                    addButtonLabel: "Add browse result"
-                )
-
-                Spacer(minLength: 24)
-            }
-            .padding(.top, 16)
-        }
-        .background(Color(.systemGray6).ignoresSafeArea())
-    }
-
-    // MARK: - Budget Card
-
-    private var budgetCard: some View {
-        VStack(spacing: 0) {
-
-            // Header gradient band
-            LinearGradient(
-                colors: [Color(hex: "1a1a2e"), Color(hex: "16213e")],
-                startPoint: .leading,
-                endPoint: .trailing
-            )
-            .frame(height: 4)
-
-            VStack(spacing: 16) {
-                HStack {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Registry Plan")
-                            .font(.title3)
-                            .fontWeight(.bold)
-                        Text("\(plan.items.count) items curated for you")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
+                    if !plan.missingEssentials.isEmpty {
+                        missingEssentialsSection
                     }
-                    Spacer()
-                    Image(systemName: "sparkles")
-                        .font(.title2)
-                        .foregroundColor(Color(hex: "e94560"))
+
+                    resultSection(
+                        title: "Curated Collection",
+                        products: plan.items,
+                        emptyMessage: "The planner could not build a complete kit for this prompt."
+                    )
+
+                    resultSection(
+                        title: "Explore More",
+                        products: response.browseProducts,
+                        emptyMessage: "No browseable semantic matches were returned."
+                    )
+
+                    Spacer(minLength: 120) // Extra space for the floating bar
                 }
-
-                Divider()
-
-                HStack(spacing: 0) {
-                    budgetStat(
-                        label: "Budget",
-                        value: plan.budget == .infinity ? "Unlimited" : String(format: "$%.0f", plan.budget),
-                        color: .primary
-                    )
-                    Divider().frame(height: 40)
-                    budgetStat(
-                        label: "Total",
-                        value: String(format: "$%.2f", plan.totalCost),
-                        color: plan.isWithinBudget ? Color(hex: "06d6a0") : .red
-                    )
-                    Divider().frame(height: 40)
-                    budgetStat(
-                        label: "Remaining",
-                        value: plan.budget == .infinity ? "—" : String(format: "$%.2f", plan.remainingBudget),
-                        color: .secondary
-                    )
-                }
-
-                HStack(spacing: 0) {
-                    budgetStat(
-                        label: "Coverage",
-                        value: "\(Int((plan.coverageScore * 100).rounded()))%",
-                        color: plan.coverageScore >= 1 ? Color(hex: "06d6a0") : Color(hex: "ffd166")
-                    )
-                    Divider().frame(height: 40)
-                    budgetStat(
-                        label: "Essentials",
-                        value: String(format: "$%.2f", plan.budgetBreakdown.essentialsCost),
-                        color: .primary
-                    )
-                    Divider().frame(height: 40)
-                    budgetStat(
-                        label: "Optional",
-                        value: String(format: "$%.2f", plan.budgetBreakdown.optionalCost),
-                        color: .secondary
-                    )
-                }
-
-                detailPills
-
-                if !canAddToRegistry {
-                    Text("Create a registry first to add planner results.")
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-
-                Button(action: onAddAll) {
-                    Label("Add All to Registry", systemImage: "plus.circle.fill")
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
-                        .background(Color(hex: "e94560"))
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                }
-                .disabled(!canAddToRegistry || plan.items.isEmpty)
-                .opacity((!canAddToRegistry || plan.items.isEmpty) ? 0.55 : 1)
+                .padding(.top, 24)
             }
-            .padding(16)
+            
+            bottomActionBar
         }
-        .background(Color(.systemBackground))
-        .cornerRadius(16)
-        .shadow(color: Color(.systemGray3).opacity(0.4), radius: 8, x: 0, y: 4)
-        .padding(.horizontal, 16)
+        .background(Color(hex: "F9F8F6").ignoresSafeArea())
     }
 
-    private func budgetStat(label: String, value: String, color: Color) -> some View {
-        VStack(spacing: 4) {
-            Text(value)
-                .font(.headline)
-                .foregroundColor(color)
+    // MARK: - Hero Section
+
+    private var heroSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text(planningContext?.registryName ?? "Registry")
+                .font(.system(size: 36, weight: .regular, design: .serif))
+                .foregroundColor(.primary)
+
+            Text("Planning your \(planningContext?.event.title.lowercased() ?? "event") registry for intimate gatherings and timeless rituals.")
+                .font(.system(size: 14))
+                .foregroundColor(.secondary)
+                .lineSpacing(4)
+
+            HStack(spacing: 8) {
+                let eventType = planningContext?.event.title.uppercased() ?? ""
+                let hints = response.intent.styleHints.map { $0.uppercased() }
+                let allHints = ([eventType] + hints).filter { !$0.isEmpty }
+                
+                Text(allHints.joined(separator: "  ·  "))
+                    .font(.system(size: 10, weight: .bold))
+                    .kerning(1.0)
+                    .foregroundColor(Color(red: 0.46, green: 0.50, blue: 0.44))
+            }
+        }
+        .padding(.horizontal, 24)
+    }
+
+    // MARK: - Stats Grid
+
+    private var statsGrid: some View {
+        VStack(spacing: 24) {
+            HStack(spacing: 0) {
+                statItem(label: "BUDGET", value: plan.budget == .infinity ? "—" : String(format: "$%.0f", plan.budget))
+                statItem(label: "TOTAL", value: String(format: "$%.0f", plan.totalCost))
+                statItem(label: "REMAINING", value: plan.budget == .infinity ? "—" : String(format: "$%.0f", plan.remainingBudget))
+            }
+            HStack(spacing: 0) {
+                statItem(label: "COVERAGE", value: "\(Int((plan.coverageScore * 100).rounded()))%")
+                statItem(label: "ESSENTIALS", value: String(format: "%.0f", plan.budgetBreakdown.essentialsCost / 50))
+                statItem(label: "OPTIONAL", value: String(format: "%.0f", plan.budgetBreakdown.optionalCost / 50))
+            }
+        }
+        .padding(.vertical, 24)
+        .padding(.horizontal, 16)
+        .background(Color.white)
+        .cornerRadius(24)
+        .padding(.horizontal, 24)
+    }
+
+    private func statItem(label: String, value: String) -> some View {
+        VStack(alignment: .center, spacing: 8) {
             Text(label)
-                .font(.caption)
+                .font(.system(size: 10, weight: .bold))
+                .kerning(1)
                 .foregroundColor(.secondary)
+            Text(value)
+                .font(.system(size: 24, weight: .light, design: .serif))
+                .foregroundColor(.primary)
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, alignment: .center)
     }
 
-    private var detailPills: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                if let eventType = response.intent.eventType {
-                    infoPill("Event: \(eventType.capitalized)")
-                }
+    // MARK: - Missing Essentials
 
-                if response.intent.hasBudget {
-                    infoPill("Budget: \(response.intent.budgetDisplay)")
-                }
-
-                ForEach(response.intent.styleHints, id: \.self) { style in
-                    infoPill(style.capitalized)
-                }
-
-                if !response.intent.ownedKeywords.isEmpty {
-                    infoPill("Owns: \(response.intent.ownedKeywords.joined(separator: ", "))")
-                }
-
-                if !response.intent.excludedKeywords.isEmpty {
-                    infoPill("Excludes: \(response.intent.excludedKeywords.joined(separator: ", "))")
-                }
+    private var missingEssentialsSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 6) {
+                Image(systemName: "triangle")
+                    .font(.system(size: 10, weight: .bold))
+                Text("MISSING ESSENTIALS (\(plan.missingEssentials.count))")
+                    .font(.system(size: 10, weight: .bold))
+                    .kerning(1)
             }
-        }
-    }
-
-    private func infoPill(_ text: String) -> some View {
-        Text(text)
-            .font(.caption)
             .foregroundColor(.secondary)
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
-            .background(Color(.systemGray6))
-            .cornerRadius(999)
-    }
 
-    private var missingEssentialsCard: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Label("Missing essentials", systemImage: "exclamationmark.circle")
-                .font(.headline)
-                .foregroundColor(Color(hex: "e94560"))
-
-            Text("These slots could not be covered within the current prompt and budget.")
-                .font(.footnote)
-                .foregroundColor(.secondary)
-
-            HStack(spacing: 8) {
-                ForEach(plan.missingEssentials, id: \.self) { slot in
-                    Text(slot.capitalized)
-                        .font(.caption)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 6)
-                        .background(Color(hex: "e94560").opacity(0.12))
-                        .foregroundColor(Color(hex: "e94560"))
-                        .cornerRadius(999)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(plan.missingEssentials, id: \.self) { slot in
+                        Text(slot.uppercased())
+                            .font(.system(size: 10, weight: .bold))
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .background(Color(.systemGray5).opacity(0.3))
+                            .cornerRadius(4)
+                    }
                 }
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(16)
-        .background(Color(.systemBackground))
-        .cornerRadius(16)
-        .shadow(color: Color(.systemGray3).opacity(0.25), radius: 8, x: 0, y: 4)
-        .padding(.horizontal, 16)
+        .padding(.horizontal, 24)
     }
+
+    // MARK: - Results Section
 
     private func resultSection(
         title: String,
-        subtitle: String,
         products: [ScoredProduct],
-        emptyMessage: String,
-        addButtonLabel: String
+        emptyMessage: String
     ) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .font(.headline)
-                Text(subtitle)
-                    .font(.footnote)
-                    .foregroundColor(.secondary)
-            }
+        VStack(alignment: .leading, spacing: 20) {
+            Text(title)
+                .font(.system(size: 28, weight: .bold, design: .serif))
+                .padding(.horizontal, 24)
 
             if products.isEmpty {
                 Text(emptyMessage)
-                    .font(.footnote)
+                    .font(.system(size: 14))
                     .foregroundColor(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(16)
-                    .background(Color(.systemBackground))
-                    .cornerRadius(14)
+                    .padding(.horizontal, 24)
             } else {
-                VStack(spacing: 12) {
+                LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 24) {
                     ForEach(products) { scored in
-                        PlannerProductRow(
+                        PlannerProductCard(
                             scored: scored,
-                            canAddToRegistry: canAddToRegistry,
-                            addButtonLabel: addButtonLabel,
+                            isSelected: isProductInRegistry(scored.product),
+                            showTickByDefault: title.contains("Curated"),
                             onAdd: { onAddItem(scored.product) }
                         )
                     }
                 }
+                .padding(.horizontal, 24)
             }
         }
-        .padding(.horizontal, 16)
+    }
+
+    private func isProductInRegistry(_ product: ProductItem) -> Bool {
+        return registryRepo.currentRegistry?.items.contains(where: { $0.id == product.id }) ?? false
+    }
+
+    // MARK: - Bottom Action Bar
+
+    private var bottomActionBar: some View {
+        HStack {
+            let curatedCount = plan.items.count
+            let browseSelectedCount = response.browseProducts.filter { isProductInRegistry($0.product) }.count
+            let totalSelected = curatedCount + browseSelectedCount
+            
+            Button {
+                showSelectedItems = true
+            } label: {
+                HStack(spacing: 4) {
+                    Text("\(totalSelected) Items Selected")
+                        .font(.system(size: 14, weight: .bold))
+                    Image(systemName: "chevron.up")
+                        .font(.system(size: 10, weight: .bold))
+                }
+                .foregroundColor(.primary)
+            }
+            
+            Spacer()
+            
+            Button(action: onAddAll) {
+                Text("Add to Registry")
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 12)
+                    .background(Color(hex: "757D6B"))
+                    .clipShape(Capsule())
+            }
+        }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 16)
+        .background(Color.white)
+        .clipShape(Capsule())
+        .shadow(color: Color.black.opacity(0.1), radius: 15, x: 0, y: 10)
+        .padding(.horizontal, 24)
+        .padding(.bottom, 30)
+        .sheet(isPresented: $showSelectedItems) {
+            SelectedItemsSheet(
+                plan: plan,
+                browseProducts: response.browseProducts,
+                isProductInRegistry: isProductInRegistry
+            )
+        }
     }
 }
 
-// MARK: - Individual product row
+// MARK: - Product Card
 
-private struct PlannerProductRow: View {
+private struct PlannerProductCard: View {
     let scored: ScoredProduct
-    let canAddToRegistry: Bool
-    let addButtonLabel: String
+    let isSelected: Bool
+    let showTickByDefault: Bool
     let onAdd: () -> Void
 
     var body: some View {
-        HStack(spacing: 12) {
-
-            // Thumbnail
-            AsyncImage(url: scored.product.imageURL) { phase in
-                if let img = phase.image {
-                    img.resizable().scaledToFill()
-                } else if phase.error != nil {
-                    Color(.systemGray5)
-                        .overlay(Image(systemName: "photo").foregroundColor(.gray))
-                } else {
-                    Color(.systemGray5).overlay(ProgressView())
+        VStack(alignment: .leading, spacing: 12) {
+            ZStack(alignment: .topLeading) {
+                ZStack(alignment: .bottomTrailing) {
+                    // Image
+                    AsyncImage(url: scored.product.imageURL) { phase in
+                        if let img = phase.image {
+                            img.resizable().scaledToFill()
+                        } else {
+                            Color(.systemGray5)
+                        }
+                    }
+                    .frame(height: 180)
+                    .clipShape(RoundedRectangle(cornerRadius: 24))
+                    .clipped()
+                    
+                    // Selection button
+                    Button(action: onAdd) {
+                        ZStack {
+                            Circle()
+                                .fill((isSelected || showTickByDefault) ? Color(hex: "757D6B") : Color.white)
+                                .frame(width: 36, height: 36)
+                                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+                            
+                            if isSelected || showTickByDefault {
+                                Image(systemName: "checkmark")
+                                    .font(.system(size: 14, weight: .bold))
+                                    .foregroundColor(.white)
+                            } else {
+                                Image(systemName: "plus")
+                                    .font(.system(size: 14, weight: .bold))
+                                    .foregroundColor(Color(hex: "757D6B"))
+                            }
+                        }
+                    }
+                    .padding(12)
                 }
+                
+                // Match badge
+                Text("\(scored.matchPercent)% MATCH")
+                    .font(.system(size: 9, weight: .bold))
+                    .kerning(0.5)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(Color.white.opacity(0.9))
+                    .clipShape(Capsule())
+                    .padding(12)
             }
-            .frame(width: 72, height: 72)
-            .cornerRadius(10)
-            .clipped()
 
-            // Info
             VStack(alignment: .leading, spacing: 4) {
+                Text((scored.product.brand ?? "ESSENTIALS").uppercased())
+                    .font(.system(size: 9, weight: .bold))
+                    .kerning(1)
+                    .foregroundColor(.secondary)
+                
                 Text(scored.product.title)
-                    .font(.subheadline)
-                    .fontWeight(.medium)
+                    .font(.system(size: 14, weight: .medium))
                     .lineLimit(2)
+                    .foregroundColor(.primary)
 
                 if let price = scored.product.price {
                     Text(price.formatted(.currency(code: "USD")))
-                        .font(.footnote)
+                        .font(.system(size: 14))
+                        .foregroundColor(.secondary)
+                }
+            }
+            .padding(.horizontal, 4)
+        }
+    }
+}
+
+// MARK: - Selected Items Sheet
+
+struct SelectedItemsSheet: View {
+    @Environment(\.dismiss) var dismiss
+    let plan: RegistryPlan
+    let browseProducts: [ScoredProduct]
+    let isProductInRegistry: (ProductItem) -> Bool
+    
+    var selectedBrowseProducts: [ScoredProduct] {
+        browseProducts.filter { isProductInRegistry($0.product) }
+    }
+    
+    var body: some View {
+        NavigationView {
+            ZStack {
+                Color(hex: "F9F8F6").ignoresSafeArea()
+                
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 24) {
+                        Text("Selected Items")
+                            .font(.system(size: 32, weight: .regular, design: .serif))
+                            .padding(.top, 24)
+                        
+                        VStack(spacing: 0) {
+                            // Curated Items
+                            ForEach(plan.items) { scored in
+                                SimpleProductRow(scored: scored)
+                                Divider().padding(.vertical, 8)
+                            }
+                            
+                            // Selected Browse Products
+                            ForEach(selectedBrowseProducts) { scored in
+                                SimpleProductRow(scored: scored)
+                                Divider().padding(.vertical, 8)
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 24)
+                }
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") { dismiss() }
+                        .fontWeight(.bold)
                         .foregroundColor(.primary)
                 }
-
-                // Match badge
-                HStack(spacing: 4) {
-                    Image(systemName: "waveform.path.ecg")
-                        .font(.caption2)
-                    Text("\(scored.matchPercent)% match")
-                        .font(.caption2)
-                        .fontWeight(.medium)
-                }
-                .padding(.horizontal, 8)
-                .padding(.vertical, 3)
-                .background(matchColor(for: scored.score).opacity(0.15))
-                .foregroundColor(matchColor(for: scored.score))
-                .cornerRadius(6)
             }
-
-            Spacer()
-
-            // Add button
-            Button(action: onAdd) {
-                Image(systemName: "plus.circle.fill")
-                    .font(.title2)
-                    .foregroundColor(Color(hex: "e94560"))
-            }
-            .disabled(!canAddToRegistry)
-            .accessibilityLabel(addButtonLabel)
-            .opacity(canAddToRegistry ? 1 : 0.45)
         }
-        .padding(12)
-        .background(Color(.systemBackground))
-        .cornerRadius(14)
-        .shadow(color: Color(.systemGray4).opacity(0.35), radius: 4, x: 0, y: 2)
     }
+}
 
-    private func matchColor(for score: Double) -> Color {
-        switch score {
-        case 0.7...: return Color(hex: "06d6a0")   // high — green
-        case 0.5...: return Color(hex: "ffd166")   // medium — amber
-        default:     return Color(hex: "e94560")   // low — red-pink
+struct SimpleProductRow: View {
+    let scored: ScoredProduct
+    
+    var body: some View {
+        HStack(alignment: .top, spacing: 16) {
+            // Image
+            AsyncImage(url: scored.product.imageURL) { phase in
+                if let img = phase.image {
+                    img.resizable().scaledToFill()
+                } else {
+                    Color(.systemGray5)
+                }
+            }
+            .frame(width: 80, height: 80)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            
+            // Details
+            VStack(alignment: .leading, spacing: 4) {
+                Text((scored.product.brand ?? "ESSENTIALS").uppercased())
+                    .font(.system(size: 10, weight: .bold))
+                    .kerning(1)
+                    .foregroundColor(.secondary)
+                
+                Text(scored.product.title)
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(.primary)
+                    .lineLimit(2)
+                
+                if let price = scored.product.price {
+                    Text("$\(price, specifier: "%.2f")")
+                        .font(.system(size: 14))
+                        .foregroundColor(Color(red: 0.54, green: 0.40, blue: 0.31))
+                }
+            }
+            
+            Spacer()
+            
+            // Match badge
+            Text("\(scored.matchPercent)%")
+                .font(.system(size: 10, weight: .bold))
+                .foregroundColor(.secondary)
+                .padding(.top, 4)
         }
+        .padding(.vertical, 8)
     }
 }
 

@@ -22,7 +22,7 @@ struct RegistryPlannerView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color(.systemGray6).ignoresSafeArea()
+                Color(hex: "F9F8F6").ignoresSafeArea()
 
                 VStack(spacing: 0) {
                     promptBar
@@ -32,17 +32,19 @@ struct RegistryPlannerView: View {
             .onTapGesture {
                 hideKeyboard()
             }
-            .navigationTitle(planningContext == nil ? "AI Registry Planner" : "AI Registry Plan")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Close") { closePlanner() }
+                ToolbarItem(placement: .principal) {
+                    Text("AI REGISTRY STUDIO")
+                        .font(.system(size: 12, weight: .bold))
+                        .kerning(2)
                         .foregroundColor(.primary)
                 }
-                if case .results = viewModel.state {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button("Clear") { viewModel.clear() }
-                            .foregroundColor(Color(hex: "e94560"))
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button { closePlanner() } label: {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(.primary)
                     }
                 }
             }
@@ -62,109 +64,37 @@ struct RegistryPlannerView: View {
 
     private var promptBar: some View {
         VStack(spacing: 12) {
-            if let planningContext {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(planningContext.registryName)
-                        .font(.headline)
-                    Text("Planning for your \(planningContext.event.title.lowercased()) registry")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
+            HStack(spacing: 12) {
+                Image(systemName: "sparkles")
+                    .foregroundColor(Color(hex: "757D6B"))
+                    .font(.system(size: 14))
 
-            if case .indexing = viewModel.state {
-                HStack(spacing: 6) {
-                    ProgressView().scaleEffect(0.8)
-                    Text("Analysing product catalogue…")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(Color(.systemGray5))
-                .cornerRadius(20)
-            } else if viewModel.indexReady {
-                HStack(spacing: 6) {
-                    Image(systemName: "checkmark.seal.fill")
-                        .font(.caption)
-                        .foregroundColor(Color(hex: "06d6a0"))
-                    Text("Catalogue ready · on-device AI")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(Color(hex: "06d6a0").opacity(0.12))
-                .cornerRadius(20)
-            }
-
-            if let intent = viewModel.parsedIntent, intent.hasBudget {
-                HStack(spacing: 6) {
-                    Image(systemName: "dollarsign.circle.fill")
-                        .font(.caption)
-                        .foregroundColor(Color(hex: "ffd166"))
-                    Text("Budget detected: \(intent.budgetDisplay)")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-            }
-
-            HStack(spacing: 10) {
-                HStack(spacing: 8) {
-                    Image(systemName: "sparkles")
-                        .foregroundColor(Color(hex: "e94560"))
-                        .font(.subheadline)
-
-                    TextField(
-                        "e.g. cozy kitchen, natural wood, under $400",
-                        text: $viewModel.promptText,
-                        axis: .vertical
-                    )
-                    .font(.subheadline)
-                    .lineLimit(1...4)
-                    .focused($isPromptFocused)
-                    .submitLabel(.search)
-                    .onSubmit { runSearch() }
-
-                    if !viewModel.promptText.isEmpty {
-                        Button {
-                            viewModel.promptText = ""
-                        } label: {
-                            Image(systemName: "xmark.circle.fill")
-                                .foregroundColor(Color(.systemGray3))
-                        }
-                    }
-                }
-                .padding(12)
-                .background(Color(.systemBackground))
-                .cornerRadius(14)
-                .shadow(color: Color(.systemGray4).opacity(0.3), radius: 4, x: 0, y: 2)
+                TextField(
+                    "Minimal and cozy wedding regi...",
+                    text: $viewModel.promptText,
+                    axis: .vertical
+                )
+                .font(.system(size: 15, weight: .medium))
+                .lineLimit(1...4)
+                .focused($isPromptFocused)
+                .submitLabel(.search)
+                .onSubmit { runSearch() }
 
                 Button(action: runSearch) {
-                    Group {
-                        if case .searching = viewModel.state {
-                            ProgressView().tint(.white).scaleEffect(0.9)
-                        } else {
-                            Image(systemName: "arrow.up.circle.fill")
-                                .font(.title2)
-                        }
-                    }
-                    .frame(width: 44, height: 44)
-                    .background(
-                        viewModel.promptText.trimmingCharacters(in: .whitespaces).isEmpty
-                            ? Color(.systemGray4)
-                            : Color(hex: "e94560")
-                    )
-                    .foregroundColor(.white)
-                    .clipShape(Circle())
+                    Image(systemName: "arrow.counterclockwise")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(.primary)
                 }
                 .disabled(viewModel.promptText.trimmingCharacters(in: .whitespaces).isEmpty || viewModel.state.isLoading)
             }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            .background(Color.white)
+            .clipShape(Capsule())
+            .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
         }
         .padding(.horizontal, 16)
-        .padding(.vertical, 14)
-        .background(Color(.systemGray6))
+        .padding(.vertical, 16)
     }
 
     @ViewBuilder
@@ -181,7 +111,8 @@ struct RegistryPlannerView: View {
                 response: response,
                 canAddToRegistry: registryRepo.isActiveRegistry,
                 onAddAll: { addAllToRegistry(plan: response.registryPlan) },
-                onAddItem: { registryRepo.addProduct($0) }
+                onAddItem: { registryRepo.addProduct($0) },
+                planningContext: planningContext
             )
         case .noResults:
             noResultsView
@@ -191,13 +122,12 @@ struct RegistryPlannerView: View {
     }
 
     private var idlePlaceholder: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: 16) {
             Spacer()
             Text("Describe Your Perfect Registry")
-                .font(.title3)
-                .fontWeight(.bold)
+                .font(.system(size: 24, weight: .bold, design: .serif))
             Text("Tell us your style, event, and budget.")
-                .font(.subheadline)
+                .font(.system(size: 14))
                 .foregroundColor(.secondary)
             Spacer()
         }
