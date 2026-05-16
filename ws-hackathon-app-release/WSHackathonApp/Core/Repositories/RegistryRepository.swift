@@ -131,6 +131,44 @@ final class RegistryRepository: ObservableObject {
         syncRegistry(registry)
     }
     
+    // MARK: - Voting
+    
+    func upvoteItem(_ productId: String) {
+        guard var registry = currentRegistry else { return }
+        guard let index = registry.items.firstIndex(where: { $0.id == productId }) else { return }
+        
+        let userId = SocketService.shared.currentUserId
+        
+        // Toggle logic: If already upvoted, remove it. Else add upvote, remove downvote.
+        if registry.items[index].upvoters.contains(userId) {
+            registry.items[index].upvoters.remove(userId)
+        } else {
+            registry.items[index].upvoters.insert(userId)
+            registry.items[index].downvoters.remove(userId)
+        }
+        
+        currentRegistry = registry
+        syncRegistry(registry)
+    }
+    
+    func downvoteItem(_ productId: String) {
+        guard var registry = currentRegistry else { return }
+        guard let index = registry.items.firstIndex(where: { $0.id == productId }) else { return }
+        
+        let userId = SocketService.shared.currentUserId
+        
+        // Toggle logic: If already downvoted, remove it. Else add downvote, remove upvote.
+        if registry.items[index].downvoters.contains(userId) {
+            registry.items[index].downvoters.remove(userId)
+        } else {
+            registry.items[index].downvoters.insert(userId)
+            registry.items[index].upvoters.remove(userId)
+        }
+        
+        currentRegistry = registry
+        syncRegistry(registry)
+    }
+    
     // MARK: - Sync Helpers
     
     private func syncRegistry(_ registry: Registry) {
@@ -141,7 +179,9 @@ final class RegistryRepository: ObservableObject {
                 "title": item.title,
                 "price": item.price,
                 "imageUrl": item.imageUrl ?? "",
-                "quantity": item.quantity
+                "quantity": item.quantity,
+                "upvoters": Array(item.upvoters),
+                "downvoters": Array(item.downvoters)
             ]
         }
         
@@ -171,12 +211,17 @@ final class RegistryRepository: ObservableObject {
                           let price = itemDict["price"] as? Double,
                           let qty = itemDict["quantity"] as? Int else { return nil }
                     
+                    let upvotersArray = itemDict["upvoters"] as? [String] ?? []
+                    let downvotersArray = itemDict["downvoters"] as? [String] ?? []
+                    
                     return RegistryItem(
                         id: itemId,
                         title: title,
                         price: price,
                         imageUrl: itemDict["imageUrl"] as? String,
-                        quantity: qty
+                        quantity: qty,
+                        upvoters: Set(upvotersArray),
+                        downvoters: Set(downvotersArray)
                     )
                 }
             }

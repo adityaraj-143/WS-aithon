@@ -45,6 +45,22 @@ final class RegistryItemRowViewModel: ObservableObject {
         return URL(string: AppConstants.API.imageBasePath + url)
     }
     
+    var upvotersCount: Int {
+        registryRepo.currentRegistry?.items.first(where: { $0.id == item.id })?.upvoters.count ?? 0
+    }
+    
+    var downvotersCount: Int {
+        registryRepo.currentRegistry?.items.first(where: { $0.id == item.id })?.downvoters.count ?? 0
+    }
+    
+    var isUpvotedByMe: Bool {
+        registryRepo.currentRegistry?.items.first(where: { $0.id == item.id })?.upvoters.contains(SocketService.shared.currentUserId) ?? false
+    }
+    
+    var isDownvotedByMe: Bool {
+        registryRepo.currentRegistry?.items.first(where: { $0.id == item.id })?.downvoters.contains(SocketService.shared.currentUserId) ?? false
+    }
+    
     // MARK: - Actions
     
     func increaseQty() {
@@ -56,6 +72,14 @@ final class RegistryItemRowViewModel: ObservableObject {
     }
     
     func removeItem() {
-       // registryRepo.removeItem(item.id)
+        registryRepo.removeItem(item.id)
+    }
+    
+    func upvoteItem() {
+        registryRepo.upvoteItem(item.id)
+    }
+    
+    func downvoteItem() {
+        registryRepo.downvoteItem(item.id)
     }
 }

@@ -9,6 +9,7 @@ import SwiftUI
 struct RegistryItemRow: View {
     
     @StateObject private var viewModel: RegistryItemRowViewModel
+    @EnvironmentObject var registryRepo: RegistryRepository
     
     init(viewModel: RegistryItemRowViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -45,6 +46,28 @@ struct RegistryItemRow: View {
                 Text(viewModel.priceText)
                     .font(.system(size: 14))
                     .foregroundColor(Color(red: 0.54, green: 0.40, blue: 0.31)) // Brownish price
+                
+                // Voting Actions
+                HStack(spacing: 12) {
+                    Button(action: viewModel.upvoteItem) {
+                        HStack(spacing: 4) {
+                            Image(systemName: viewModel.isUpvotedByMe ? "hand.thumbsup.fill" : "hand.thumbsup")
+                            Text("\(viewModel.upvotersCount)")
+                                .font(.system(size: 12))
+                        }
+                    }
+                    .foregroundColor(viewModel.isUpvotedByMe ? .blue : .gray)
+                    
+                    Button(action: viewModel.downvoteItem) {
+                        HStack(spacing: 4) {
+                            Image(systemName: viewModel.isDownvotedByMe ? "hand.thumbsdown.fill" : "hand.thumbsdown")
+                            Text("\(viewModel.downvotersCount)")
+                                .font(.system(size: 12))
+                        }
+                    }
+                    .foregroundColor(viewModel.isDownvotedByMe ? .red : .gray)
+                }
+                .padding(.top, 4)
             }
             .padding(.top, 4)
             
