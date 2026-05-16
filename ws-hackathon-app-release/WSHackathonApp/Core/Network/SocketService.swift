@@ -103,12 +103,20 @@ class SocketService: ObservableObject {
         }
         
         // Requirement 4 & 6: Listen for receive_invite
-        socket.on(SocketEvents.receiveInvite) { [weak self] data in
+        socket.on(SocketEvents.receiveInvite) { [weak self] data, _ in
+            print("📬 receive_invite raw data: \(data)")
             guard let self = self,
-                  let dict = data.first as? [String: Any],
-                  let fromId = dict["fromUserId"] as? String,
+                  let dict = data.first as? [String: Any] else {
+                print("❌ Failed to parse receive_invite data as [String: Any]")
+                return
+            }
+            
+            guard let fromId = dict["fromUserId"] as? String,
                   let fromName = dict["fromDisplayName"] as? String,
-                  let link = dict["inviteLink"] as? String else { return }
+                  let link = dict["inviteLink"] as? String else {
+                print("❌ Missing required fields in receive_invite: \(dict)")
+                return
+            }
             
             let regId = dict["registryId"] as? String
             let regName = dict["registryName"] as? String
@@ -124,10 +132,14 @@ class SocketService: ObservableObject {
             DispatchQueue.main.async {
                 self.lastReceivedInvite = invite
                 if regId != nil {
-                    // Avoid duplicates
                     if !self.pendingRegistryInvites.contains(invite) {
                         self.pendingRegistryInvites.append(invite)
+                        print("✅ Added invite to pending list! Total pending: \(self.pendingRegistryInvites.count)")
+                    } else {
+                        print("⚠️ Invite already in pending list.")
                     }
+                } else {
+                    print("❌ regId was nil, invite ignored by UI.")
                 }
             }
         }
@@ -208,10 +220,14 @@ class SocketService: ObservableObject {
      * Finds a user by display name and sends an invite
      */
     func sendInvite(toDisplayName name: String, registry: Registry? = nil) -> Bool {
-        if let user = activeUsers.first(where: { $0.displayName.lowercased() == name.lowercased() }) {
+        let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        print("🔍 Attempting to send invite to: '\(trimmedName)'")
+        if let user = activeUsers.first(where: { $0.displayName.lowercased() == trimmedName.lowercased() }) {
             sendInvite(to: user.userId, registry: registry)
+            print("✅ Successfully dispatched send_invite to \(user.userId)")
             return true
         }
+        print("❌ Could not find active user with name '\(trimmedName)'. Current active users: \(activeUsers.map { $0.displayName })")
         return false
     }
     
