@@ -138,12 +138,24 @@ struct RegistryPlanBuilder {
 
     private func adjustedScore(for candidate: ScoredProduct, slot: String, state: RegistryConversationState) -> Double {
         let slotBoost = matches(slot: slot, product: candidate.product) ? 0.25 : 0
-        let eventBoost = state.eventType.map {
-            candidate.product.eventTags.map(normalizeToken).contains(normalizeToken($0)) ? 0.15 : 0
+        let eventBoost = state.eventType.map { event in
+            let searchable = [
+                candidate.product.title,
+                candidate.product.collection ?? "",
+                candidate.product.shortDescription ?? "",
+                candidate.product.semanticDescription ?? ""
+            ] + candidate.product.eventTags + candidate.product.essentialForEvents
+            return searchable.contains { normalizeToken($0).contains(normalizeToken(event)) } ? 0.15 : 0
         } ?? 0
         let styleBoost = state.styleHints.contains { style in
-            candidate.product.styleTags.map(normalizeToken).contains(normalizeToken(style)) ||
-            candidate.product.settingTags.map(normalizeToken).contains(normalizeToken(style))
+            let searchable = [
+                candidate.product.title,
+                candidate.product.collection ?? "",
+                candidate.product.material ?? "",
+                candidate.product.shortDescription ?? "",
+                candidate.product.semanticDescription ?? ""
+            ] + candidate.product.styleTags
+            return searchable.contains { normalizeToken($0).contains(normalizeToken(style)) }
         } ? 0.1 : 0
 
         let price = candidate.product.price ?? 0
@@ -160,18 +172,40 @@ struct RegistryPlanBuilder {
 
     private func matches(slot: String, product: ProductItem) -> Bool {
         let normalizedSlot = normalizeToken(slot)
-        let values = [
+        var values = [
             product.title,
-            product.description ?? "",
+            product.shortDescription ?? "",
+            product.semanticDescription ?? "",
+            product.collection ?? "",
+            product.brand ?? "",
+            product.material ?? "",
+            product.productType ?? "",
             product.color ?? ""
-        ] + product.slotHints + product.eventTags + product.styleTags + product.settingTags
+        ]
+        values.append(contentsOf: product.slotHints)
+        values.append(contentsOf: product.settingTags)
+        values.append(contentsOf: product.eventTags)
+        values.append(contentsOf: product.styleTags)
 
         return values.contains { normalizeToken($0).contains(normalizedSlot) }
     }
 
     private func matches(keyword: String, product: ProductItem) -> Bool {
         let normalizedKeyword = normalizeToken(keyword)
-        let searchable = [product.title, product.description ?? ""] + product.slotHints + product.eventTags + product.styleTags
+        var searchable = [
+            product.title,
+            product.shortDescription ?? "",
+            product.semanticDescription ?? "",
+            product.collection ?? "",
+            product.brand ?? "",
+            product.material ?? "",
+            product.productType ?? ""
+        ]
+        searchable.append(contentsOf: product.slotHints)
+        searchable.append(contentsOf: product.settingTags)
+        searchable.append(contentsOf: product.eventTags)
+        searchable.append(contentsOf: product.styleTags)
+
         return searchable.contains { normalizeToken($0).contains(normalizedKeyword) }
     }
 

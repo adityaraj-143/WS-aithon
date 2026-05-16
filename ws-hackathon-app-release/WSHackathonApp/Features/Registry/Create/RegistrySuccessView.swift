@@ -32,15 +32,9 @@ struct RegistrySuccessView: View {
 
             Text(registryRepo.currentRegistry?.displayName ?? "")
                 .font(.headline)
-                .foregroundStyle(Color.wsBody)
-                .multilineTextAlignment(.center)
-
-            Spacer()
-
-            Button {
-                tabBarVM.resetRegistryFlow()
-            } label: {
-                Text("Back to Registry")
+            
+            Button("Start Browsing") {
+                tabBarVM.selectTab(.home)
             }
             .buttonStyle(WSPrimaryButtonStyle())
             .padding(.horizontal, 40)

@@ -18,32 +18,52 @@ extension ProductItem {
 
         parts.append(title)
 
-        if let description, !description.isEmpty {
-            parts.append(description)
+        if let shortDesc = shortDescription, !shortDesc.isEmpty {
+            parts.append(shortDesc)
         }
 
-        if !eventTags.isEmpty {
-            parts.append("events: \(eventTags.joined(separator: ", "))")
+        if let semanticDescription, !semanticDescription.isEmpty {
+            parts.append(semanticDescription)
         }
 
-        if !slotHints.isEmpty {
-            parts.append("slots: \(slotHints.joined(separator: ", "))")
+        if let brand = brand, !brand.isEmpty {
+            parts.append("brand: \(cleanToken(brand))")
         }
 
-        if !styleTags.isEmpty {
-            parts.append("style: \(styleTags.joined(separator: ", "))")
+        if let material = material, !material.isEmpty {
+            parts.append("material: \(cleanToken(material))")
         }
 
-        if !settingTags.isEmpty {
-            parts.append("setting: \(settingTags.joined(separator: ", "))")
+        if let type = productType, !type.isEmpty {
+            parts.append("category: \(cleanToken(type))")
         }
 
-        if !essentialForEvents.isEmpty {
-            parts.append("essential for: \(essentialForEvents.joined(separator: ", "))")
+        if let coll = collection, !coll.isEmpty {
+            parts.append("collection: \(cleanToken(coll))")
         }
 
         if let color, !color.isEmpty {
             parts.append("color: \(cleanToken(color))")
+        }
+
+        if !eventTags.isEmpty {
+            parts.append("events: \(eventTags.map(cleanToken).joined(separator: ", "))")
+        }
+
+        if !slotHints.isEmpty {
+            parts.append("use cases: \(slotHints.map(cleanToken).joined(separator: ", "))")
+        }
+
+        if !styleTags.isEmpty {
+            parts.append("style: \(styleTags.map(cleanToken).joined(separator: ", "))")
+        }
+
+        if !settingTags.isEmpty {
+            parts.append("settings: \(settingTags.map(cleanToken).joined(separator: ", "))")
+        }
+
+        if !essentialForEvents.isEmpty {
+            parts.append("essential for: \(essentialForEvents.map(cleanToken).joined(separator: ", "))")
         }
 
         if let price = price {
@@ -67,8 +87,8 @@ extension ProductItemDTO {
 
         parts.append(name)
 
-        if let description, !description.isEmpty {
-            parts.append(description)
+        if let shortName = shortName, !shortName.isEmpty {
+            parts.append(shortName)
         }
 
         if let brand = properties?.brand, !brand.isEmpty {
@@ -101,29 +121,33 @@ extension ProductItemDTO {
             parts.append("collection: \(cleanCollection)")
         }
 
-        if let eventTags, !eventTags.isEmpty {
-            parts.append("events: \(eventTags.joined(separator: ", "))")
-        }
-
-        if let slotHints, !slotHints.isEmpty {
-            parts.append("slots: \(slotHints.joined(separator: ", "))")
-        }
-
-        if let styleTags, !styleTags.isEmpty {
-            parts.append("style tags: \(styleTags.joined(separator: ", "))")
-        }
-
-        if let settingTags, !settingTags.isEmpty {
-            parts.append("setting tags: \(settingTags.joined(separator: ", "))")
-        }
-
-        if let essentialForEvents, !essentialForEvents.isEmpty {
-            parts.append("essential for: \(essentialForEvents.joined(separator: ", "))")
-        }
-
         if let regularPrice = price?.regularPrice {
             parts.append(String(format: "priced at $%.2f", regularPrice))
             parts.append("price band: \(priceBand(for: regularPrice))")
+        }
+
+        if let description, !description.isEmpty {
+            parts.append(description)
+        }
+
+        if let eventTags, !eventTags.isEmpty {
+            parts.append("events: \(eventTags.map(cleanToken).joined(separator: ", "))")
+        }
+
+        if let slotHints, !slotHints.isEmpty {
+            parts.append("use cases: \(slotHints.map(cleanToken).joined(separator: ", "))")
+        }
+
+        if let styleTags, !styleTags.isEmpty {
+            parts.append("style: \(styleTags.map(cleanToken).joined(separator: ", "))")
+        }
+
+        if let settingTags, !settingTags.isEmpty {
+            parts.append("settings: \(settingTags.map(cleanToken).joined(separator: ", "))")
+        }
+
+        if let essentialForEvents, !essentialForEvents.isEmpty {
+            parts.append("essential for: \(essentialForEvents.map(cleanToken).joined(separator: ", "))")
         }
 
         if properties?.isFood == "true" {
@@ -144,6 +168,7 @@ private func cleanToken(_ value: String) -> String {
         .replacingOccurrences(of: "]", with: "")
         .replacingOccurrences(of: "-", with: " ")
         .replacingOccurrences(of: "/", with: " ")
+        .replacingOccurrences(of: "_", with: " ")
 }
 
 private func priceBand(for price: Double) -> String {

@@ -17,7 +17,6 @@ enum HomeRoute: Hashable {
 class WSTabBarViewModel: ObservableObject {
     
     @Published var selectedTab: TabItem = .home
-    @Published var registryPath: [RegistryRoute] = []
     @Published var homePath: [HomeRoute] = []
 
     
@@ -29,16 +28,7 @@ class WSTabBarViewModel: ObservableObject {
         selectedTab = tab
     }
     
-    func goToRegistrySuccess() {
-        registryPath.append(.success)
-    }
-    
-    func resetRegistryFlow() {
-        registryPath.removeAll()
-    }
-    
     func navigateToDetail(_ product: ProductItem) {
         homePath.append(.detail(product))
     }
 }
-

@@ -2,30 +2,22 @@
 //  RegistryPlannerView.swift
 //  WSHackathonApp
 //
-//  Main entry point for the AI registry planner feature.
-//  Shown as a sheet from RegistryView when the user taps "Plan My Registry".
-//
 
 import SwiftUI
 
 struct RegistryPlannerView: View {
 
-    // MARK: - Environment
-
     @EnvironmentObject var registryRepo: RegistryRepository
-
-    // MARK: - State
-
     @StateObject private var viewModel = RegistryPlannerViewModel()
 
-    /// The raw DTOs needed to build the embedding index.
-    /// Passed in from HomeViewModel / the fetch that already happened.
     let productDTOs: [ProductItemDTO]
+    let planningContext: RegistryPlanningContext?
+    var onClose: (() -> Void)? = nil
+    var onAddAllComplete: (() -> Void)? = nil
 
     @Environment(\.dismiss) private var dismiss
     @FocusState private var isPromptFocused: Bool
-
-    // MARK: - Body
+    @State private var hasTriggeredInitialSearch = false
 
     var body: some View {
         NavigationStack {
@@ -37,11 +29,11 @@ struct RegistryPlannerView: View {
                     stateContent
                 }
             }
-            .navigationTitle("AI Registry Planner")
+            .navigationTitle(planningContext == nil ? "AI Registry Planner" : "AI Registry Plan")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Close") { dismiss() }
+                    Button("Close") { closePlanner() }
                         .foregroundColor(.primary)
                 }
                 if case .results = viewModel.state {
@@ -53,16 +45,31 @@ struct RegistryPlannerView: View {
             }
         }
         .task {
+            if let planningContext {
+                viewModel.configureInitialPrompt(planningContext.combinedPrompt)
+            }
+        }
+        .task(id: productDTOs.count) {
             viewModel.buildIndex(dtos: productDTOs)
+        }
+        .onChange(of: viewModel.indexReady) { _ in
+            triggerInitialSearchIfNeeded()
         }
     }
 
-    // MARK: - Prompt Input Bar
-
     private var promptBar: some View {
         VStack(spacing: 12) {
+            if let planningContext {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(planningContext.registryName)
+                        .font(.headline)
+                    Text("Planning for your \(planningContext.event.title.lowercased()) registry")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
 
-            // Indexing status badge
             if case .indexing = viewModel.state {
                 HStack(spacing: 6) {
                     ProgressView().scaleEffect(0.8)
@@ -89,7 +96,6 @@ struct RegistryPlannerView: View {
                 .cornerRadius(20)
             }
 
-            // Budget hint (live parsing)
             if let intent = viewModel.parsedIntent, intent.hasBudget {
                 HStack(spacing: 6) {
                     Image(systemName: "dollarsign.circle.fill")
@@ -99,10 +105,8 @@ struct RegistryPlannerView: View {
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
-                .transition(.opacity.combined(with: .scale(scale: 0.9)))
             }
 
-            // Text input + Search button
             HStack(spacing: 10) {
                 HStack(spacing: 8) {
                     Image(systemName: "sparkles")
@@ -137,9 +141,7 @@ struct RegistryPlannerView: View {
                 Button(action: runSearch) {
                     Group {
                         if case .searching = viewModel.state {
-                            ProgressView()
-                                .tint(.white)
-                                .scaleEffect(0.9)
+                            ProgressView().tint(.white).scaleEffect(0.9)
                         } else {
                             Image(systemName: "arrow.up.circle.fill")
                                 .font(.title2)
@@ -153,7 +155,6 @@ struct RegistryPlannerView: View {
                     )
                     .foregroundColor(.white)
                     .clipShape(Circle())
-                    .shadow(color: Color(hex: "e94560").opacity(0.35), radius: 6, x: 0, y: 3)
                 }
                 .disabled(viewModel.promptText.trimmingCharacters(in: .whitespaces).isEmpty || viewModel.state.isLoading)
             }
@@ -161,101 +162,49 @@ struct RegistryPlannerView: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 14)
         .background(Color(.systemGray6))
-        .animation(.spring(response: 0.3), value: viewModel.parsedIntent?.hasBudget)
     }
-
-    // MARK: - State-based Content
 
     @ViewBuilder
     private var stateContent: some View {
         switch viewModel.state {
         case .idle:
             idlePlaceholder
-
         case .indexing:
             loadingView(message: "Building on-device AI index…")
-
         case .searching:
             loadingView(message: "Finding your perfect products…")
-
-        case .results(let plan):
+        case .results(let response):
             RegistryPlanResultView(
-                plan: plan,
-                onAddAll: { addAllToRegistry(plan: plan) },
+                response: response,
+                canAddToRegistry: registryRepo.isActiveRegistry,
+                onAddAll: { addAllToRegistry(plan: response.registryPlan) },
                 onAddItem: { registryRepo.addProduct($0) }
             )
-            .transition(.opacity.combined(with: .move(edge: .bottom)))
-
         case .noResults:
             noResultsView
-
         case .error(let msg):
             errorView(message: msg)
         }
     }
 
-    // MARK: - Placeholder Views
-
     private var idlePlaceholder: some View {
         VStack(spacing: 24) {
             Spacer()
-
-            Image(systemName: "sparkles")
-                .font(.system(size: 52))
-                .foregroundStyle(
-                    LinearGradient(
-                        colors: [Color(hex: "e94560"), Color(hex: "ffd166")],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-
-            VStack(spacing: 8) {
-                Text("Describe Your Perfect Registry")
-                    .font(.title3)
-                    .fontWeight(.bold)
-                    .multilineTextAlignment(.center)
-
-                Text("Tell us your style, event, and budget.\nWe'll find the best products — entirely on your device.")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                    .multilineTextAlignment(.center)
-            }
-
-            // Suggestion chips
-            VStack(spacing: 10) {
-                suggestionChip("🍳 Modern kitchen setup under $500")
-                suggestionChip("🌿 Natural wood & ceramic cookware")
-                suggestionChip("🥂 Elegant barware, budget $300")
-            }
-
+            Text("Describe Your Perfect Registry")
+                .font(.title3)
+                .fontWeight(.bold)
+            Text("Tell us your style, event, and budget.")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
             Spacer()
         }
         .padding(.horizontal, 24)
     }
 
-    private func suggestionChip(_ text: String) -> some View {
-        Button {
-            viewModel.promptText = text
-            isPromptFocused = false
-            runSearch()
-        } label: {
-            Text(text)
-                .font(.footnote)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 8)
-                .background(Color(.systemBackground))
-                .foregroundColor(.primary)
-                .cornerRadius(20)
-                .shadow(color: Color(.systemGray4).opacity(0.3), radius: 3, x: 0, y: 1)
-        }
-    }
-
     private func loadingView(message: String) -> some View {
         VStack(spacing: 16) {
             Spacer()
-            ProgressView()
-                .scaleEffect(1.4)
+            ProgressView().scaleEffect(1.4)
             Text(message)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
@@ -266,16 +215,7 @@ struct RegistryPlannerView: View {
     private var noResultsView: some View {
         VStack(spacing: 16) {
             Spacer()
-            Image(systemName: "magnifyingglass.circle")
-                .font(.system(size: 48))
-                .foregroundColor(.secondary)
             Text("No products matched your prompt.")
-                .font(.headline)
-            Text("Try different keywords or relax the budget constraint.")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 40)
             Spacer()
         }
     }
@@ -283,29 +223,38 @@ struct RegistryPlannerView: View {
     private func errorView(message: String) -> some View {
         VStack(spacing: 16) {
             Spacer()
-            Image(systemName: "exclamationmark.triangle")
-                .font(.system(size: 48))
-                .foregroundColor(.orange)
             Text(message)
-                .font(.subheadline)
                 .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 40)
             Spacer()
         }
     }
-
-    // MARK: - Actions
 
     private func runSearch() {
         isPromptFocused = false
         viewModel.search()
     }
 
+    private func triggerInitialSearchIfNeeded() {
+        guard planningContext != nil else { return }
+        guard viewModel.indexReady else { return }
+        guard !hasTriggeredInitialSearch else { return }
+        guard !viewModel.promptText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+
+        hasTriggeredInitialSearch = true
+        runSearch()
+    }
+
     private func addAllToRegistry(plan: RegistryPlan) {
+        guard registryRepo.isActiveRegistry else { return }
         for scored in plan.items {
             registryRepo.addProduct(scored.product)
         }
+        onAddAllComplete?()
+        closePlanner()
+    }
+
+    private func closePlanner() {
+        onClose?()
         dismiss()
     }
 }

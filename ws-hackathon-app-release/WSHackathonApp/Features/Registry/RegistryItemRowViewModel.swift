@@ -58,25 +58,4 @@ final class RegistryItemRowViewModel: ObservableObject {
     func removeItem() {
         registryRepo.removeItem(item.id)
     }
-    
-    func addToCart() {
-        let product = ProductItem(
-            id: item.id,
-            title: item.title,
-            price: item.price,
-            path: item.imageUrl ?? "",
-            description: nil,
-            eventTags: [],
-            slotHints: [],
-            styleTags: [],
-            settingTags: [],
-            essentialForEvents: [],
-            color: nil
-        )
-        let quantityInRegistry = registryRepo.quantity(for: item)
-        
-        cartRepo.add(product: product, quantity: quantityInRegistry)
-        
-        tabBarVM.selectTab(.cart)
-    }
 }

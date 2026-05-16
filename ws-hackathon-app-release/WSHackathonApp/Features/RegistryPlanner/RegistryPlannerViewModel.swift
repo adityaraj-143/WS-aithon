@@ -10,7 +10,7 @@ enum PlannerState {
     case idle
     case indexing        // Building the NLEmbedding index in background
     case searching       // Running cosine similarity search
-    case results(RegistryPlan)
+    case results(PlannedRegistryResponse)
     case noResults       // Search returned nothing above threshold
     case error(String)
 
@@ -30,12 +30,15 @@ final class RegistryPlannerViewModel: ObservableObject {
     @Published var promptText: String = ""
     @Published var state: PlannerState = .idle
     @Published var indexReady: Bool = false
+    @Published private(set) var initialSearchPerformed = false
 
     // MARK: - Dependencies
 
-    private let vectorStore = ProductVectorStore()
-    private let parser = PromptParser()
-    private let planBuilder = RegistryPlanBuilder()
+    nonisolated private let planner: RegistryPlannerService
+
+    init() {
+        self.planner = RegistryPlannerService()
+    }
 
     // MARK: - Index Bootstrap
 
@@ -43,14 +46,18 @@ final class RegistryPlannerViewModel: ObservableObject {
     /// Indexing runs on a detached background task so it never blocks the main thread.
     func buildIndex(dtos: [ProductItemDTO]) {
         guard !indexReady else { return }
+        guard !dtos.isEmpty else {
+            state = .error("Product catalog is still loading. Open Home first or wait for products to finish loading.")
+            return
+        }
         state = .indexing
 
         Task.detached(priority: .userInitiated) { [weak self] in
             guard let self else { return }
-            self.vectorStore.index(dtos: dtos)
+            self.planner.buildIndex(dtos: dtos)
             await MainActor.run {
-                self.indexReady = self.vectorStore.hasIndex
-                self.state = .idle
+                self.indexReady = self.planner.hasIndex
+                self.state = self.planner.hasIndex ? .idle : .error("Unable to build the AI product index on this device.")
             }
         }
     }
@@ -68,49 +75,69 @@ final class RegistryPlannerViewModel: ObservableObject {
         state = .searching
 
         Task {
-            // Run the CPU-bound search off the main thread
-            let (plan) = await Task.detached(priority: .userInitiated) { [weak self] in
+            let response = await Task.detached(priority: .userInitiated) { [weak self] in
                 guard let self else {
-                    return RegistryPlan(
-                        items: [],
-                        totalCost: 0,
-                        budget: .infinity,
-                        coverageScore: 0,
-                        missingEssentials: [],
-                        budgetBreakdown: RegistryBudgetBreakdown(essentialsCost: 0, optionalCost: 0)
+                    return PlannedRegistryResponse(
+                        intent: RegistryPromptIntent(
+                            rawPrompt: query,
+                            budget: nil,
+                            eventType: nil,
+                            styleHints: [],
+                            ownedKeywords: [],
+                            excludedKeywords: []
+                        ),
+                        browseProducts: [],
+                        registryPlan: RegistryPlan(
+                            items: [],
+                            totalCost: 0,
+                            budget: .infinity,
+                            coverageScore: 0,
+                            missingEssentials: [],
+                            budgetBreakdown: RegistryBudgetBreakdown(essentialsCost: 0, optionalCost: 0)
+                        )
                     )
                 }
 
-                let intent = self.parser.parse(query)
-                let candidates = self.vectorStore.search(prompt: query, topK: 20, minScore: 0.1)
-                return self.planBuilder.build(from: candidates, intent: intent)
+                return self.planner.plan(prompt: query, topK: 20, minScore: 0.1)
             }.value
 
-            if plan.isEmpty {
+            if response.browseProducts.isEmpty && response.registryPlan.isEmpty {
                 state = .noResults
             } else {
-                state = .results(plan)
+                initialSearchPerformed = true
+                state = .results(response)
             }
         }
+    }
+
+    func configureInitialPrompt(_ prompt: String) {
+        let trimmed = prompt.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        promptText = trimmed
     }
 
     // MARK: - Clear
 
     func clear() {
         promptText = ""
+        planner.resetConversation()
         state = .idle
     }
 
     // MARK: - Convenience
 
-    var currentPlan: RegistryPlan? {
-        if case .results(let plan) = state { return plan }
+    var currentResponse: PlannedRegistryResponse? {
+        if case .results(let response) = state { return response }
         return nil
+    }
+
+    var currentPlan: RegistryPlan? {
+        currentResponse?.registryPlan
     }
 
     var parsedIntent: RegistryPromptIntent? {
         let query = promptText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !query.isEmpty else { return nil }
-        return parser.parse(query)
+        return PromptParser().parse(query)
     }
 }

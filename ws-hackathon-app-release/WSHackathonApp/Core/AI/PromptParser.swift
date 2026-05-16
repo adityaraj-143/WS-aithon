@@ -4,7 +4,8 @@
 //
 //  Extracts structured intent from a free-text user prompt.
 //  The semantic matching is handled by NLEmbedding — this parser
-//  only needs to extract the *numeric* budget constraint for filtering.
+    //  extracts budget plus lightweight planner hints like event, style,
+    //  owned items, and exclusions.
 //
 
 import Foundation
@@ -58,7 +59,8 @@ struct PromptParser {
     ]
 
     private static let knownStyles: [String] = [
-        "elegant", "minimal", "cozy", "modern", "rustic", "classic", "luxury", "warm", "neutral"
+        "elegant", "minimal", "cozy", "modern", "rustic", "classic", "luxury", "warm", "neutral",
+        "natural", "practical", "premium", "organic"
     ]
 
     private static let ownershipPatterns: [String] = [
