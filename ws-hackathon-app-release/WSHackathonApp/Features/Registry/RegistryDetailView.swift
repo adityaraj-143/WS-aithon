@@ -96,7 +96,7 @@ struct RegistryDetailView: View {
                                 GeometryReader { geometry in
                                     ZStack(alignment: .leading) {
                                         Capsule()
-                                            .background(Color.borderSubtle)
+                                            .fill(Color.borderSubtle)
                                             .frame(height: 8)
                                         
                                         Capsule()

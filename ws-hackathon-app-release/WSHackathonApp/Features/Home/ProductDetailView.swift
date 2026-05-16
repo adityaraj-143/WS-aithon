@@ -122,11 +122,11 @@ struct ProductDetailView: View {
                 Button(action: { dismiss() }) {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 16, weight: .bold))
-                        .foregroundColor(.black)
+                        .foregroundColor(.textPrimary)
                         .frame(width: 40, height: 40)
-                        .background(Color.white)
+                        .background(Color.surfacePrimary)
                         .clipShape(Circle())
-                        .shadow(color: .black.opacity(0.1), radius: 4)
+                        .shadow(color: Color.textPrimary.opacity(0.1), radius: 4)
                 }
                 Spacer()
             }
@@ -154,7 +154,7 @@ struct ProductDetailView: View {
                     }
                     .padding(.horizontal, 24)
                     .padding(.vertical, 14)
-                    .background(Color.white)
+                    .background(Color.surfacePrimary)
                     .clipShape(Capsule())
                     .shadow(color: .black.opacity(0.1), radius: 12, y: 4)
                     .overlay(
@@ -208,11 +208,12 @@ struct ProductDetailView: View {
                     Text("Add to Registry")
                 }
                 .font(.system(size: 15, weight: .medium))
-                .foregroundColor(.white)
+                .foregroundColor(.brandPrimary)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 16)
-                .background(Color.wsSuccess)
+                .background(Color.surfacePrimary)
                 .clipShape(Capsule())
+                .overlay(Capsule().stroke(Color.brandPrimary, lineWidth: 1.5))
             }
             
             let isInCart = cartRepository.items.contains(where: { $0.id == viewModel.product.id })
@@ -315,9 +316,9 @@ struct RegistrySelectionSheet: View {
                     Button(action: { dismiss() }) {
                         Image(systemName: "xmark")
                             .font(.system(size: 14, weight: .bold))
-                            .foregroundColor(.black)
+                            .foregroundColor(.textPrimary)
                             .frame(width: 30, height: 30)
-                            .background(Color.black.opacity(0.05))
+                            .background(Color.textPrimary.opacity(0.05))
                             .clipShape(Circle())
                     }
                 }
@@ -340,7 +341,7 @@ struct RegistrySelectionSheet: View {
                                     .font(.system(size: 15, weight: .medium))
                                 Spacer()
                             }
-                            .foregroundColor(.wsSuccess)
+                            .foregroundColor(.brandPrimary)
                             .padding(.vertical, 18)
                             .background(
                                 RoundedRectangle(cornerRadius: 16)
@@ -365,7 +366,7 @@ struct RegistrySelectionSheet: View {
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 18)
-                        .background(Color.wsSuccess)
+                        .background(Color.brandPrimary)
                         .clipShape(Capsule())
                 }
                 .disabled(selectedIds.isEmpty)
@@ -419,7 +420,7 @@ struct RegistrySelectionSheet: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(registry.displayName)
                         .font(.system(size: 15, weight: .medium))
-                        .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                        .foregroundColor(.textPrimary)
                     
                     Text("\(registry.items.count) Items • 1 Collaborators")
                         .font(.system(size: 13))
@@ -436,7 +437,7 @@ struct RegistrySelectionSheet: View {
                     
                     if isSelected {
                         Circle()
-                            .fill(Color.wsSuccess)
+                            .fill(Color.brandPrimary)
                             .frame(width: 24, height: 24)
                         Image(systemName: "checkmark")
                             .font(.system(size: 12, weight: .bold))
@@ -451,7 +452,7 @@ struct RegistrySelectionSheet: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
-                    .stroke(isSelected ? Color.wsSuccess : Color.borderSubtle, lineWidth: 1)
+                    .stroke(isSelected ? Color.brandPrimary : Color.borderSubtle, lineWidth: 1)
             )
         }
         .buttonStyle(PlainButtonStyle())
