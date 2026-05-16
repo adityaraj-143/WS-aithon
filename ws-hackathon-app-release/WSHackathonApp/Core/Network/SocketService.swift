@@ -87,9 +87,17 @@ class SocketService: ObservableObject {
         }
         
         // Requirement 4 & 6: Listen for users_list
-        socket.on(SocketEvents.usersList) { [weak self] data in
-            guard let self = self,
-                  let usersArray = data.first as? [[String: Any]] else { return }
+        socket.on(SocketEvents.usersList) { [weak self] data, _ in
+            print("👥 received users_list data: \(data)")
+            guard let self = self else { return }
+            
+            // Try casting to Array of Any first if [[String: Any]] fails
+            guard let anyArray = data.first as? [Any] else {
+                print("❌ Failed to get users array from data.first")
+                return
+            }
+            
+            let usersArray = anyArray.compactMap { $0 as? [String: Any] }
             
             let users = usersArray.compactMap { dict -> SocketUser? in
                 guard let uid = dict["userId"] as? String,
@@ -99,6 +107,7 @@ class SocketService: ObservableObject {
             
             DispatchQueue.main.async {
                 self.activeUsers = users
+                print("✅ Updated activeUsers count: \(self.activeUsers.count)")
             }
         }
         
