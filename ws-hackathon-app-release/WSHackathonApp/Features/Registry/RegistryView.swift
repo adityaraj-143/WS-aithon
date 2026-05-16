@@ -38,10 +38,12 @@ struct RegistryView: View {
                     .padding(.top, 24)
                     .padding(.bottom, 32)
 
-                    if viewModel.hasRegistry {
-                        populatedStateView
-                    } else {
-                        emptyStateView
+                    Group {
+                        if viewModel.hasRegistry {
+                            populatedStateView
+                        } else {
+                            emptyStateView
+                        }
                     }
                     .padding(.top, 20)
                     .padding(.bottom, 32)
