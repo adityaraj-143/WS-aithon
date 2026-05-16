@@ -87,7 +87,7 @@ class SocketService: ObservableObject {
         }
         
         // Requirement 4 & 6: Listen for users_list
-        socket.on(SocketEvents.usersList) { [weak self] data, _ in
+        socket.on(SocketEvents.usersList) { [weak self] data in
             print("👥 received users_list data: \(data)")
             guard let self = self else { return }
             
@@ -112,7 +112,7 @@ class SocketService: ObservableObject {
         }
         
         // Requirement 4 & 6: Listen for receive_invite
-        socket.on(SocketEvents.receiveInvite) { [weak self] data, _ in
+        socket.on(SocketEvents.receiveInvite) { [weak self] data in
             print("📬 receive_invite raw data: \(data)")
             guard let self = self,
                   let dict = data.first as? [String: Any] else {
