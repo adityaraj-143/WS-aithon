@@ -19,12 +19,13 @@ final class SocketService {
     private init() {
 
         manager = SocketManager(
-            socketURL: URL(string: "http://10.21.111.153:3001")!,
+            socketURL: URL(string: "http://127.0.0.1:3001")!,
             config: [
                 .log(true),
                 .compress,
                 .reconnects(true),
-                .reconnectAttempts(-1)
+                .reconnectAttempts(-1),
+                .forceWebsockets(true)
             ]
         )
 
