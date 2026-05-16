@@ -139,37 +139,38 @@ private extension CartView {
 
     // ─── Checkout Bar ────────────────────────────────────────────
     var checkoutBar: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(viewModel.totalPriceText)
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                
+                Text("Total Amount")
+                    .font(.system(size: 13))
+                    .foregroundColor(.gray)
+            }
+            .padding(.leading, 32)
+            
+            Spacer()
+            
             Button {
                 showCheckout = true
             } label: {
                 Text(AppStrings.Cart.checkoutButton)
-                    .font(.system(size: 15, weight: .medium))
+                    .font(.system(size: 15, weight: .bold))
                     .foregroundColor(.white)
-                    .frame(minWidth: 150)
+                    .padding(.horizontal, 32)
                     .padding(.vertical, 16)
-                    .background(warmBrown)
+                    .background(Color(red: 0.46, green: 0.50, blue: 0.44))
                     .clipShape(Capsule())
             }
-
-            Spacer()
-
-            VStack(alignment: .trailing, spacing: 2) {
-                Text(AppStrings.Cart.total)
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundColor(Color(red: 0.45, green: 0.45, blue: 0.45))
-                Text(viewModel.totalPriceText)
-                    .font(.system(size: 22, weight: .regular, design: .serif))
-                    .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
-            }
+            .padding(8)
         }
-        .padding(20)
         .background(Color.white)
-        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-        .shadow(color: Color.black.opacity(0.06), radius: 16, y: 4)
-        .padding(.horizontal, 20)
-        .padding(.top, 8)
-        .padding(.bottom, 24)
+        .clipShape(Capsule())
+        .shadow(color: Color.black.opacity(0.08), radius: 20, x: 0, y: 10)
+        .padding(.horizontal, 24)
+        .padding(.bottom, 32)
     }
 
     // ─── Smart Recommendations ───────────────────────────────────

@@ -18,7 +18,7 @@ final class CartRepository: ObservableObject {
         guard let priceValue = product.price else { return }
         
         if let index = items.firstIndex(where: { $0.id == product.id }) {
-            items[index].quantity += 1
+            items[index].quantity += quantity
         } else {
             let newItem = CartItem(
                 id: product.id,
@@ -54,5 +54,9 @@ final class CartRepository: ObservableObject {
     func increaseQuantity(productId: String) {
         guard let index = items.firstIndex(where: { $0.id == productId }) else { return }
         items[index].quantity += 1
+    }
+
+    func removeItemCompletely(productId: String) {
+        items.removeAll(where: { $0.id == productId })
     }
 }

@@ -76,49 +76,60 @@ struct RegistryItemRow: View {
             
             Spacer(minLength: 8)
             
-            // Actions
             VStack(alignment: .trailing, spacing: 0) {
-                Menu {
-//                    Button(action: viewModel.addToCart) {
-//                        Label("Add to Cart", systemImage: "cart.badge.plus")
-//                    }
-                    Button(role: .destructive, action: viewModel.removeItem) {
-                        Label("Remove Item", systemImage: "trash")
-                    }
-                } label: {
-                    Image(systemName: "ellipsis")
-                        .foregroundColor(.gray)
-                        .frame(width: 32, height: 32)
-                        .background(Color.white)
-                        .clipShape(Circle())
-                        .overlay(Circle().stroke(Color(white: 0.9), lineWidth: 1))
-                }
-                
-                Spacer()
-                
-                HStack(spacing: 12) {
-                    Button(action: viewModel.decreaseQty) {
-                        Image(systemName: "minus")
-                            .font(.system(size: 12, weight: .bold))
-                            .foregroundColor(.gray)
+                if !viewModel.isInCart {
+                    Button(action: viewModel.addToCart) {
+                        Image(systemName: "cart.badge.plus")
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundColor(Color(red: 0.46, green: 0.50, blue: 0.44))
+                            .frame(width: 36, height: 36)
+                            .background(Color.white)
+                            .clipShape(Circle())
+                            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
                     }
                     
-                    Text(viewModel.quantityText)
+                    Spacer()
+                    
+                    HStack(spacing: 12) {
+                        Button(action: viewModel.decreaseQty) {
+                            Image(systemName: "minus")
+                                .font(.system(size: 12, weight: .bold))
+                                .foregroundColor(.gray)
+                        }
+                        
+                        Text(viewModel.quantityText)
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                            .frame(minWidth: 14, alignment: .center)
+                        
+                        Button(action: viewModel.increaseQty) {
+                            Image(systemName: "plus")
+                                .font(.system(size: 12, weight: .bold))
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 8)
+                    .background(Color.white)
+                    .clipShape(Capsule())
+                    .overlay(Capsule().stroke(Color(white: 0.9), lineWidth: 1))
+                } else {
+                    Spacer()
+                    Button(action: viewModel.removeFromCart) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "cart.badge.minus")
+                            Text("Remove")
+                        }
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
-                        .frame(minWidth: 14, alignment: .center)
-                    
-                    Button(action: viewModel.increaseQty) {
-                        Image(systemName: "plus")
-                            .font(.system(size: 12, weight: .bold))
-                            .foregroundColor(.gray)
+                        .foregroundColor(Color(red: 0.46, green: 0.50, blue: 0.44))
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(Color.white)
+                        .clipShape(Capsule())
+                        .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
+                        .overlay(Capsule().stroke(Color(red: 0.46, green: 0.50, blue: 0.44).opacity(0.2), lineWidth: 1))
                     }
                 }
-                .padding(.horizontal, 10)
-                .padding(.vertical, 8)
-                .background(Color.white)
-                .clipShape(Capsule())
-                .overlay(Capsule().stroke(Color(white: 0.9), lineWidth: 1))
             }
         }
         .frame(height: 80)

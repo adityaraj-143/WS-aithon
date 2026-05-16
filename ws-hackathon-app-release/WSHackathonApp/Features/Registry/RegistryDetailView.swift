@@ -176,6 +176,7 @@ struct RegistryDetailView: View {
                             }
                         }
                         .padding(.top, 64)
+                        .padding(.bottom, 100)
                     }
                 }
             else {
@@ -250,54 +251,71 @@ struct RegistryDetailView: View {
     
     @ViewBuilder
     func suggestedCard(for product: ProductItem, index: Int) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            ZStack(alignment: .top) {
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(Color.white)
-                    .frame(width: 160, height: 160)
+        let sageColor = Color(red: 0.46, green: 0.50, blue: 0.44)
+        let cardBg = Color.clear
+        
+        VStack(alignment: .leading, spacing: 0) {
+            ZStack(alignment: .topLeading) {
+                Color(red: 0.95, green: 0.95, blue: 0.95)
+                    .frame(width: 140, height: 140)
                 
                 if let urlString = product.path, let url = URL(string: AppConstants.API.imageBasePath + urlString) {
                     CustomAsyncImage(url: url)
-                        .frame(width: 160, height: 160)
-                        .cornerRadius(16)
+                        .frame(width: 140, height: 140)
                 }
                 
-                HStack(alignment: .top) {
-                    Text(index % 2 == 0 ? "TRENDING" : "POPULAR")
-                        .font(.system(size: 10, weight: .bold))
-                        .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(Color.white.opacity(0.8))
-                        .cornerRadius(4)
-                    
-                    Spacer()
-                    
-                    Image(systemName: "heart")
-                        .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
-                }
-                .padding(12)
+                Text(index % 2 == 0 ? "TRENDING" : "POPULAR")
+                    .font(.system(size: 9, weight: .bold))
+                    .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(Color.white.opacity(0.8))
+                    .cornerRadius(4)
+                    .padding(10)
             }
+            .clipShape(RoundedRectangle(cornerRadius: 14))
+            .clipped()
             
             VStack(alignment: .leading, spacing: 4) {
-                Text("BRAND")
-                    .font(.system(size: 10, weight: .bold))
+                Text(product.brand?.uppercased() ?? "BRAND")
+                    .font(.system(size: 9, weight: .bold))
                     .tracking(1.0)
                     .foregroundColor(.gray)
+                    .lineLimit(1)
                 
                 Text(product.title)
-                    .font(.system(size: 14, weight: .medium))
+                    .font(.system(size: 13, weight: .medium))
                     .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
                     .lineLimit(2)
+                    .frame(minHeight: 32, alignment: .topLeading)
                 
                 if let price = product.price {
-                    Text("$\(price, specifier: "%.2f")")
-                        .font(.system(size: 14))
-                        .foregroundColor(Color(red: 0.54, green: 0.40, blue: 0.31))
+                    Text(price.formatted(.currency(code: "USD")))
+                        .font(.system(size: 12))
+                        .foregroundColor(Color(red: 0.4, green: 0.35, blue: 0.3))
                 }
+                
+                Button {
+                    withAnimation {
+                        registryRepo.addProduct(product)
+                    }
+                } label: {
+                    Text("+ Add to Registry")
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 8)
+                        .background(sageColor)
+                        .clipShape(Capsule())
+                }
+                .padding(.top, 8)
             }
-            .frame(width: 160, alignment: .leading)
+            .padding(10)
         }
+        .frame(width: 140)
+        .background(cardBg)
+        .cornerRadius(16)
+        .shadow(color: Color.black.opacity(0.03), radius: 5, x: 0, y: 2)
     }
 }
 

@@ -40,6 +40,12 @@ final class RegistryItemRowViewModel: ObservableObject {
                 self?.objectWillChange.send()
             }
             .store(in: &cancellables)
+            
+        cartRepo.objectWillChange
+            .sink { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
     }
     
     // MARK: - Display
@@ -57,6 +63,10 @@ final class RegistryItemRowViewModel: ObservableObject {
     var imageURL: URL? {
         guard let url = latestItem.imageUrl else { return nil }
         return URL(string: AppConstants.API.imageBasePath + url)
+    }
+    
+    var isInCart: Bool {
+        cartRepo.items.contains(where: { $0.id == itemId })
     }
     
     // MARK: - Actions
@@ -91,5 +101,37 @@ final class RegistryItemRowViewModel: ObservableObject {
     
     func toggleUpvote() {
         registryRepo.toggleUpvote(itemId)
+    }
+    
+    func addToCart() {
+        // Create a basic ProductItem to add to cart
+        let product = ProductItem(
+            id: latestItem.id,
+            title: latestItem.title,
+            price: latestItem.price,
+            retailPrice: nil,
+            path: latestItem.imageUrl,
+            color: nil,
+            brand: nil,
+            shortDescription: nil,
+            availability: nil,
+            deliveryEstimate: nil,
+            material: nil,
+            collection: nil,
+            semanticDescription: nil,
+            eventTags: [],
+            slotHints: [],
+            styleTags: [],
+            settingTags: [],
+            essentialForEvents: [],
+            productType: nil,
+            canGiftWrap: false,
+            isFreeShipping: false
+        )
+        cartRepo.add(product: product, quantity: latestItem.quantity)
+    }
+    
+    func removeFromCart() {
+        cartRepo.removeItemCompletely(productId: itemId)
     }
 }
