@@ -55,6 +55,7 @@ struct WSTabView: View {
             // Handle joining
             if !registryRepository.registries.contains(where: { $0.id == uuid }) {
                 registryRepository.createRegistry(
+                    id: uuid,
                     firstName: invite.fromDisplayName,
                     lastName: " (Shared)",
                     event: .wedding,

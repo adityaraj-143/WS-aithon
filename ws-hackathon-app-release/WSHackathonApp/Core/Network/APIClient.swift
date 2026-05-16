@@ -340,13 +340,13 @@ class Socket {
 
     // MARK: - Emit
 
-    func emit(_ event: String, _ data: [String: Any]) {
+    func emit(_ event: String, _ data: Any) {
         guard status == .connected else {
             print("⚠️ emit('\(event)') skipped — socket not connected (status: \(status))")
             return
         }
         let array: [Any] = [event, data]
-        guard let jsonData = try? JSONSerialization.data(withJSONObject: array),
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: array, options: []),
               let jsonString = String(data: jsonData, encoding: .utf8) else { return }
         sendRaw("42" + jsonString)
     }

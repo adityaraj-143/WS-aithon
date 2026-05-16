@@ -37,4 +37,5 @@ enum SocketEvents {
     static let syncRegistry = "sync_registry"
     static let joinRegistryRoom = "join_registry_room"
     static let registryUpdated = "registry_updated"
+    static let userRegistries = "user_registries"
 }

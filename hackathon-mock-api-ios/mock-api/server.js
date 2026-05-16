@@ -84,27 +84,29 @@ io.on("connection", (socket) => {
     const { userId, displayName } = data;
     if (!userId || !displayName) return;
 
-    // Store user in active users map
     activeUsers.set(userId, {
       socketId: socket.id,
       displayName: displayName
     });
 
     console.log(`👤 User Connected: ${displayName} (${userId})`);
-
-    // Persist user identity
     saveUsers();
 
-    // Check for pending invites for this user
+    // Push pending invites
     const pending = invitations.filter(inv => inv.toUserId === userId);
-    if (pending.length > 0) {
-        console.log(`📬 Sending ${pending.length} pending invites to ${displayName}`);
-        pending.forEach(invite => {
-            socket.emit("receive_invite", invite);
-        });
+    pending.forEach(invite => socket.emit("receive_invite", invite));
+
+    // Send all registries this user is a member of
+    const userRegistries = Object.values(registries).filter(reg => 
+        reg.ownerId === userId || (reg.members && reg.members.includes(userId))
+    );
+    if (userRegistries.length > 0) {
+        console.log(`📦 Sending ${userRegistries.length} registries to ${displayName}`);
+        socket.emit("user_registries", userRegistries);
+        // Automatically join rooms for these registries
+        userRegistries.forEach(reg => socket.join(reg.id));
     }
 
-    // Requirement 3: broadcast updated active users list to all clients
     broadcastUsersList();
   });
 
@@ -116,7 +118,24 @@ io.on("connection", (socket) => {
     socket.join(registryId);
     console.log(`🏠 Socket ${socket.id} joined room: ${registryId}`);
     
-    // Send existing data if any
+    // Add member if not already there
+    const userId = getUserIdBySocketId(socket.id);
+    const user = activeUsers.get(userId);
+    
+    if (userId && registries[registryId] && user) {
+        if (!registries[registryId].members) registries[registryId].members = [];
+        if (!registries[registryId].collaboratorNames) registries[registryId].collaboratorNames = [];
+        
+        if (!registries[registryId].members.includes(userId)) {
+            registries[registryId].members.push(userId);
+            registries[registryId].collaboratorNames.push(user.displayName);
+            saveRegistries();
+            
+            // Broadcast updated registry with new collaborator to everyone in the room
+            io.to(registryId).emit("registry_updated", registries[registryId]);
+        }
+    }
+
     if (registries[registryId]) {
         socket.emit("registry_updated", registries[registryId]);
     }
@@ -131,13 +150,25 @@ io.on("connection", (socket) => {
     const { registryId, registryData } = payload;
     if (!registryId || !registryData) return;
 
-    console.log(`🔄 Syncing registry: ${registryId} (Items: ${registryData.items?.length || 0})`);
+    const userId = getUserIdBySocketId(socket.id);
     
-    // Update master copy
+    // If new registry, set owner and initial members
+    if (!registries[registryId]) {
+        registryData.ownerId = userId;
+        registryData.members = [userId];
+        // Ensure collaboratorNames includes owner
+        const user = activeUsers.get(userId);
+        registryData.collaboratorNames = [user ? user.displayName : "Owner"];
+    } else {
+        // Keep existing server-managed metadata
+        registryData.ownerId = registries[registryId].ownerId;
+        registryData.members = registries[registryId].members;
+        registryData.collaboratorNames = registries[registryId].collaboratorNames;
+    }
+
     registries[registryId] = registryData;
     saveRegistries();
 
-    // Broadcast update to everyone in the room
     io.to(registryId).emit("registry_updated", registryData);
   });
 
@@ -219,9 +250,15 @@ function broadcastUsersList() {
         displayName: data.displayName
     }));
   
-  // Requirement 4: users_list (Server -> Client)
   io.emit("users_list", users);
   console.log(`📢 Broadcasted users list: ${users.length} users active`);
+}
+
+function getUserIdBySocketId(socketId) {
+  for (let [userId, userData] of activeUsers.entries()) {
+    if (userData.socketId === socketId) return userId;
+  }
+  return null;
 }
 
 app.use(express.json());

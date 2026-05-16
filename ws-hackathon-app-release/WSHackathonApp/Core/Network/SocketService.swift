@@ -4,6 +4,7 @@ import Combine
 
 extension Notification.Name {
     static let didReceiveRegistryUpdate = Notification.Name("didReceiveRegistryUpdate")
+    static let didFetchUserRegistries = Notification.Name("didFetchUserRegistries")
 }
 
 /**
@@ -133,10 +134,17 @@ class SocketService: ObservableObject {
         }
         
         // Listen for real-time registry updates
-        socket.on(SocketEvents.registryUpdated) { [weak self] data in
+        socket.on(SocketEvents.registryUpdated) { data in
             guard let dict = data.first as? [String: Any] else { return }
             print("📦 Received real-time registry update")
             NotificationCenter.default.post(name: .didReceiveRegistryUpdate, object: dict)
+        }
+        
+        // Listen for all user registries (sent on connect)
+        socket.on(SocketEvents.userRegistries) { data in
+            guard let array = data.first as? [[String: Any]] else { return }
+            print("📦 Received \(array.count) account registries")
+            NotificationCenter.default.post(name: .didFetchUserRegistries, object: array)
         }
     }
     
@@ -152,11 +160,7 @@ class SocketService: ObservableObject {
     
     // Fixed join_registry_room emit to match server
     func joinRoom(registryId: String) {
-        // Since my Socket class stringifies the data, I should send it as [registryId]
-        // Actually the server expects the first argument to be registryId.
-        // My Socket.emit(event, dict) wraps it in [event, dict].
-        // I'll update my server to handle the dict or update emit.
-        socket?.emit(SocketEvents.joinRegistryRoom, ["id": registryId])
+        socket?.emit(SocketEvents.joinRegistryRoom, registryId)
     }
 
     func syncRegistry(id: String, data: [String: Any]) {

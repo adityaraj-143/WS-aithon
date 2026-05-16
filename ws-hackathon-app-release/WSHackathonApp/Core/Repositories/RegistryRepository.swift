@@ -17,14 +17,38 @@ final class RegistryRepository: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     init() {
+        loadFromDisk()
         setupSocketListeners()
+    }
+    
+    private func saveToDisk() {
+        if let encoded = try? JSONEncoder().encode(registries) {
+            UserDefaults.standard.set(encoded, forKey: "saved_registries")
+        }
+    }
+    
+    private func loadFromDisk() {
+        if let data = UserDefaults.standard.data(forKey: "saved_registries"),
+           let decoded = try? JSONDecoder().decode([Registry].self, from: data) {
+            self.registries = decoded
+        }
     }
     
     private func setupSocketListeners() {
         NotificationCenter.default.addObserver(forName: .didReceiveRegistryUpdate, object: nil, queue: .main) { [weak self] notification in
             guard let dict = notification.object as? [String: Any],
                   let self = self else { return }
-            self.applyRemoteUpdate(dict)
+            Task { @MainActor in
+                self.applyRemoteUpdate(dict)
+            }
+        }
+        
+        NotificationCenter.default.addObserver(forName: .didFetchUserRegistries, object: nil, queue: .main) { [weak self] notification in
+            guard let array = notification.object as? [[String: Any]],
+                  let self = self else { return }
+            Task { @MainActor in
+                self.applyBulkRemoteUpdate(array)
+            }
         }
     }
     
@@ -37,6 +61,7 @@ final class RegistryRepository: ObservableObject {
             guard let newValue = newValue else { return }
             if let index = registries.firstIndex(where: { $0.id == newValue.id }) {
                 registries[index] = newValue
+                saveToDisk()
             }
         }
     }
@@ -46,26 +71,34 @@ final class RegistryRepository: ObservableObject {
         activeRegistryId != nil
     }
     
-    func createRegistry(firstName: String,
+    func createRegistry(id: UUID? = nil,
+                        firstName: String,
                         lastName: String,
                         event: RegistryEvent,
                         date: Date,
                         budget: String?) {
         
         let newRegistry = Registry(
-            id: UUID(),
+            id: id ?? UUID(),
             firstName: firstName,
             lastName: lastName,
             event: event,
             date: date,
             budget: budget,
-            items: []
+            items: [],
+            collaboratorNames: [SocketService.shared.currentDisplayName]
         )
         
         registries.append(newRegistry)
         activeRegistryId = newRegistry.id
+        saveToDisk()
         
-        // Joining room for the new registry
+        if id == nil {
+            // SYNC: Push the new registry to the server only if it's brand new
+            syncRegistry(newRegistry)
+        }
+        
+        // Joining room for the registry
         SocketService.shared.joinRoom(registryId: newRegistry.id.uuidString)
     }
     
@@ -149,7 +182,11 @@ final class RegistryRepository: ObservableObject {
             "id": registry.id.uuidString,
             "firstName": registry.firstName,
             "lastName": registry.lastName,
-            "items": itemsDict
+            "event": registry.event.rawValue,
+            "date": registry.date.timeIntervalSince1970,
+            "budget": registry.budget ?? "",
+            "items": itemsDict,
+            "collaboratorNames": registry.collaboratorNames
         ]
         
         SocketService.shared.syncRegistry(id: registry.id.uuidString, data: registryDict)
@@ -181,11 +218,80 @@ final class RegistryRepository: ObservableObject {
                 }
             }
             
+            // Update metadata if available
+            if let eventRaw = dict["event"] as? String, let event = RegistryEvent(rawValue: eventRaw) {
+                registry.event = event
+            }
+            if let timeInterval = dict["date"] as? TimeInterval {
+                registry.date = Date(timeIntervalSince1970: timeInterval)
+            }
+            if let budget = dict["budget"] as? String {
+                registry.budget = budget
+            }
+            if let collaborators = dict["collaboratorNames"] as? [String] {
+                registry.collaboratorNames = collaborators
+            }
+            
             registries[index] = registry
             if activeRegistryId == id {
                 currentRegistry = registry
             }
+            saveToDisk()
+        } else {
+            // New registry we didn't have locally (e.g. joined via invite on another device)
+            if let registry = parseRegistry(from: dict) {
+                registries.append(registry)
+                saveToDisk()
+            }
         }
+    }
+    
+    private func applyBulkRemoteUpdate(_ array: [[String: Any]]) {
+        for dict in array {
+            self.applyRemoteUpdate(dict)
+        }
+    }
+    
+    private func parseRegistry(from dict: [String: Any]) -> Registry? {
+        guard let idString = dict["id"] as? String,
+              let id = UUID(uuidString: idString),
+              let firstName = dict["firstName"] as? String,
+              let lastName = dict["lastName"] as? String else { return nil }
+        
+        var items: [RegistryItem] = []
+        if let itemsArray = dict["items"] as? [[String: Any]] {
+            items = itemsArray.compactMap { itemDict -> RegistryItem? in
+                guard let itemId = itemDict["id"] as? String,
+                      let title = itemDict["title"] as? String,
+                      let price = itemDict["price"] as? Double,
+                      let qty = itemDict["quantity"] as? Int else { return nil }
+                
+                return RegistryItem(
+                    id: itemId,
+                    title: title,
+                    price: price,
+                    imageUrl: itemDict["imageUrl"] as? String,
+                    quantity: qty
+                )
+            }
+        }
+        
+        let eventRaw = dict["event"] as? String ?? ""
+        let event = RegistryEvent(rawValue: eventRaw) ?? .wedding
+        let date = (dict["date"] as? TimeInterval).map { Date(timeIntervalSince1970: $0) } ?? Date()
+        let budget = dict["budget"] as? String
+        let collaborators = dict["collaboratorNames"] as? [String] ?? []
+        
+        return Registry(
+            id: id,
+            firstName: firstName,
+            lastName: lastName,
+            event: event,
+            date: date,
+            budget: budget,
+            items: items,
+            collaboratorNames: collaborators
+        )
     }
     
     func quantity(for registryItem: RegistryItem) -> Int {

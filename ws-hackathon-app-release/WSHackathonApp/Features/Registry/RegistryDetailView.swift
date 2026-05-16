@@ -59,6 +59,17 @@ struct RegistryDetailView: View {
                                 Text(registry.date.formatted(date: .abbreviated, time: .omitted))
                                     .font(.system(size: 14))
                                     .foregroundColor(.gray)
+                                
+                                if !registry.collaboratorNames.isEmpty {
+                                    HStack(spacing: 4) {
+                                        Image(systemName: "person.2")
+                                            .font(.system(size: 12))
+                                        Text("With: " + registry.collaboratorNames.joined(separator: ", "))
+                                            .font(.system(size: 12, weight: .medium))
+                                    }
+                                    .foregroundColor(Color(red: 0.46, green: 0.50, blue: 0.44))
+                                    .padding(.top, 4)
+                                }
                             }
                         }
                         .padding(.horizontal, 24)

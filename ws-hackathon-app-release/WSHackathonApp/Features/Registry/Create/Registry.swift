@@ -23,10 +23,11 @@ struct Registry: Identifiable, Codable {
     let id: UUID
     let firstName: String
     let lastName: String
-    let event: RegistryEvent
-    let date: Date
-    let budget: String?
+    var event: RegistryEvent
+    var date: Date
+    var budget: String?
     var items: [RegistryItem]
+    var collaboratorNames: [String] = []
     
     var displayName: String {
         if lastName.isEmpty {
