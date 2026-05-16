@@ -17,12 +17,7 @@ struct ProductItemDTO: Identifiable, Codable {
     let media: ProductMedia?
     let availability: String?
     let deliveryEstimate: String?
-    let description: String?
-    let eventTags: [String]?
-    let slotHints: [String]?
-    let styleTags: [String]?
-    let settingTags: [String]?
-    let essentialForEvents: [String]?
+    let freeShip: Bool?
 }
 
 struct ProductPrice: Codable {
@@ -52,6 +47,7 @@ struct ProductProperties: Codable {
     let shortName: String?
     let color: String?
 }
+
 
 struct ProductMedia: Codable {
     let images: [ProductImage]?

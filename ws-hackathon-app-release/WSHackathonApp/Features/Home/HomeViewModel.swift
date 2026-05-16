@@ -10,11 +10,14 @@ import Combine
 
 class HomeViewModel: ObservableObject {
     @Published var searchText: String = ""
+    @Published var selectedCategory: String = "All"
     @Published var products: [ProductItem] = []
     /// Raw DTOs exposed for the on-device AI planner (richer fields than ProductItem)
     @Published var productDTOs: [ProductItemDTO] = []
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
+    
+    let categories = ["All", "Kitchen", "Dining", "Bedding"]
     
     private var hasLoaded = false
     private var cartRepository: CartRepository?
@@ -60,16 +63,34 @@ class HomeViewModel: ObservableObject {
     }
     
     var filteredProducts: [ProductItem] {
-        if searchText.isEmpty {
-            return products
-        } else {
-            return products.filter { $0.title.localizedCaseInsensitiveContains(searchText) }
+        var result = products
+        
+        if selectedCategory != "All" {
+            result = result.filter { product in
+                guard let type = product.productType?.lowercased() else { return false }
+                
+                switch selectedCategory {
+                case "Kitchen":
+                    return type.contains("dutch") || type.contains("fry-pan") || type.contains("coffee") || type.contains("cutting") || type.contains("oil")
+                case "Dining":
+                    return type.contains("serveware") || type.contains("cups") || type.contains("glasses") || type.contains("susan")
+                case "Bedding":
+                    return false
+                default:
+                    return true
+                }
+            }
         }
+        
+        if !searchText.isEmpty {
+            result = result.filter { $0.title.localizedCaseInsensitiveContains(searchText) }
+        }
+        
+        return result
     }
     
     func fetchProducts() async {
-        guard !hasLoaded else { return }
-        hasLoaded = true
+        guard !hasLoaded || products.isEmpty else { return }
         
         isLoading = true
         errorMessage = nil
@@ -78,11 +99,14 @@ class HomeViewModel: ObservableObject {
             let dtos: [ProductItemDTO] = try await APIClient.shared.request(Endpoint.products())
             self.productDTOs = dtos
             self.products = dtos.map { ProductItem(from: $0) }
+            hasLoaded = true
         } catch {
-            print(error)
+            print("API Error: \(error)")
             errorMessage = "Failed to load products"
+            hasLoaded = false
         }
         
         isLoading = false
     }
 }
+
