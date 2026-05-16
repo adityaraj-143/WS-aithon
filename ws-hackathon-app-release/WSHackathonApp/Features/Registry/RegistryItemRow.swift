@@ -45,6 +45,31 @@ struct RegistryItemRow: View {
                 Text(viewModel.priceText)
                     .font(.system(size: 14))
                     .foregroundColor(Color(red: 0.54, green: 0.40, blue: 0.31)) // Brownish price
+                
+                HStack(spacing: 6) {
+                    Button(action: viewModel.toggleUpvote) {
+                        HStack(spacing: 4) {
+                            Image(systemName: viewModel.isUpvoted ? "heart.fill" : "heart")
+                                .font(.system(size: 12))
+                                .foregroundColor(viewModel.isUpvoted ? .red : .gray)
+                            
+                            if viewModel.upvoteCount > 0 {
+                                Text("\(viewModel.upvoteCount)")
+                                    .font(.system(size: 12, weight: .semibold))
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                    }
+                    
+                    if !viewModel.upvotedByText.isEmpty {
+                        Text(viewModel.upvotedByText)
+                            .font(.system(size: 10))
+                            .foregroundColor(.gray.opacity(0.8))
+                            .italic()
+                            .lineLimit(1)
+                    }
+                }
+                .padding(.top, 2)
             }
             .padding(.top, 4)
             

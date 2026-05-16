@@ -38,5 +38,13 @@
     "registryId": "2993E7B0-DFF6-4823-9E6F-11FB59CEDC9B",
     "registryName": "Birthday",
     "toUserId": "1B970CAB-97DC-4CF4-8B1C-19CF7135DBD5"
+  },
+  {
+    "fromUserId": "011916E3-5A13-4DF0-A4A3-CBB1DE4AF451",
+    "fromDisplayName": "Guest-909",
+    "inviteLink": "wsapp://registry/1ED6A5D2-A53C-4ED9-83A6-200314E1CE96",
+    "registryId": "1ED6A5D2-A53C-4ED9-83A6-200314E1CE96",
+    "registryName": "Holiday",
+    "toUserId": "1B970CAB-97DC-4CF4-8B1C-19CF7135DBD5"
   }
 ]

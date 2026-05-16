@@ -43,4 +43,5 @@ struct RegistryItem: Identifiable, Codable {
     let price: Double
     let imageUrl: String?
     var quantity: Int
+    var upvotedBy: [String] = []
 }

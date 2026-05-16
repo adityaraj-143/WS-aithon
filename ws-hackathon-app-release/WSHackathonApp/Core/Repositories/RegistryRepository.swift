@@ -164,6 +164,31 @@ final class RegistryRepository: ObservableObject {
         syncRegistry(registry)
     }
     
+    func removeItem(_ productId: String) {
+        guard var registry = currentRegistry else { return }
+        registry.items.removeAll { $0.id == productId }
+        currentRegistry = registry
+        syncRegistry(registry)
+    }
+    
+    func toggleUpvote(_ productId: String) {
+        guard var registry = currentRegistry else { return }
+        guard let index = registry.items.firstIndex(where: { $0.id == productId }) else { return }
+        
+        let userName = SocketService.shared.currentDisplayName
+        var item = registry.items[index]
+        
+        if item.upvotedBy.contains(userName) {
+            item.upvotedBy.removeAll { $0 == userName }
+        } else {
+            item.upvotedBy.append(userName)
+        }
+        
+        registry.items[index] = item
+        currentRegistry = registry
+        syncRegistry(registry)
+    }
+    
     // MARK: - Sync Helpers
     
     private func syncRegistry(_ registry: Registry) {
@@ -174,7 +199,8 @@ final class RegistryRepository: ObservableObject {
                 "title": item.title,
                 "price": item.price,
                 "imageUrl": item.imageUrl ?? "",
-                "quantity": item.quantity
+                "quantity": item.quantity,
+                "upvotedBy": item.upvotedBy
             ]
         }
         
@@ -213,7 +239,8 @@ final class RegistryRepository: ObservableObject {
                         title: title,
                         price: price,
                         imageUrl: itemDict["imageUrl"] as? String,
-                        quantity: qty
+                        quantity: qty,
+                        upvotedBy: itemDict["upvotedBy"] as? [String] ?? []
                     )
                 }
             }
@@ -271,7 +298,8 @@ final class RegistryRepository: ObservableObject {
                     title: title,
                     price: price,
                     imageUrl: itemDict["imageUrl"] as? String,
-                    quantity: qty
+                    quantity: qty,
+                    upvotedBy: itemDict["upvotedBy"] as? [String] ?? []
                 )
             }
         }
