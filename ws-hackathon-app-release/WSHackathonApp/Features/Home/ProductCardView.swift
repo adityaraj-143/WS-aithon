@@ -24,11 +24,18 @@ struct ProductCardView: View {
             // MARK: - Image Section
             ZStack(alignment: .top) {
                 AsyncImage(url: product.imageURL) { phase in
-                    if let image = phase.image {
+                    switch phase {
+                    case .empty:
+                        Color(red: 0.95, green: 0.95, blue: 0.95)
+                            .overlay(ProgressView())
+                    case .success(let image):
                         image
                             .resizable()
                             .scaledToFill()
-                    } else {
+                    case .failure(_):
+                        Color(red: 0.95, green: 0.95, blue: 0.95)
+                            .overlay(Image(systemName: "photo").foregroundColor(.gray))
+                    @unknown default:
                         Color(red: 0.95, green: 0.95, blue: 0.95)
                     }
                 }
@@ -40,8 +47,52 @@ struct ProductCardView: View {
                 .onTapGesture(perform: onSelect)
                 
                 HStack(alignment: .top) {
-                    statusPill
+                    if quantity == 0 {
+                        statusPill
+                    }
+                    
                     Spacer()
+                    
+                    if quantity > 0 {
+                        HStack(spacing: 8) {
+                            Button(action: onRemove) {
+                                Image(systemName: "minus")
+                                    .font(.system(size: 10, weight: .bold))
+                                    .foregroundColor(.black)
+                                    .frame(width: 24, height: 24)
+                                    .background(Color.white)
+                                    .clipShape(Circle())
+                            }
+                            
+                            Text("\(quantity)")
+                                .font(.system(size: 13, weight: .bold))
+                                .foregroundColor(.black)
+                                .frame(minWidth: 12)
+                            
+                            Button(action: onAdd) {
+                                Image(systemName: "plus")
+                                    .font(.system(size: 10, weight: .bold))
+                                    .foregroundColor(.black)
+                                    .frame(width: 24, height: 24)
+                                    .background(Color.white)
+                                    .clipShape(Circle())
+                            }
+                        }
+                        .padding(2)
+                        .background(Color.white)
+                        .clipShape(Capsule())
+                        .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
+                    } else {
+                        Button(action: onAdd) {
+                            Image(systemName: "cart")
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundColor(.black)
+                                .frame(width: 28, height: 28)
+                                .background(Color.white)
+                                .clipShape(Circle())
+                                .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 2)
+                        }
+                    }
                 }
                 .padding(10)
             }
@@ -73,9 +124,9 @@ struct ProductCardView: View {
             .padding(.horizontal, 4)
             .padding(.bottom, 8)
         }
-        // ✅ FIX: Card background + rounded corners so it looks self-contained
-        .background(Color(red: 245/255, green: 243/255, blue: 237/255))
+        .background(Color.white)
         .cornerRadius(16)
+        .shadow(color: Color.black.opacity(0.03), radius: 10, x: 0, y: 4)
     }
     
     @ViewBuilder
