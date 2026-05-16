@@ -92,8 +92,15 @@ io.on("connection", (socket) => {
     console.log(`👤 User Connected: ${displayName} (${userId})`);
     saveUsers();
 
-    // Push pending invites
-    const pending = invitations.filter(inv => inv.toUserId === userId);
+    // Push pending invites (only for registries they haven't joined yet)
+    const pending = invitations.filter(inv => {
+        if (inv.toUserId !== userId) return false;
+        if (inv.registryId && registries[inv.registryId]) {
+            const members = registries[inv.registryId].members || [];
+            if (members.includes(userId)) return false;
+        }
+        return true;
+    });
     pending.forEach(invite => socket.emit("receive_invite", invite));
 
     // Send all registries this user is a member of
@@ -133,6 +140,18 @@ io.on("connection", (socket) => {
             
             // Broadcast updated registry with new collaborator to everyone in the room
             io.to(registryId).emit("registry_updated", registries[registryId]);
+
+            // Clear any pending invites for this user to this registry
+            const originalInvCount = invitations.length;
+            invitations = invitations.filter(inv => {
+                const matchTo = inv.toUserId === userId;
+                const matchReg = (inv.registryId || "") === (registryId || "");
+                return !(matchTo && matchReg);
+            });
+            if (invitations.length !== originalInvCount) {
+                console.log(`✨ Automatically cleared ${originalInvCount - invitations.length} pending invites for user joining registry`);
+                saveInvites();
+            }
         }
     }
 
@@ -196,6 +215,15 @@ io.on("connection", (socket) => {
 
     console.log(`📩 Invite Request: from ${fromUserId} to ${toUserId} for ${registryName || 'room'}`);
 
+    // Check if already a member
+    if (registryId && registries[registryId]) {
+        const members = registries[registryId].members || [];
+        if (members.includes(toUserId)) {
+            console.log(`⚠️ User ${toUserId} is already a member of ${registryId}. Skipping invite.`);
+            return;
+        }
+    }
+
     const inviteData = {
         fromUserId: fromUserId,
         fromDisplayName: sender ? sender.displayName : "Someone",
@@ -205,15 +233,44 @@ io.on("connection", (socket) => {
         toUserId: toUserId // Store recipient to persist it
     };
 
-    // Persist invitation
-    invitations.push(inviteData);
-    saveInvites();
+    // Persist invitation if not already present
+    const exists = invitations.find(inv => 
+        inv.fromUserId === fromUserId && 
+        inv.toUserId === toUserId && 
+        inv.registryId === registryId
+    );
+    
+    if (!exists) {
+        invitations.push(inviteData);
+        saveInvites();
+    }
 
     if (targetUser && targetUser.socketId) {
       console.log(`✅ Sending real-time invite to ${targetUser.displayName} (${targetUser.socketId})`);
       io.to(targetUser.socketId).emit("receive_invite", inviteData);
     } else {
       console.log(`🕒 User ${toUserId} is offline. Invite saved for later.`);
+    }
+  });
+
+  /**
+   * EVENT: accept_invite
+   * Called when a user accepts or ignores an invite.
+   */
+  socket.on("accept_invite", (payload) => {
+    const { fromUserId, toUserId, registryId } = payload;
+    console.log(`🗑️ Removing invite: from ${fromUserId} to ${toUserId} for ${registryId || 'no-registry'}`);
+    
+    const originalCount = invitations.length;
+    invitations = invitations.filter(inv => {
+        const matchFrom = inv.fromUserId === fromUserId;
+        const matchTo = inv.toUserId === toUserId;
+        const matchReg = (inv.registryId || "") === (registryId || "");
+        return !(matchFrom && matchTo && matchReg);
+    });
+    
+    if (invitations.length !== originalCount) {
+        saveInvites();
     }
   });
 

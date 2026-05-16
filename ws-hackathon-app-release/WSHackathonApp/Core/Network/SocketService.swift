@@ -220,6 +220,14 @@ class SocketService: ObservableObject {
     }
     
     func acceptInvite(_ invite: ReceiveInvitePayload) {
+        // Notify server to remove this invite
+        let payload: [String: Any] = [
+            "fromUserId": invite.fromUserId,
+            "toUserId": currentUserId,
+            "registryId": invite.registryId ?? ""
+        ]
+        socket?.emit(SocketEvents.acceptInvite, payload)
+        
         DispatchQueue.main.async {
             self.pendingRegistryInvites.removeAll { $0 == invite }
         }
