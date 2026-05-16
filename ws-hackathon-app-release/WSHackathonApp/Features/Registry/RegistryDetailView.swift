@@ -11,8 +11,7 @@ struct RegistryDetailView: View {
     @EnvironmentObject var cartRepo: CartRepository
     @EnvironmentObject var tabBarVM: WSTabBarViewModel
     @StateObject private var viewModel = RegistryDetailViewModel()
-    @State private var showInviteAlert = false
-    @State private var guestName = ""
+    @State private var showInviteSheet = false
     @State private var showSuccessToast = false
     
     var body: some View {
@@ -40,7 +39,7 @@ struct RegistryDetailView: View {
                                 Spacer()
                                 
                                 Button(action: {
-                                    showInviteAlert = true
+                                    showInviteSheet = true
                                 }) {
                                     HStack(spacing: 4) {
                                         Image(systemName: "person.badge.plus")
@@ -172,26 +171,8 @@ struct RegistryDetailView: View {
                 }
             }
         )
-        .alert("Invite Guest", isPresented: $showInviteAlert) {
-            TextField("Guest Name (e.g. Guest-123)", text: $guestName)
-                .textInputAutocapitalization(.never)
-            Button("Send") {
-                let success = SocketService.shared.sendInvite(toDisplayName: guestName, registry: registryRepo.currentRegistry)
-                if success {
-                    withAnimation {
-                        showSuccessToast = true
-                    }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                        withAnimation { 
-                            showSuccessToast = false
-                            guestName = ""
-                        }
-                    }
-                }
-            }
-            Button("Cancel", role: .cancel) { guestName = "" }
-        } message: {
-            Text("Enter the exact display name of the guest you want to invite to this registry.")
+        .sheet(isPresented: $showInviteSheet) {
+            RegistryInviteView(registry: registryRepo.currentRegistry)
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
