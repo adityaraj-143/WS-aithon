@@ -156,6 +156,7 @@ class Socket {
     private var connectCallbacks:    [() -> Void] = []
     private var disconnectCallbacks: [() -> Void] = []
     private var reconnectCallbacks:  [() -> Void] = []
+    private var eventCallbacks:      [String: [([Any]) -> Void]] = [:]
 
     private(set) var status: SocketStatus = .notConnected
     private var shouldReconnect: Bool = true
@@ -190,6 +191,14 @@ class Socket {
         case .disconnect: disconnectCallbacks.append(cb)
         case .reconnect:  reconnectCallbacks.append(cb)
         }
+    }
+
+    /// Registers a listener for a custom Socket.IO event
+    func on(_ event: String, callback: @escaping ([Any]) -> Void) {
+        if eventCallbacks[event] == nil {
+            eventCallbacks[event] = []
+        }
+        eventCallbacks[event]?.append(callback)
     }
 
     /// Remove all listeners for a given event (use before re-registering session handlers).
@@ -270,6 +279,22 @@ class Socket {
             startPingTimer()
             DispatchQueue.main.async {
                 self.connectCallbacks.forEach { $0() }
+            }
+        } else if text.hasPrefix("42") {
+            // Socket.IO Event: 42["event", data]
+            let jsonPart = String(text.dropFirst(2))
+            if let data = jsonPart.data(using: .utf8),
+               let array = try? JSONSerialization.jsonObject(with: data) as? [Any],
+               array.count >= 1,
+               let eventName = array[0] as? String {
+                
+                let eventData = Array(array.dropFirst())
+                DispatchQueue.main.async {
+                    self.eventCallbacks[eventName]?.forEach { $0(eventData) }
+                    
+                    // Also notify the Service if needed (using a bridge or another pattern)
+                    // For simplicity, we'll just use the eventCallbacks.
+                }
             }
         } else if text == "2" {
             // Server PING — reply with PONG

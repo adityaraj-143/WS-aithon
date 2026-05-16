@@ -1,0 +1,18 @@
+[
+  {
+    "fromUserId": "A34EAA51-EF1F-4AD6-9FBA-F5ABD597C232",
+    "fromDisplayName": "Guest-824",
+    "inviteLink": "wsapp://registry/08F0CDA2-FEC2-49ED-88CE-808A91B220F0",
+    "registryId": "08F0CDA2-FEC2-49ED-88CE-808A91B220F0",
+    "registryName": "Housewarming",
+    "toUserId": "8C70BC93-C6DB-4D8F-B5DC-34C0D064B106"
+  },
+  {
+    "fromUserId": "A34EAA51-EF1F-4AD6-9FBA-F5ABD597C232",
+    "fromDisplayName": "Guest-824",
+    "inviteLink": "wsapp://registry/A007284B-EFEA-470E-B761-B433E8616A06",
+    "registryId": "A007284B-EFEA-470E-B761-B433E8616A06",
+    "registryName": "Wedding",
+    "toUserId": "8C70BC93-C6DB-4D8F-B5DC-34C0D064B106"
+  }
+]

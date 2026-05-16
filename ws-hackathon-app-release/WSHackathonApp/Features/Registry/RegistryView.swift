@@ -13,6 +13,7 @@ struct RegistryView: View {
     @EnvironmentObject var cartRepo: CartRepository
     @EnvironmentObject var homeVM: HomeViewModel
 
+    @StateObject private var socketService = SocketService.shared
     @State private var showCreateSheet = false
     @State private var showPlannerSheet = false
     @State private var showDetailSheet = false
@@ -36,7 +37,12 @@ struct RegistryView: View {
                     }
                     .padding(.horizontal, 24)
                     .padding(.top, 24)
-                    .padding(.bottom, 32)
+                    .padding(.bottom, 20)
+
+                    if !socketService.pendingRegistryInvites.isEmpty {
+                        invitationsSection
+                            .padding(.bottom, 12)
+                    }
 
                     if viewModel.hasRegistry {
                         populatedStateView
@@ -86,6 +92,102 @@ struct RegistryView: View {
 }
 
 private extension RegistryView {
+    var invitationsSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Pending Invitations")
+                .font(.system(size: 14, weight: .bold))
+                .foregroundColor(.secondary)
+                .padding(.horizontal, 24)
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 16) {
+                    ForEach(socketService.pendingRegistryInvites, id: \.inviteLink) { invite in
+                        VStack(alignment: .leading, spacing: 12) {
+                            HStack {
+                                Circle()
+                                    .fill(Color.blue.opacity(0.1))
+                                    .frame(width: 32, height: 32)
+                                    .overlay(Image(systemName: "envelope.fill").font(.system(size: 12)).foregroundColor(.blue))
+                                
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(invite.fromDisplayName)
+                                        .font(.system(size: 14, weight: .bold))
+                                    Text("invited you")
+                                        .font(.system(size: 12))
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                            
+                            Text(invite.registryName ?? "A registry")
+                                .font(.system(size: 16, weight: .medium, design: .serif))
+                                .lineLimit(1)
+                            
+                            HStack(spacing: 8) {
+                                Button(action: {
+                                    joinRegistry(invite)
+                                }) {
+                                    Text("Join")
+                                        .font(.system(size: 13, weight: .bold))
+                                        .foregroundColor(.white)
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.vertical, 8)
+                                        .background(Color.blue)
+                                        .cornerRadius(8)
+                                }
+                                
+                                Button(action: {
+                                    socketService.acceptInvite(invite)
+                                }) {
+                                    Text("Ignore")
+                                        .font(.system(size: 13, weight: .bold))
+                                        .foregroundColor(.secondary)
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.vertical, 8)
+                                        .background(Color.gray.opacity(0.1))
+                                        .cornerRadius(8)
+                                }
+                            }
+                        }
+                        .padding(16)
+                        .frame(width: 220)
+                        .background(Color.white)
+                        .cornerRadius(16)
+                        .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
+                    }
+                }
+                .padding(.horizontal, 24)
+                .padding(.bottom, 4)
+            }
+        }
+    }
+
+    func joinRegistry(_ invite: ReceiveInvitePayload) {
+        // Mock "Joining" logic:
+        // In a real app, this would fetch registry data from backend.
+        // For the hackathon, we'll create a local copy or just switch to it.
+        if let regId = invite.registryId, let uuid = UUID(uuidString: regId) {
+            // Check if we already have it
+            if !registryRepo.registries.contains(where: { $0.id == uuid }) {
+                registryRepo.createRegistry(
+                    firstName: invite.fromDisplayName,
+                    lastName: " (Shared)",
+                    event: .wedding, // Default or parsed from name
+                    date: Date(),
+                    budget: "Unknown"
+                )
+                // Update the ID to match the invited one for "sync" illusion
+                if var last = registryRepo.registries.last {
+                    // This is hacky but for a demo it works to align them
+                    // registryRepo.activeRegistryId = last.id
+                }
+            } else {
+                registryRepo.activeRegistryId = uuid
+                showDetailSheet = true
+            }
+        }
+        socketService.acceptInvite(invite)
+    }
+
     var emptyStateView: some View {
         VStack(spacing: 24) {
             Spacer()

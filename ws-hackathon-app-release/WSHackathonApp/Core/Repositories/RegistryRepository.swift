@@ -14,6 +14,20 @@ final class RegistryRepository: ObservableObject {
     @Published var registries: [Registry] = []
     @Published var activeRegistryId: UUID?
     
+    private var cancellables = Set<AnyCancellable>()
+    
+    init() {
+        setupSocketListeners()
+    }
+    
+    private func setupSocketListeners() {
+        NotificationCenter.default.addObserver(forName: .didReceiveRegistryUpdate, object: nil, queue: .main) { [weak self] notification in
+            guard let dict = notification.object as? [String: Any],
+                  let self = self else { return }
+            self.applyRemoteUpdate(dict)
+        }
+    }
+    
     var currentRegistry: Registry? {
         get {
             guard let id = activeRegistryId else { return nil }
@@ -50,14 +64,9 @@ final class RegistryRepository: ObservableObject {
         
         registries.append(newRegistry)
         activeRegistryId = newRegistry.id
-    }
-    
-    // MARK: - Delete Registry
-    
-    func deleteRegistry() {
-        guard let id = activeRegistryId else { return }
-        registries.removeAll { $0.id == id }
-        activeRegistryId = registries.last?.id
+        
+        // Joining room for the new registry
+        SocketService.shared.joinRoom(registryId: newRegistry.id.uuidString)
     }
     
     // MARK: - Add Product
@@ -91,18 +100,12 @@ final class RegistryRepository: ObservableObject {
         if activeRegistryId == registryId {
             currentRegistry = registry
         }
-    }
-    
-    // MARK: - Remove Item
-    
-    func removeItem(_ productId: String) {
-        guard var registry = currentRegistry else { return }
         
-        registry.items.removeAll { $0.id == productId }
-        currentRegistry = registry
+        // SYNC: Push to other users
+        syncRegistry(registry)
     }
     
-    // MARK: - Update Quantity
+    // MARK: - Quantity Updates
     
     func increaseQty(_ productId: String) {
         guard var registry = currentRegistry else { return }
@@ -110,12 +113,12 @@ final class RegistryRepository: ObservableObject {
         if let index = registry.items.firstIndex(where: { $0.id == productId }) {
             registry.items[index].quantity += 1
             currentRegistry = registry
+            syncRegistry(registry)
         }
     }
     
     func decreaseQty(_ productId: String) {
         guard var registry = currentRegistry else { return }
-        
         guard let index = registry.items.firstIndex(where: { $0.id == productId }) else { return }
         
         if registry.items[index].quantity > 1 {
@@ -125,6 +128,64 @@ final class RegistryRepository: ObservableObject {
         }
         
         currentRegistry = registry
+        syncRegistry(registry)
+    }
+    
+    // MARK: - Sync Helpers
+    
+    private func syncRegistry(_ registry: Registry) {
+        // Convert to dict for socket
+        let itemsDict = registry.items.map { item -> [String: Any] in
+            return [
+                "id": item.id,
+                "title": item.title,
+                "price": item.price,
+                "imageUrl": item.imageUrl ?? "",
+                "quantity": item.quantity
+            ]
+        }
+        
+        let registryDict: [String: Any] = [
+            "id": registry.id.uuidString,
+            "firstName": registry.firstName,
+            "lastName": registry.lastName,
+            "items": itemsDict
+        ]
+        
+        SocketService.shared.syncRegistry(id: registry.id.uuidString, data: registryDict)
+    }
+    
+    private func applyRemoteUpdate(_ dict: [String: Any]) {
+        guard let idString = dict["id"] as? String,
+              let id = UUID(uuidString: idString) else { return }
+        
+        // Find if we have this registry
+        if let index = registries.firstIndex(where: { $0.id == id }) {
+            var registry = registries[index]
+            
+            // Update items
+            if let itemsArray = dict["items"] as? [[String: Any]] {
+                registry.items = itemsArray.compactMap { itemDict -> RegistryItem? in
+                    guard let itemId = itemDict["id"] as? String,
+                          let title = itemDict["title"] as? String,
+                          let price = itemDict["price"] as? Double,
+                          let qty = itemDict["quantity"] as? Int else { return nil }
+                    
+                    return RegistryItem(
+                        id: itemId,
+                        title: title,
+                        price: price,
+                        imageUrl: itemDict["imageUrl"] as? String,
+                        quantity: qty
+                    )
+                }
+            }
+            
+            registries[index] = registry
+            if activeRegistryId == id {
+                currentRegistry = registry
+            }
+        }
     }
     
     func quantity(for registryItem: RegistryItem) -> Int {

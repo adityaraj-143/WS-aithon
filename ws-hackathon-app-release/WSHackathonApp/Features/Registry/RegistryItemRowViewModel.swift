@@ -56,6 +56,6 @@ final class RegistryItemRowViewModel: ObservableObject {
     }
     
     func removeItem() {
-        registryRepo.removeItem(item.id)
+       // registryRepo.removeItem(item.id)
     }
 }

@@ -51,7 +51,7 @@ class HomeViewModel: ObservableObject {
     }
     
     func removeFromRegistry(_ product: ProductItem) {
-        registryRepository?.removeItem(product.id)
+//        registryRepository?.registries.removeItem(product.id)
     }
     
     func quantity(for product: ProductItem) -> Int {

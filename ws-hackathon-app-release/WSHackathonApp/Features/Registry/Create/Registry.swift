@@ -6,7 +6,20 @@
 //
 
 import Foundation
-struct Registry: Identifiable {
+
+enum RegistryEvent: String, CaseIterable, Identifiable, Codable {
+    case wedding = "Wedding"
+    case baby = "Baby Shower"
+    case birthday = "Birthday"
+    case housewarming = "Housewarming"
+    case holiday = "Holiday"
+    case other = "Other"
+    
+    var id: String { rawValue }
+    var title: String { rawValue }
+}
+
+struct Registry: Identifiable, Codable {
     let id: UUID
     let firstName: String
     let lastName: String
@@ -21,4 +34,12 @@ struct Registry: Identifiable {
         }
         return "\(firstName) \(lastName) - \(event.title)"
     }
+}
+
+struct RegistryItem: Identifiable, Codable {
+    let id: String
+    let title: String
+    let price: Double
+    let imageUrl: String?
+    var quantity: Int
 }

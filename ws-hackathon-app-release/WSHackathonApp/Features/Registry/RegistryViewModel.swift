@@ -55,6 +55,6 @@ final class RegistryViewModel: ObservableObject {
     // MARK: - Actions
     
     func deleteRegistry(using repository: RegistryRepository) {
-        repository.deleteRegistry()
+       // repository.deleteRegistry()
     }
 }

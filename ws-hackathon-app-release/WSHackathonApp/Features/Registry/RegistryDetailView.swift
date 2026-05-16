@@ -11,6 +11,9 @@ struct RegistryDetailView: View {
     @EnvironmentObject var cartRepo: CartRepository
     @EnvironmentObject var tabBarVM: WSTabBarViewModel
     @StateObject private var viewModel = RegistryDetailViewModel()
+    @State private var showInviteAlert = false
+    @State private var guestName = ""
+    @State private var showSuccessToast = false
     
     var body: some View {
         ZStack {
@@ -34,7 +37,23 @@ struct RegistryDetailView: View {
                                     .tracking(1.0)
                                     .foregroundColor(Color(red: 0.46, green: 0.50, blue: 0.44))
                                 
-                                Text("•")
+                                Spacer()
+                                
+                                Button(action: {
+                                    showInviteAlert = true
+                                }) {
+                                    HStack(spacing: 4) {
+                                        Image(systemName: "person.badge.plus")
+                                        Text("Invite")
+                                    }
+                                    .font(.system(size: 14, weight: .semibold))
+                                    .foregroundColor(.blue)
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 6)
+                                    .background(Color.blue.opacity(0.1))
+                                    .cornerRadius(12)
+                                }
+                            }
                                     .foregroundColor(.gray)
                                 
                                 Text(registry.date.formatted(date: .abbreviated, time: .omitted))
@@ -130,13 +149,49 @@ struct RegistryDetailView: View {
                                 .padding(.top, 16)
                             }
                         }
-                        .padding(.top, 40)
-                        .padding(.bottom, 60)
                     }
                 }
-            } else {
+            else {
                 Text("Registry not found")
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
+        }
+        .overlay(
+            VStack {
+                if showSuccessToast {
+                    Text("Invite sent to \(guestName)!")
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 24)
+                        .padding(.vertical, 12)
+                        .background(Color.green)
+                        .cornerRadius(25)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                        .padding(.top, 20)
+                    Spacer()
+                }
+            }
+        )
+        .alert("Invite Guest", isPresented: $showInviteAlert) {
+            TextField("Guest Name (e.g. Guest-123)", text: $guestName)
+                .textInputAutocapitalization(.never)
+            Button("Send") {
+                let success = SocketService.shared.sendInvite(toDisplayName: guestName, registry: registryRepo.currentRegistry)
+                if success {
+                    withAnimation {
+                        showSuccessToast = true
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                        withAnimation { 
+                            showSuccessToast = false
+                            guestName = ""
+                        }
+                    }
+                }
+            }
+            Button("Cancel", role: .cancel) { guestName = "" }
+        } message: {
+            Text("Enter the exact display name of the guest you want to invite to this registry.")
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -223,3 +278,4 @@ struct RegistryDetailView: View {
         }
     }
 }
+

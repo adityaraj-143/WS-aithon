@@ -51,6 +51,6 @@ class ProductDetailViewModel: ObservableObject {
     }
     
     func removeFromRegistry() {
-        registryRepository?.removeItem(product.id)
+       // registryRepository?.removeItem(product.id)
     }
 }

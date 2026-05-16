@@ -12,69 +12,224 @@ const io = new Server(server, {
   cors: { origin: "*" }
 });
 
-// In-memory store for active users
-// This is temporary memory (lost on server restart)
-const activeUsers = new Map()
+/**
+ * Requirement 2: Backend should maintain an in-memory active users map:
+ * Map<userId, { socketId, displayName }>
+ */
+let activeUsers = new Map();
+let invitations = []; // Persisted list of invites
+let registries = {}; // Persisted registry data: { registryId: { data } }
+
+// Paths for persistence
+const USERS_FILE = path.join(__dirname, "data", "users.json");
+const INVITES_FILE = path.join(__dirname, "data", "invites.json");
+const REGISTRIES_FILE = path.join(__dirname, "data", "registries.json");
+
+/**
+ * Persistence Helpers
+ */
+function loadData() {
+  try {
+    if (!fs.existsSync(path.join(__dirname, "data"))) {
+      fs.mkdirSync(path.join(__dirname, "data"));
+    }
+    if (fs.existsSync(USERS_FILE)) {
+      const data = JSON.parse(fs.readFileSync(USERS_FILE, "utf8"));
+      // We only restore the name mapping, socket IDs will be new
+      Object.entries(data).forEach(([userId, name]) => {
+        activeUsers.set(userId, { socketId: null, displayName: name });
+      });
+      console.log(`📦 Loaded ${activeUsers.size} users from storage`);
+    }
+    if (fs.existsSync(INVITES_FILE)) {
+      invitations = JSON.parse(fs.readFileSync(INVITES_FILE, "utf8"));
+      console.log(`📦 Loaded ${invitations.length} invitations from storage`);
+    }
+    if (fs.existsSync(REGISTRIES_FILE)) {
+      registries = JSON.parse(fs.readFileSync(REGISTRIES_FILE, "utf8"));
+      console.log(`📦 Loaded ${Object.keys(registries).length} registries from storage`);
+    }
+  } catch (err) {
+    console.error("❌ Error loading persisted data:", err);
+  }
+}
+
+function saveUsers() {
+  const data = {};
+  for (let [userId, userData] of activeUsers.entries()) {
+    data[userId] = userData.displayName;
+  }
+  fs.writeFileSync(USERS_FILE, JSON.stringify(data, null, 2));
+}
+
+function saveInvites() {
+  fs.writeFileSync(INVITES_FILE, JSON.stringify(invitations, null, 2));
+}
+
+function saveRegistries() {
+  fs.writeFileSync(REGISTRIES_FILE, JSON.stringify(registries, null, 2));
+}
+
+// Initial load
+loadData();
 
 io.on("connection", (socket) => {
-
-  // Log every new socket connection
-  console.log("🔌 New socket connected:", socket.id)
+  console.log("🔌 New socket connected:", socket.id);
 
   /**
-   * EVENT: connect_user
-   * Triggered when iOS app launches
-   * Sends user identity to backend
+   * Requirement 4: connect_user (Client -> Server)
+   * Payload: { userId, displayName }
    */
   socket.on("connect_user", (data) => {
+    const { userId, displayName } = data;
+    if (!userId || !displayName) return;
 
-    const { userId, displayName } = data
-
-    // Store user in memory map
+    // Store user in active users map
     activeUsers.set(userId, {
       socketId: socket.id,
-      displayName
-    })
+      displayName: displayName
+    });
 
-    // DEBUG LOG 1: single user added
-    console.log("👤 User added:")
-    console.log(data)
+    console.log(`👤 User Connected: ${displayName} (${userId})`);
 
-    // DEBUG LOG 2: full active user list
-    console.log("📌 Active Users Now:")
-    console.log(Array.from(activeUsers.entries()))
-  })
+    // Persist user identity
+    saveUsers();
+
+    // Check for pending invites for this user
+    const pending = invitations.filter(inv => inv.toUserId === userId);
+    if (pending.length > 0) {
+        console.log(`📬 Sending ${pending.length} pending invites to ${displayName}`);
+        pending.forEach(invite => {
+            socket.emit("receive_invite", invite);
+        });
+    }
+
+    // Requirement 3: broadcast updated active users list to all clients
+    broadcastUsersList();
+  });
 
   /**
-   * HANDLE DISCONNECT
+   * EVENT: join_registry_room
+   * Allows users to receive real-time updates for a specific registry
+   */
+  socket.on("join_registry_room", (registryId) => {
+    socket.join(registryId);
+    console.log(`🏠 Socket ${socket.id} joined room: ${registryId}`);
+    
+    // Send existing data if any
+    if (registries[registryId]) {
+        socket.emit("registry_updated", registries[registryId]);
+    }
+  });
+
+  /**
+   * EVENT: sync_registry
+   * Called whenever a user modifies their registry.
+   * Updates the global state and broadcasts to the room.
+   */
+  socket.on("sync_registry", (payload) => {
+    const { registryId, registryData } = payload;
+    if (!registryId || !registryData) return;
+
+    console.log(`🔄 Syncing registry: ${registryId} (Items: ${registryData.items?.length || 0})`);
+    
+    // Update master copy
+    registries[registryId] = registryData;
+    saveRegistries();
+
+    // Broadcast update to everyone in the room
+    io.to(registryId).emit("registry_updated", registryData);
+  });
+
+  /**
+   * Requirement 4: get_users (Client -> Server)
+   * Returns active users list
+   */
+  socket.on("get_users", () => {
+    socket.emit("users_list", Array.from(activeUsers.entries())
+      .filter(([_, data]) => data.socketId !== null) // Only show currently online
+      .map(([userId, data]) => ({
+        userId,
+        displayName: data.displayName
+      })));
+  });
+
+  /**
+   * Requirement 4: send_invite (Client -> Server)
+   * Payload: { fromUserId, toUserId, inviteLink }
+   */
+  socket.on("send_invite", (payload) => {
+    const { fromUserId, toUserId, inviteLink, registryId, registryName } = payload;
+    const targetUser = activeUsers.get(toUserId);
+    const sender = activeUsers.get(fromUserId);
+
+    console.log(`📩 Invite Request: from ${fromUserId} to ${toUserId} for ${registryName || 'room'}`);
+
+    const inviteData = {
+        fromUserId: fromUserId,
+        fromDisplayName: sender ? sender.displayName : "Someone",
+        inviteLink: inviteLink,
+        registryId: registryId,
+        registryName: registryName,
+        toUserId: toUserId // Store recipient to persist it
+    };
+
+    // Persist invitation
+    invitations.push(inviteData);
+    saveInvites();
+
+    if (targetUser && targetUser.socketId) {
+      console.log(`✅ Sending real-time invite to ${targetUser.displayName} (${targetUser.socketId})`);
+      io.to(targetUser.socketId).emit("receive_invite", inviteData);
+    } else {
+      console.log(`🕒 User ${toUserId} is offline. Invite saved for later.`);
+    }
+  });
+
+  /**
+   * Requirement 5: Remove disconnected users automatically
    */
   socket.on("disconnect", () => {
-
-    console.log("❌ Socket disconnected:", socket.id)
-
-    // Remove user from memory when socket disconnects
+    let disconnectedUserId = null;
     for (let [userId, userData] of activeUsers.entries()) {
       if (userData.socketId === socket.id) {
-        activeUsers.delete(userId)
-        break
+        disconnectedUserId = userId;
+        // Mark as offline but keep identity for persistence
+        activeUsers.set(userId, { ...userData, socketId: null });
+        break;
       }
     }
 
-    // DEBUG LOG after removal
-    console.log("📌 Active Users After Disconnect:")
-    console.log(Array.from(activeUsers.entries()))
-  })
+    if (disconnectedUserId) {
+      console.log(`❌ User Disconnected: ${disconnectedUserId}`);
+      // Requirement 5: Broadcast updated user list after disconnect
+      broadcastUsersList();
+    }
+  });
+});
 
-})
+/**
+ * Helper to broadcast users list to everyone
+ */
+function broadcastUsersList() {
+  const users = Array.from(activeUsers.entries())
+    .filter(([_, data]) => data.socketId !== null) // Only broadcast online users
+    .map(([userId, data]) => ({
+        userId,
+        displayName: data.displayName
+    }));
+  
+  // Requirement 4: users_list (Server -> Client)
+  io.emit("users_list", users);
+  console.log(`📢 Broadcasted users list: ${users.length} users active`);
+}
 
 app.use(express.json());
-
-// Serve image files from the local "images" directory
-// Handles URLs like /images//img17m.jpg (double-slash from paths starting with "/")
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 function readJson(fileName) {
   const filePath = path.join(__dirname, "responses", fileName);
+  if (!fs.existsSync(filePath)) return {};
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
 }
 
@@ -85,7 +240,7 @@ function delayedJson(res, fileName, status = 200, delay = 500) {
 }
 
 app.get("/health", (req, res) => {
-  res.json({ status: "ok" });
+  res.json({ status: "ok", activeUsersCount: activeUsers.size });
 });
 
 app.post("/login", (req, res) => {
@@ -108,7 +263,6 @@ app.get("/skus", (req, res) => {
   return delayedJson(res, "skus.json", 200, 700);
 });
 
-
 server.listen(PORT, "0.0.0.0", () => {
-  console.log(`Mock API running on http://0.0.0.0:${PORT}`);
+  console.log(`🚀 Real-time Backend running on http://0.0.0.0:${PORT}`);
 });
