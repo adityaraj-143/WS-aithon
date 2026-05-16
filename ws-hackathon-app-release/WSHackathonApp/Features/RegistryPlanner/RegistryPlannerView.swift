@@ -29,6 +29,9 @@ struct RegistryPlannerView: View {
                     stateContent
                 }
             }
+            .onTapGesture {
+                hideKeyboard()
+            }
             .navigationTitle(planningContext == nil ? "AI Registry Planner" : "AI Registry Plan")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -52,7 +55,7 @@ struct RegistryPlannerView: View {
         .task(id: productDTOs.count) {
             viewModel.buildIndex(dtos: productDTOs)
         }
-        .onChange(of: viewModel.indexReady) { _ in
+        .onChange(of: viewModel.indexReady) {
             triggerInitialSearchIfNeeded()
         }
     }

@@ -18,6 +18,9 @@ struct ProductDetailView: View {
     
     @State private var showRegistrySheet = false
     @State private var selectedRegistryIds: Set<UUID> = []
+    @State private var showCartAlert = false
+    @State private var cartAlertMessage = "Added to cart!"
+    @State private var showConfetti = false
     
     var body: some View {
         ZStack(alignment: .top) {
@@ -72,15 +75,21 @@ struct ProductDetailView: View {
                         .padding(.top, 30)
                         
                         // Pills HStack wrapping
-                        HStack(spacing: 10) {
-                            if viewModel.product.availability != "NLA" {
-                                pill("IN STOCK")
-                            }
-                            if viewModel.product.isFreeShipping {
-                                pill("FREE SHIPPING")
-                            }
-                            if viewModel.product.canGiftWrap {
-                                pill("GIFT WRAP AVAILABLE")
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 10) {
+                                if viewModel.product.availability != "NLA" {
+                                    pill("IN STOCK")
+                                }
+                                if viewModel.product.isFreeShipping {
+                                    pill("FREE SHIPPING")
+                                }
+                                if viewModel.product.canGiftWrap {
+                                    pill("GIFT WRAP AVAILABLE")
+                                }
+                                
+                                let warranties = ["6 MONTHS WARRANTY", "1 YEAR WARRANTY", "2 YEARS WARRANTY"]
+                                let warrantyIndex = abs(viewModel.product.id.hashValue) % warranties.count
+                                pill(warranties[warrantyIndex])
                             }
                         }
                         
@@ -129,6 +138,40 @@ struct ProductDetailView: View {
             }
             .padding(.horizontal, 20)
             .padding(.top, 20)
+            
+            if showConfetti {
+                ConfettiOverlay()
+                    .allowsHitTesting(false)
+                    .zIndex(2)
+                    .id(UUID())
+            }
+            
+            if showCartAlert {
+                // Toast notification
+                VStack {
+                    Spacer()
+                    HStack(spacing: 12) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundColor(Color(red: 175/255, green: 155/255, blue: 130/255))
+                            .font(.system(size: 22))
+                        Text(cartAlertMessage)
+                            .font(.system(size: 15, weight: .medium))
+                            .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 14)
+                    .background(Color.white)
+                    .clipShape(Capsule())
+                    .shadow(color: .black.opacity(0.1), radius: 12, y: 4)
+                    .overlay(
+                        Capsule()
+                            .stroke(Color(red: 0.9, green: 0.9, blue: 0.9), lineWidth: 1)
+                    )
+                    .padding(.bottom, 100)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
+                .zIndex(3)
+            }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
             bottomActionBar
@@ -162,19 +205,58 @@ struct ProductDetailView: View {
     }
     
     private var bottomActionBar: some View {
-        Button(action: {
-            showRegistrySheet = true
-        }) {
-            HStack {
-                Image(systemName: "plus")
-                Text("Add to Repository")
+        HStack(spacing: 12) {
+            Button(action: {
+                showRegistrySheet = true
+            }) {
+                HStack {
+                    Image(systemName: "plus")
+                    Text("Add to Registry")
+                }
+                .font(.system(size: 15, weight: .medium))
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
+                .background(Color(red: 115/255, green: 125/255, blue: 105/255))
+                .clipShape(Capsule())
             }
-            .font(.system(size: 15, weight: .medium))
-            .foregroundColor(.white)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 16)
-            .background(Color(red: 115/255, green: 125/255, blue: 105/255))
-            .clipShape(Capsule())
+            
+            let isInCart = cartRepository.items.contains(where: { $0.id == viewModel.product.id })
+            Button(action: {
+                if isInCart {
+                    cartRepository.remove(productId: viewModel.product.id)
+                    cartAlertMessage = "Removed from cart!"
+                    withAnimation(.spring()) {
+                        showCartAlert = true
+                        showConfetti = false
+                    }
+                } else {
+                    viewModel.addToCart()
+                    cartAlertMessage = "Added to cart!"
+                    withAnimation(.spring()) {
+                        showCartAlert = true
+                        showConfetti = true
+                    }
+                }
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    withAnimation(.easeInOut) {
+                        showCartAlert = false
+                        showConfetti = false
+                    }
+                }
+            }) {
+                HStack {
+                    Image(systemName: isInCart ? "cart.fill.badge.minus" : "cart.badge.plus")
+                    Text(isInCart ? "Added in cart" : "Add to Cart")
+                }
+                .font(.system(size: 15, weight: .medium))
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
+                .background(Color(red: 175/255, green: 155/255, blue: 130/255))
+                .clipShape(Capsule())
+            }
         }
         .padding(.horizontal, 20)
         .padding(.top, 16)
@@ -232,7 +314,7 @@ struct RegistrySelectionSheet: View {
             VStack(alignment: .leading, spacing: 0) {
                 // Header
                 HStack {
-                    Text("Save to Repository")
+                    Text("Save to Registry")
                         .font(.system(size: 24, weight: .regular, design: .serif))
                         .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
                     Spacer()
@@ -260,7 +342,7 @@ struct RegistrySelectionSheet: View {
                             HStack {
                                 Spacer()
                                 Image(systemName: "plus")
-                                Text("Create New Repository")
+                                Text("Create New Registry")
                                     .font(.system(size: 15, weight: .medium))
                                 Spacer()
                             }
@@ -311,11 +393,11 @@ struct RegistrySelectionSheet: View {
     
     private var saveButtonTitle: String {
         if selectedIds.isEmpty {
-            return "Select a Repository"
+            return "Select a Registry"
         } else if selectedIds.count == 1, let id = selectedIds.first, let reg = registries.first(where: { $0.id == id }) {
             return "Save to \(reg.displayName)"
         } else {
-            return "Save to Multiple Repositories"
+            return "Save to Multiple Registries"
         }
     }
     

@@ -33,6 +33,8 @@ struct WSTabView: View {
             HomeView()
         case .registry:
             RegistryView()
+        case .cart:
+            CartView()
         }
     }
 }

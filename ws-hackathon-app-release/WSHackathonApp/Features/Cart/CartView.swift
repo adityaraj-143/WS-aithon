@@ -11,22 +11,42 @@ struct CartView: View {
     @StateObject private var viewModel = CartViewModel()
     @EnvironmentObject var cartRepository: CartRepository
     @EnvironmentObject var tabBarVM: WSTabBarViewModel
+    @EnvironmentObject var homeVM: HomeViewModel
+
+    private let bgColor = Color(red: 245/255, green: 243/255, blue: 237/255)
+    private let warmBrown = Color(red: 175/255, green: 155/255, blue: 130/255)
+    
+    @State private var showCheckout = false
 
     var body: some View {
         NavigationStack {
             ZStack(alignment: .bottom) {
-                Color.wsBackground.ignoresSafeArea()
+                bgColor.ignoresSafeArea()
 
-                if viewModel.isEmptyCart {
-                    emptyState
-                } else {
-                    cartContent
+                VStack(alignment: .leading, spacing: 0) {
+                    headerView
+                    
+                    if viewModel.isEmptyCart {
+                        emptyState
+                    } else {
+                        cartContent
+                    }
                 }
             }
-            .navigationTitle(AppStrings.Cart.title)
+            .navigationBarHidden(true)
         }
         .onAppear {
             viewModel.bind(repository: cartRepository)
+            viewModel.updateRecommendations(allProducts: homeVM.products)
+        }
+        .onChange(of: viewModel.items.count) {
+            viewModel.updateRecommendations(allProducts: homeVM.products)
+        }
+        .fullScreenCover(isPresented: $showCheckout) {
+            CheckoutView(
+                items: viewModel.items,
+                totalPrice: cartRepository.totalPrice
+            )
         }
     }
 }
@@ -35,13 +55,49 @@ struct CartView: View {
 
 private extension CartView {
 
+    // ─── Header View ─────────────────────────────────────────────
+    var headerView: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("Cart")
+                .font(.system(size: 34, weight: .regular, design: .serif))
+                .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+            
+            if !viewModel.isEmptyCart {
+                Text("\(viewModel.items.reduce(0) { $0 + $1.quantity }) items in your cart")
+                    .font(.system(size: 15))
+                    .foregroundColor(Color(red: 0.45, green: 0.45, blue: 0.45))
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 20)
+        .padding(.top, 20)
+        .padding(.bottom, 16)
+    }
+
     // ─── Empty State ─────────────────────────────────────────────
     var emptyState: some View {
-        VStack {
+        VStack(spacing: 20) {
             Spacer()
-            EmptyCartView()
+            
+            Image(systemName: "cart")
+                .font(.system(size: 52, weight: .light))
+                .foregroundColor(Color(red: 0.7, green: 0.7, blue: 0.7))
+                .padding(.bottom, 4)
+
+            Text(AppStrings.Cart.emptyMessage)
+                .font(.system(size: 20, weight: .medium, design: .serif))
+                .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                .multilineTextAlignment(.center)
+
+            Text("Use the tab bar to browse and add items")
+                .font(.system(size: 15))
+                .foregroundColor(Color(red: 0.45, green: 0.45, blue: 0.45))
+                .multilineTextAlignment(.center)
+            
             Spacer()
         }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 20)
     }
 
     // ─── Cart Content ────────────────────────────────────────────
@@ -49,13 +105,6 @@ private extension CartView {
         VStack(spacing: 0) {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 0) {
-
-                    // Stats header
-                    summaryHeader
-                        .padding(.horizontal, 20)
-                        .padding(.top, 8)
-                        .padding(.bottom, 16)
-
                     // Item list
                     LazyVStack(spacing: 12) {
                         ForEach(viewModel.items) { item in
@@ -80,107 +129,110 @@ private extension CartView {
         }
     }
 
-    // ─── Summary Header (Achievement-style stat badges) ──────────
-    var summaryHeader: some View {
-        HStack(spacing: 12) {
-            StatBadge(
-                value: "\(viewModel.items.count)",
-                label: "Items",
-                icon: "bag.fill",
-                tint: .wsBrand,
-                background: .pastelMint
-            )
-            StatBadge(
-                value: "\(viewModel.items.reduce(0) { $0 + $1.quantity })",
-                label: "Qty",
-                icon: "number",
-                tint: .purple,
-                background: .pastelLavender
-            )
-            StatBadge(
-                value: viewModel.totalPriceText,
-                label: "Total",
-                icon: "dollarsign.circle.fill",
-                tint: .orange,
-                background: .pastelPeach
-            )
-        }
-    }
-
     // ─── Checkout Bar ────────────────────────────────────────────
     var checkoutBar: some View {
-        VStack(spacing: 14) {
-            HStack {
-                Text(AppStrings.Cart.total)
-                    .font(.headline)
-                    .foregroundStyle(Color.wsBody)
-                Spacer()
-                Text(viewModel.totalPriceText)
-                    .font(.title2.weight(.heavy))
-                    .foregroundStyle(Color.wsTitle)
-            }
-
+        HStack(spacing: 16) {
             Button {
-                // TODO: Checkout flow
+                showCheckout = true
             } label: {
                 Text(AppStrings.Cart.checkoutButton)
+                    .font(.system(size: 15, weight: .medium))
+                    .foregroundColor(.white)
+                    .frame(minWidth: 150)
+                    .padding(.vertical, 16)
+                    .background(warmBrown)
+                    .clipShape(Capsule())
             }
-            .buttonStyle(WSPrimaryButtonStyle())
+
+            Spacer()
+
+            VStack(alignment: .trailing, spacing: 2) {
+                Text(AppStrings.Cart.total)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(Color(red: 0.45, green: 0.45, blue: 0.45))
+                Text(viewModel.totalPriceText)
+                    .font(.system(size: 22, weight: .regular, design: .serif))
+                    .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+            }
         }
         .padding(20)
-        .background(
-            Color.wsCard
-                .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                .shadow(color: .black.opacity(0.08), radius: 16, x: 0, y: -4)
-                .ignoresSafeArea(edges: .bottom)
-        )
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .shadow(color: Color.black.opacity(0.06), radius: 16, y: 4)
+        .padding(.horizontal, 20)
+        .padding(.top, 8)
+        .padding(.bottom, 24)
     }
 
     // ─── Smart Recommendations ───────────────────────────────────
+    @ViewBuilder
     var smartRecommendationsSection: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            WSSectionHeader(title: "Complete Your Bundle")
-                .padding(.horizontal, 20)
+        if !viewModel.recommendations.isEmpty {
+            VStack(alignment: .leading, spacing: 14) {
+                Text("Complete Your Bundle")
+                    .font(.system(size: 20, weight: .regular, design: .serif))
+                    .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                    .padding(.horizontal, 20)
 
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 14) {
-                    ForEach(0..<4) { index in
-                        VStack(alignment: .leading, spacing: 6) {
-                            ZStack {
-                                Color.wsElevated
-                                Image(systemName: "sparkles")
-                                    .font(.title2)
-                                    .foregroundStyle(Color.wsBrand)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 12) {
+                        ForEach(viewModel.recommendations) { product in
+                            VStack(alignment: .leading, spacing: 0) {
+                                ZStack {
+                                    Color(red: 0.95, green: 0.95, blue: 0.95)
+                                    CustomAsyncImage(url: product.imageURL)
+                                }
+                                .frame(width: 140, height: 140)
+                                .clipShape(RoundedRectangle(cornerRadius: 14))
+                                .clipped()
+
+                                VStack(alignment: .leading, spacing: 4) {
+                                    if let brand = product.brand {
+                                        Text(brand.uppercased())
+                                            .font(.system(size: 9, weight: .bold))
+                                            .tracking(1)
+                                            .foregroundColor(Color(red: 0.5, green: 0.5, blue: 0.5))
+                                            .lineLimit(1)
+                                    }
+                                    
+                                    Text(product.title)
+                                        .font(.system(size: 13, weight: .medium))
+                                        .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                                        .lineLimit(2)
+                                        .frame(minHeight: 32, alignment: .topLeading)
+
+                                    Text(product.price?.formatted(.currency(code: "USD")) ?? "$0.00")
+                                        .font(.system(size: 12))
+                                        .foregroundColor(Color(red: 0.4, green: 0.35, blue: 0.3))
+                                }
+                                .padding(.top, 8)
+                                .padding(.horizontal, 4)
+
+                                Button {
+                                    withAnimation {
+                                        viewModel.add(product: product)
+                                        viewModel.updateRecommendations(allProducts: homeVM.products)
+                                    }
+                                } label: {
+                                    Text("+ Add to Cart")
+                                        .font(.system(size: 12, weight: .medium))
+                                        .foregroundColor(.white)
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.vertical, 8)
+                                        .background(warmBrown)
+                                        .clipShape(Capsule())
+                                }
+                                .padding(.top, 8)
+                                .padding(.horizontal, 4)
+                                .padding(.bottom, 4)
                             }
-                            .frame(width: 130, height: 130)
-                            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-
-                            Text("Matching Item \(index + 1)")
-                                .font(.subheadline.weight(.medium))
-                                .foregroundStyle(Color.wsTitle)
-                                .lineLimit(1)
-
-                            Text("$49.99")
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(Color.wsBody)
-
-                            Button {
-                                // Mock add
-                            } label: {
-                                Text("Add")
-                                    .font(.caption.weight(.bold))
-                                    .foregroundStyle(.white)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 8)
-                                    .background(Color.wsBrand)
-                                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                            }
+                            .frame(width: 140)
+                            .background(bgColor)
+                            .cornerRadius(16)
                         }
-                        .frame(width: 130)
-                        .wsCard(cornerRadius: 14, padding: 10)
                     }
+                    .padding(.horizontal, 20)
                 }
-                .padding(.horizontal, 20)
             }
         }
     }
