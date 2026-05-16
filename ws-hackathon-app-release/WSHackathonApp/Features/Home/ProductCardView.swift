@@ -17,33 +17,17 @@ struct ProductCardView: View {
     let onRemoveFromRegistry: () -> Void
     let onSelect: () -> Void
     
-    private let sageColor = Color(hex: "757D6B")
+    private let accentColor = Color.brandPrimary
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             
             // MARK: - Image Section
             ZStack(alignment: .top) {
-                AsyncImage(url: product.imageURL) { phase in
-                    switch phase {
-                    case .empty:
-                        Color(red: 0.95, green: 0.95, blue: 0.95)
-                            .overlay(ProgressView())
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .scaledToFill()
-                    case .failure(_):
-                        Color(red: 0.95, green: 0.95, blue: 0.95)
-                            .overlay(Image(systemName: "photo").foregroundColor(.gray))
-                    @unknown default:
-                        Color(red: 0.95, green: 0.95, blue: 0.95)
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .frame(height: 180)
-                .clipShape(RoundedRectangle(cornerRadius: 24))
-                .clipped()
+                CustomAsyncImage(url: product.imageURL)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 180)
+                    .clipShape(RoundedRectangle(cornerRadius: 24))
                 .onTapGesture(perform: onSelect)
                 
                 HStack(alignment: .top) {
@@ -58,7 +42,7 @@ struct ProductCardView: View {
                             Button(action: onRemove) {
                                 Image(systemName: "minus")
                                     .font(.system(size: 10, weight: .bold))
-                                    .foregroundColor(sageColor)
+                                    .foregroundColor(accentColor)
                                     .frame(width: 24, height: 24)
                                     .background(Color.white)
                                     .clipShape(Circle())
@@ -66,13 +50,13 @@ struct ProductCardView: View {
                             
                             Text("\(quantity)")
                                 .font(.system(size: 13, weight: .bold))
-                                .foregroundColor(.primary)
+                                .foregroundColor(.textPrimary)
                                 .frame(minWidth: 12)
                             
                             Button(action: onAdd) {
                                 Image(systemName: "plus")
                                     .font(.system(size: 10, weight: .bold))
-                                    .foregroundColor(sageColor)
+                                    .foregroundColor(accentColor)
                                     .frame(width: 24, height: 24)
                                     .background(Color.white)
                                     .clipShape(Circle())
@@ -92,7 +76,7 @@ struct ProductCardView: View {
                                 
                                 Image(systemName: "cart")
                                     .font(.system(size: 14, weight: .bold))
-                                    .foregroundColor(sageColor)
+                                    .foregroundColor(accentColor)
                             }
                         }
                     }
@@ -106,13 +90,13 @@ struct ProductCardView: View {
                     Text(brand.uppercased())
                         .font(.system(size: 11, weight: .medium))
                         .kerning(0.5)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.textSecondary)
                         .lineLimit(1)
                 }
                 
                 Text(product.title)
                     .font(.system(size: 16, weight: .regular, design: .serif))
-                    .foregroundColor(.primary)
+                    .foregroundColor(.textPrimary)
                     .lineLimit(2)
                     .fixedSize(horizontal: false, vertical: true)
                     .frame(height: 44, alignment: .topLeading)
@@ -120,7 +104,7 @@ struct ProductCardView: View {
                 if let price = product.price {
                     Text(price.formatted(.currency(code: "USD")))
                         .font(.system(size: 15, weight: .regular, design: .serif))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.textSecondary)
                 }
             }
             .padding(.horizontal, 4)

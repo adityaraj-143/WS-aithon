@@ -12,9 +12,9 @@ struct CheckoutView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var selectedPayment: PaymentMethod = .creditCard
     
-    private let bgColor = Color(red: 245/255, green: 243/255, blue: 237/255)
-    private let warmBrown = Color(red: 175/255, green: 155/255, blue: 130/255)
-    private let oliveGreen = Color(red: 115/255, green: 125/255, blue: 105/255)
+    private let bgColor = Color.appBackground
+    private let brandColor = Color.brandPrimary
+    private let accentSuccess = Color.wsSuccess
     
     var body: some View {
         ZStack(alignment: .top) {
@@ -25,7 +25,7 @@ struct CheckoutView: View {
                 HStack {
                     Text("Checkout")
                         .font(.system(size: 24, weight: .regular, design: .serif))
-                        .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                        .foregroundColor(.textPrimary)
                     Spacer()
                     Button(action: { dismiss() }) {
                         Image(systemName: "xmark")
@@ -80,7 +80,7 @@ struct CheckoutView: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 18)
-                    .background(warmBrown)
+                    .background(brandColor)
                     .clipShape(Capsule())
                 }
                 .padding(.horizontal, 24)
@@ -113,19 +113,19 @@ struct CheckoutView: View {
                     VStack(alignment: .leading, spacing: 3) {
                         Text(item.title)
                             .font(.system(size: 14, weight: .medium))
-                            .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                            .foregroundColor(.textPrimary)
                             .lineLimit(1)
                         
                         Text("Qty: \(item.quantity)")
                             .font(.system(size: 12))
-                            .foregroundColor(Color(red: 0.5, green: 0.5, blue: 0.5))
+                            .foregroundColor(.textTertiary)
                     }
                     
                     Spacer()
                     
                     Text("$\(item.price * Double(item.quantity), specifier: "%.2f")")
                         .font(.system(size: 14, weight: .medium))
-                        .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                        .foregroundColor(.textPrimary)
                 }
             }
         }
@@ -154,21 +154,21 @@ struct CheckoutView: View {
             HStack(spacing: 14) {
                 Image(systemName: method.icon)
                     .font(.system(size: 18))
-                    .foregroundColor(isSelected ? warmBrown : Color(red: 0.5, green: 0.5, blue: 0.5))
+                    .foregroundColor(isSelected ? brandColor : Color.textTertiary)
                     .frame(width: 40, height: 40)
                     .background(
                         RoundedRectangle(cornerRadius: 10)
-                            .fill(isSelected ? warmBrown.opacity(0.1) : Color(red: 0.92, green: 0.91, blue: 0.88))
+                            .fill(isSelected ? brandColor.opacity(0.1) : Color.brandAccentWash)
                     )
                 
                 VStack(alignment: .leading, spacing: 3) {
                     Text(method.title)
                         .font(.system(size: 14, weight: .medium))
-                        .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                        .foregroundColor(.textPrimary)
                     
                     Text(method.subtitle)
                         .font(.system(size: 12))
-                        .foregroundColor(Color(red: 0.5, green: 0.5, blue: 0.5))
+                        .foregroundColor(.textTertiary)
                 }
                 
                 Spacer()
@@ -176,12 +176,12 @@ struct CheckoutView: View {
                 // Radio
                 ZStack {
                     Circle()
-                        .stroke(isSelected ? Color.clear : Color(red: 0.8, green: 0.8, blue: 0.8), lineWidth: 1.5)
+                        .stroke(isSelected ? Color.clear : Color.textMuted, lineWidth: 1.5)
                         .frame(width: 22, height: 22)
                     
                     if isSelected {
                         Circle()
-                            .fill(warmBrown)
+                            .fill(brandColor)
                             .frame(width: 22, height: 22)
                         Image(systemName: "checkmark")
                             .font(.system(size: 11, weight: .bold))
@@ -192,11 +192,11 @@ struct CheckoutView: View {
             .padding(14)
             .background(
                 RoundedRectangle(cornerRadius: 16)
-                    .fill(isSelected ? warmBrown.opacity(0.06) : Color.white)
+                    .fill(isSelected ? brandColor.opacity(0.06) : Color.surfacePrimary)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 16)
-                    .stroke(isSelected ? warmBrown.opacity(0.3) : Color(red: 0.9, green: 0.9, blue: 0.9), lineWidth: 1)
+                    .stroke(isSelected ? brandColor.opacity(0.3) : Color.borderSubtle, lineWidth: 1)
             )
         }
         .buttonStyle(PlainButtonStyle())
@@ -212,19 +212,19 @@ struct CheckoutView: View {
                 HStack(alignment: .top, spacing: 12) {
                     Image(systemName: offer.icon)
                         .font(.system(size: 16))
-                        .foregroundColor(oliveGreen)
+                        .foregroundColor(accentSuccess)
                         .frame(width: 36, height: 36)
-                        .background(oliveGreen.opacity(0.1))
+                        .background(accentSuccess.opacity(0.1))
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                     
                     VStack(alignment: .leading, spacing: 4) {
                         Text(offer.title)
                             .font(.system(size: 13, weight: .semibold))
-                            .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                            .foregroundColor(.textPrimary)
                         
                         Text(offer.description)
                             .font(.system(size: 12))
-                            .foregroundColor(Color(red: 0.5, green: 0.5, blue: 0.5))
+                            .foregroundColor(.textTertiary)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                 }
@@ -244,16 +244,16 @@ struct CheckoutView: View {
             priceRow("Estimated Tax", value: totalPrice * 0.08)
             
             Divider()
-                .background(Color(red: 0.85, green: 0.85, blue: 0.85))
+                .background(Color.borderSubtle)
             
             HStack {
                 Text("Total")
                     .font(.system(size: 16, weight: .semibold, design: .serif))
-                    .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                    .foregroundColor(.textPrimary)
                 Spacer()
                 Text((totalPrice + totalPrice * 0.08).formatted(.currency(code: "USD")))
                     .font(.system(size: 18, weight: .regular, design: .serif))
-                    .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                    .foregroundColor(.textPrimary)
             }
         }
     }
@@ -262,16 +262,16 @@ struct CheckoutView: View {
         HStack {
             Text(title)
                 .font(.system(size: 14))
-                .foregroundColor(Color(red: 0.45, green: 0.45, blue: 0.45))
+                .foregroundColor(.textSecondary)
             Spacer()
             if let label {
                 Text(label)
                     .font(.system(size: 14, weight: .medium))
-                    .foregroundColor(oliveGreen)
+                    .foregroundColor(accentSuccess)
             } else {
                 Text(value.formatted(.currency(code: "USD")))
                     .font(.system(size: 14))
-                    .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                    .foregroundColor(.textPrimary)
             }
         }
     }
@@ -282,12 +282,12 @@ struct CheckoutView: View {
         Text(title)
             .font(.system(size: 11, weight: .bold))
             .tracking(1.5)
-            .foregroundColor(Color(red: 0.5, green: 0.5, blue: 0.5))
+            .foregroundColor(.textTertiary)
     }
     
     private var sectionDivider: some View {
         Divider()
-            .background(Color(red: 0.9, green: 0.9, blue: 0.9))
+            .background(Color.borderSubtle)
             .padding(.vertical, 4)
     }
     

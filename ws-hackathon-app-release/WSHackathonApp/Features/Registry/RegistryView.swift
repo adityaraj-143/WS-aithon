@@ -22,18 +22,18 @@ struct RegistryView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color(red: 0.96, green: 0.95, blue: 0.93)
+                Color.appBackground
                     .ignoresSafeArea()
 
                 VStack(alignment: .leading, spacing: 0) {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Registries")
                             .font(.system(size: 34, weight: .regular, design: .serif))
-                            .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                            .foregroundColor(.textPrimary)
 
                         Text("Your curated planning collections")
                             .font(.system(size: 15, weight: .regular, design: .default))
-                            .foregroundColor(Color.gray)
+                            .foregroundColor(.textSecondary)
                     }
                     .padding(.horizontal, 24)
                     .padding(.top, 24)
@@ -113,16 +113,16 @@ private extension RegistryView {
                         VStack(alignment: .leading, spacing: 12) {
                             HStack {
                                 Circle()
-                                    .fill(Color.blue.opacity(0.1))
+                                    .fill(Color.brandPrimary.opacity(0.1))
                                     .frame(width: 32, height: 32)
-                                    .overlay(Image(systemName: "envelope.fill").font(.system(size: 12)).foregroundColor(.blue))
+                                    .overlay(Image(systemName: "envelope.fill").font(.system(size: 12)).foregroundColor(.brandPrimary))
                                 
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(invite.fromDisplayName)
                                         .font(.system(size: 14, weight: .bold))
                                     Text("invited you")
                                         .font(.system(size: 12))
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(.textSecondary)
                                 }
                             }
                             
@@ -139,7 +139,7 @@ private extension RegistryView {
                                         .foregroundColor(.white)
                                         .frame(maxWidth: .infinity)
                                         .padding(.vertical, 8)
-                                        .background(Color.blue)
+                                        .background(Color.brandPrimary)
                                         .cornerRadius(8)
                                 }
                                 
@@ -148,7 +148,7 @@ private extension RegistryView {
                                 }) {
                                     Text("Ignore")
                                         .font(.system(size: 13, weight: .bold))
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(.textSecondary)
                                         .frame(maxWidth: .infinity)
                                         .padding(.vertical, 8)
                                         .background(Color.gray.opacity(0.1))
@@ -202,7 +202,7 @@ private extension RegistryView {
             
             ZStack {
                 RoundedRectangle(cornerRadius: 32)
-                    .fill(Color(white: 0.97))
+                    .fill(Color.brandAccentWash)
                     .frame(width: 120, height: 120)
                 
                 Image(systemName: "folder")
@@ -213,7 +213,7 @@ private extension RegistryView {
             VStack(spacing: 12) {
                 Text("No Registries Yet")
                     .font(.system(size: 32, weight: .regular, design: .serif))
-                    .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                    .foregroundColor(.textPrimary)
                 
                 Text("Create collections for weddings,\ngifting, housewarmings, and more.")
                     .font(.system(size: 16))
@@ -233,7 +233,7 @@ private extension RegistryView {
                 .foregroundColor(.white)
                 .padding(.horizontal, 32)
                 .padding(.vertical, 16)
-                .background(Color(red: 0.46, green: 0.50, blue: 0.44))
+                .background(Color.brandPrimary)
                 .clipShape(Capsule())
             }
             .padding(.top, 8)
@@ -276,7 +276,7 @@ private extension RegistryView {
                     .font(.title2)
                     .foregroundColor(.white)
                     .frame(width: 64, height: 64)
-                    .background(Color(red: 0.46, green: 0.50, blue: 0.44))
+                    .background(Color.brandPrimary)
                     .clipShape(Circle())
             }
             .padding()
@@ -289,17 +289,17 @@ private extension RegistryView {
                 VStack(alignment: .leading, spacing: 8) {
                     Text(title)
                         .font(.system(size: 22, weight: .regular, design: .serif))
-                        .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                        .foregroundColor(.textPrimary)
 
                     Text(type)
                         .font(.system(size: 12, weight: .bold))
                         .tracking(1.0)
-                        .foregroundColor(Color(red: 0.46, green: 0.50, blue: 0.44))
+                        .foregroundColor(.brandPrimary)
 
                     if let budget = budget, !budget.isEmpty {
                         Text("Budget: $\(budget)")
                             .font(.system(size: 14, weight: .medium))
-                            .foregroundColor(Color.gray)
+                            .foregroundColor(.textSecondary)
                     }
                 }
 
@@ -307,7 +307,7 @@ private extension RegistryView {
 
                 Image(systemName: "chevron.right")
                     .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(Color.gray)
+                    .foregroundColor(.textSecondary)
                     .padding(.top, 4)
             }
             .padding(24)
@@ -318,17 +318,17 @@ private extension RegistryView {
             HStack {
                 HStack(spacing: 8) {
                     Image(systemName: "calendar")
-                        .foregroundColor(Color.gray)
+                        .foregroundColor(.textSecondary)
                     Text(date)
                         .font(.system(size: 16))
-                        .foregroundColor(Color.gray)
+                        .foregroundColor(.textSecondary)
                 }
 
                 Spacer()
 
                 Text(itemsCount)
                     .font(.system(size: 16, weight: .bold))
-                    .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                    .foregroundColor(.textPrimary)
             }
             .padding(24)
         }

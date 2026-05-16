@@ -13,8 +13,8 @@ struct CartView: View {
     @EnvironmentObject var tabBarVM: WSTabBarViewModel
     @EnvironmentObject var homeVM: HomeViewModel
 
-    private let bgColor = Color(red: 245/255, green: 243/255, blue: 237/255)
-    private let warmBrown = Color(red: 175/255, green: 155/255, blue: 130/255)
+    private let bgColor = Color.appBackground
+    private let brandColor = Color.brandPrimary
     
     @State private var showCheckout = false
 
@@ -60,12 +60,12 @@ private extension CartView {
         VStack(alignment: .leading, spacing: 6) {
             Text("Cart")
                 .font(.system(size: 34, weight: .regular, design: .serif))
-                .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                .foregroundColor(.textPrimary)
             
             if !viewModel.isEmptyCart {
                 Text("\(viewModel.items.reduce(0) { $0 + $1.quantity }) items in your cart")
                     .font(.system(size: 15))
-                    .foregroundColor(Color(red: 0.45, green: 0.45, blue: 0.45))
+                    .foregroundColor(.textSecondary)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -81,7 +81,7 @@ private extension CartView {
             
             ZStack {
                 RoundedRectangle(cornerRadius: 32)
-                    .fill(Color(white: 0.97))
+                    .fill(Color.brandAccentWash)
                     .frame(width: 120, height: 120)
                 
                 Image(systemName: "cart")
@@ -92,11 +92,11 @@ private extension CartView {
             VStack(spacing: 12) {
                 Text("Your Cart is Empty")
                     .font(.system(size: 32, weight: .regular, design: .serif))
-                    .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                    .foregroundColor(.textPrimary)
                 
                 Text("Explore our curated collection and\nadd items to start your journey.")
                     .font(.system(size: 16))
-                    .foregroundColor(.gray)
+                    .foregroundColor(.textSecondary)
                     .multilineTextAlignment(.center)
                     .lineSpacing(4)
             }
@@ -143,7 +143,7 @@ private extension CartView {
             VStack(alignment: .leading, spacing: 2) {
                 Text(viewModel.totalPriceText)
                     .font(.system(size: 16, weight: .bold))
-                    .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                    .foregroundColor(.textPrimary)
                 
                 Text("Total Amount")
                     .font(.system(size: 13))
@@ -161,7 +161,7 @@ private extension CartView {
                     .foregroundColor(.white)
                     .padding(.horizontal, 32)
                     .padding(.vertical, 16)
-                    .background(Color(red: 0.46, green: 0.50, blue: 0.44))
+                    .background(Color.brandPrimary)
                     .clipShape(Capsule())
             }
             .padding(8)
@@ -180,7 +180,7 @@ private extension CartView {
             VStack(alignment: .leading, spacing: 14) {
                 Text("Complete Your Bundle")
                     .font(.system(size: 20, weight: .regular, design: .serif))
-                    .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                    .foregroundColor(.textPrimary)
                     .padding(.horizontal, 20)
 
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -188,7 +188,7 @@ private extension CartView {
                         ForEach(viewModel.recommendations) { product in
                             VStack(alignment: .leading, spacing: 0) {
                                 ZStack {
-                                    Color(red: 0.95, green: 0.95, blue: 0.95)
+                                    Color.borderSubtle
                                     CustomAsyncImage(url: product.imageURL)
                                 }
                                 .frame(width: 140, height: 140)
@@ -200,19 +200,19 @@ private extension CartView {
                                         Text(brand.uppercased())
                                             .font(.system(size: 9, weight: .bold))
                                             .tracking(1)
-                                            .foregroundColor(Color(red: 0.5, green: 0.5, blue: 0.5))
+                                            .foregroundColor(.textTertiary)
                                             .lineLimit(1)
                                     }
                                     
                                     Text(product.title)
                                         .font(.system(size: 13, weight: .medium))
-                                        .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                                        .foregroundColor(.textPrimary)
                                         .lineLimit(2)
                                         .frame(minHeight: 32, alignment: .topLeading)
 
                                     Text(product.price?.formatted(.currency(code: "USD")) ?? "$0.00")
                                         .font(.system(size: 12))
-                                        .foregroundColor(Color(red: 0.4, green: 0.35, blue: 0.3))
+                                        .foregroundColor(.brandPrimary)
                                 }
                                 .padding(.top, 8)
                                 .padding(.horizontal, 4)
@@ -228,7 +228,7 @@ private extension CartView {
                                         .foregroundColor(.white)
                                         .frame(maxWidth: .infinity)
                                         .padding(.vertical, 8)
-                                        .background(warmBrown)
+                                        .background(brandColor)
                                         .clipShape(Capsule())
                                 }
                                 .padding(.top, 8)

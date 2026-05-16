@@ -24,12 +24,12 @@ struct CartItemRow: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(item.title)
                     .font(.system(size: 15, weight: .medium))
-                    .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                    .foregroundColor(.textPrimary)
                     .lineLimit(2)
 
                 Text("$\(item.price, specifier: "%.2f")")
                     .font(.system(size: 13))
-                    .foregroundColor(Color(red: 0.45, green: 0.45, blue: 0.45))
+                    .foregroundColor(.textSecondary)
 
                 Spacer(minLength: 0)
 
@@ -49,10 +49,10 @@ struct CartItemRow: View {
                             .font(.system(size: 12, weight: .bold))
                     }
                 }
-                .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                .foregroundColor(.textPrimary)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 8)
-                .background(Color(red: 0.92, green: 0.91, blue: 0.88))
+                .background(Color.brandAccentWash)
                 .clipShape(Capsule())
             }
 
@@ -61,7 +61,7 @@ struct CartItemRow: View {
             // ─── Line Total ──────────────────────────────────
             Text("$\(item.price * Double(item.quantity), specifier: "%.2f")")
                 .font(.system(size: 16, weight: .semibold, design: .serif))
-                .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                .foregroundColor(.textPrimary)
         }
         .padding(16)
         .background(Color.white)

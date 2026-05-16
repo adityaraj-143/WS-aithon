@@ -53,7 +53,7 @@ struct RegistryPlanResultView: View {
             
             bottomActionBar
         }
-        .background(Color(hex: "F9F8F6").ignoresSafeArea())
+        .background(Color.appBackground.ignoresSafeArea())
     }
 
     // MARK: - Hero Section
@@ -62,11 +62,11 @@ struct RegistryPlanResultView: View {
         VStack(alignment: .leading, spacing: 16) {
             Text(planningContext?.registryName ?? "Registry")
                 .font(.system(size: 36, weight: .regular, design: .serif))
-                .foregroundColor(.primary)
+                .foregroundColor(.textPrimary)
 
             Text("Planning your \(planningContext?.event.title.lowercased() ?? "event") registry for intimate gatherings and timeless rituals.")
                 .font(.system(size: 14))
-                .foregroundColor(.secondary)
+                .foregroundColor(.textSecondary)
                 .lineSpacing(4)
 
             HStack(spacing: 8) {
@@ -77,7 +77,7 @@ struct RegistryPlanResultView: View {
                 Text(allHints.joined(separator: "  ·  "))
                     .font(.system(size: 10, weight: .bold))
                     .kerning(1.0)
-                    .foregroundColor(Color(red: 0.46, green: 0.50, blue: 0.44))
+                    .foregroundColor(.brandPrimary)
             }
         }
         .padding(.horizontal, 24)
@@ -110,10 +110,10 @@ struct RegistryPlanResultView: View {
             Text(label)
                 .font(.system(size: 10, weight: .bold))
                 .kerning(1)
-                .foregroundColor(.secondary)
+                .foregroundColor(.textSecondary)
             Text(value)
                 .font(.system(size: 24, weight: .light, design: .serif))
-                .foregroundColor(.primary)
+                .foregroundColor(.textPrimary)
         }
         .frame(maxWidth: .infinity, alignment: .center)
     }
@@ -129,7 +129,7 @@ struct RegistryPlanResultView: View {
                     .font(.system(size: 10, weight: .bold))
                     .kerning(1)
             }
-            .foregroundColor(.secondary)
+            .foregroundColor(.textSecondary)
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
@@ -162,7 +162,7 @@ struct RegistryPlanResultView: View {
             if products.isEmpty {
                 Text(emptyMessage)
                     .font(.system(size: 14))
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.textSecondary)
                     .padding(.horizontal, 24)
             } else {
                 LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 24) {
@@ -201,7 +201,7 @@ struct RegistryPlanResultView: View {
                     Image(systemName: "chevron.up")
                         .font(.system(size: 10, weight: .bold))
                 }
-                .foregroundColor(.primary)
+                .foregroundColor(.textPrimary)
             }
             
             Spacer()
@@ -212,7 +212,7 @@ struct RegistryPlanResultView: View {
                     .foregroundColor(.white)
                     .padding(.horizontal, 24)
                     .padding(.vertical, 12)
-                    .background(Color(hex: "757D6B"))
+                    .background(Color.brandPrimary)
                     .clipShape(Capsule())
             }
         }
@@ -246,22 +246,15 @@ private struct PlannerProductCard: View {
             ZStack(alignment: .topLeading) {
                 ZStack(alignment: .bottomTrailing) {
                     // Image
-                    AsyncImage(url: scored.product.imageURL) { phase in
-                        if let img = phase.image {
-                            img.resizable().scaledToFill()
-                        } else {
-                            Color(.systemGray5)
-                        }
-                    }
-                    .frame(height: 180)
-                    .clipShape(RoundedRectangle(cornerRadius: 24))
-                    .clipped()
+                    CustomAsyncImage(url: scored.product.imageURL)
+                        .frame(height: 180)
+                        .clipShape(RoundedRectangle(cornerRadius: 24))
                     
                     // Selection button
                     Button(action: onAdd) {
                         ZStack {
                             Circle()
-                                .fill((isSelected || showTickByDefault) ? Color(hex: "757D6B") : Color.white)
+                                .fill((isSelected || showTickByDefault) ? Color.brandPrimary : Color.surfacePrimary)
                                 .frame(width: 36, height: 36)
                                 .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
                             
@@ -272,7 +265,7 @@ private struct PlannerProductCard: View {
                             } else {
                                 Image(systemName: "plus")
                                     .font(.system(size: 14, weight: .bold))
-                                    .foregroundColor(Color(hex: "757D6B"))
+                                    .foregroundColor(.brandPrimary)
                             }
                         }
                     }
@@ -294,17 +287,17 @@ private struct PlannerProductCard: View {
                 Text((scored.product.brand ?? "ESSENTIALS").uppercased())
                     .font(.system(size: 9, weight: .bold))
                     .kerning(1)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.textSecondary)
                 
                 Text(scored.product.title)
                     .font(.system(size: 14, weight: .medium))
                     .lineLimit(2)
-                    .foregroundColor(.primary)
+                    .foregroundColor(.textPrimary)
 
                 if let price = scored.product.price {
                     Text(price.formatted(.currency(code: "USD")))
                         .font(.system(size: 14))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.textSecondary)
                 }
             }
             .padding(.horizontal, 4)
@@ -327,7 +320,7 @@ struct SelectedItemsSheet: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color(hex: "F9F8F6").ignoresSafeArea()
+                Color.appBackground.ignoresSafeArea()
                 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 24) {
@@ -357,7 +350,7 @@ struct SelectedItemsSheet: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Done") { dismiss() }
                         .fontWeight(.bold)
-                        .foregroundColor(.primary)
+                        .foregroundColor(.textPrimary)
                 }
             }
         }
@@ -370,22 +363,16 @@ struct SimpleProductRow: View {
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
             // Image
-            AsyncImage(url: scored.product.imageURL) { phase in
-                if let img = phase.image {
-                    img.resizable().scaledToFill()
-                } else {
-                    Color(.systemGray5)
-                }
-            }
-            .frame(width: 80, height: 80)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            CustomAsyncImage(url: scored.product.imageURL)
+                .frame(width: 80, height: 80)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
             
             // Details
             VStack(alignment: .leading, spacing: 4) {
                 Text((scored.product.brand ?? "ESSENTIALS").uppercased())
                     .font(.system(size: 10, weight: .bold))
                     .kerning(1)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.textSecondary)
                 
                 Text(scored.product.title)
                     .font(.system(size: 16, weight: .medium))
@@ -395,7 +382,7 @@ struct SimpleProductRow: View {
                 if let price = scored.product.price {
                     Text("$\(price, specifier: "%.2f")")
                         .font(.system(size: 14))
-                        .foregroundColor(Color(red: 0.54, green: 0.40, blue: 0.31))
+                        .foregroundColor(.brandPrimary)
                 }
             }
             

@@ -37,7 +37,7 @@ struct RegistryDetailView: View {
     
     var body: some View {
         ZStack {
-            Color(red: 0.96, green: 0.95, blue: 0.93)
+            Color.appBackground
                 .ignoresSafeArea()
             
             if let registry = registryRepo.currentRegistry {
@@ -49,13 +49,13 @@ struct RegistryDetailView: View {
                         VStack(alignment: .leading, spacing: 8) {
                             Text(registry.displayName.components(separatedBy: " - ").first ?? registry.displayName)
                                 .font(.system(size: 34, weight: .regular, design: .serif))
-                                .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                                .foregroundColor(.textPrimary)
                             
                             HStack(spacing: 8) {
                                 Text("\(registry.event.rawValue) EVENT • \(registry.date.formatted(date: .abbreviated, time: .omitted))")
                                     .font(.system(size: 10, weight: .bold))
                                     .tracking(1.0)
-                                    .foregroundColor(Color(red: 0.46, green: 0.50, blue: 0.44))
+                                    .foregroundColor(.brandPrimary)
                                     .textCase(.uppercase)
                                 
                                 Spacer()
@@ -68,7 +68,7 @@ struct RegistryDetailView: View {
                                         Text("With: " + registry.collaboratorNames.joined(separator: ", "))
                                             .font(.system(size: 12, weight: .medium))
                                     }
-                                    .foregroundColor(Color(red: 0.46, green: 0.50, blue: 0.44))
+                                    .foregroundColor(.brandPrimary)
                                     .padding(.top, 4)
                                 }
                             }
@@ -83,11 +83,11 @@ struct RegistryDetailView: View {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("$\(Int(totalSpent))")
                                             .font(.system(size: 44, weight: .regular, design: .serif))
-                                            .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                                            .foregroundColor(.textPrimary)
                                         Text("amount used so far")
                                             .font(.system(size: 10, weight: .bold))
                                             .tracking(1.0)
-                                            .foregroundColor(.gray)
+                                            .foregroundColor(.textSecondary)
                                             .textCase(.uppercase)
                                     }
                                     Spacer()
@@ -96,11 +96,11 @@ struct RegistryDetailView: View {
                                 GeometryReader { geometry in
                                     ZStack(alignment: .leading) {
                                         Capsule()
-                                            .fill(Color(white: 0.9))
+                                            .background(Color.borderSubtle)
                                             .frame(height: 8)
                                         
                                         Capsule()
-                                            .fill(Color(red: 0.46, green: 0.50, blue: 0.44))
+                                            .fill(Color.brandPrimary)
                                             .frame(width: geometry.size.width * min(1.0, (budgetAmount > 0 ? (totalSpent / budgetAmount) : 0)), height: 8)
                                     }
                                 }
@@ -109,7 +109,7 @@ struct RegistryDetailView: View {
                                 HStack {
                                     Text("Budget: $\(budget)")
                                         .font(.system(size: 12, weight: .bold))
-                                        .foregroundColor(.gray)
+                                        .foregroundColor(.textSecondary)
                                     
                                     Spacer()
                                     
@@ -127,7 +127,7 @@ struct RegistryDetailView: View {
                             VStack(alignment: .leading, spacing: 16) {
                                 Text("Saved Items")
                                     .font(.system(size: 24, weight: .regular, design: .serif))
-                                    .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                                    .foregroundColor(.textPrimary)
                                     .padding(.horizontal, 24)
                                 
                                 VStack(spacing: 0) {
@@ -157,7 +157,7 @@ struct RegistryDetailView: View {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Suggested For Your Event")
                                 .font(.system(size: 24, weight: .regular, design: .serif))
-                                .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                                .foregroundColor(.textPrimary)
                                 .padding(.horizontal, 24)
                             
                             Text("Trending items for \(registry.event.rawValue) registries.")
@@ -192,7 +192,7 @@ struct RegistryDetailView: View {
                         .foregroundColor(.white)
                         .padding(.horizontal, 24)
                         .padding(.vertical, 12)
-                        .background(Color.green)
+                        .background(Color.wsSuccess)
                         .cornerRadius(25)
                         .transition(.move(edge: .top).combined(with: .opacity))
                         .padding(.top, 20)
@@ -227,7 +227,7 @@ struct RegistryDetailView: View {
                 Button(action: { dismiss() }) {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 18, weight: .semibold))
-                        .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                        .foregroundColor(.textPrimary)
                 }
             }
             
@@ -236,7 +236,7 @@ struct RegistryDetailView: View {
                     Button(action: { showInviteAlert = true }) {
                         Image(systemName: "person.badge.plus")
                             .font(.system(size: 18, weight: .semibold))
-                            .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                            .foregroundColor(.textPrimary)
                     }
                     
                 }
@@ -251,12 +251,12 @@ struct RegistryDetailView: View {
     
     @ViewBuilder
     func suggestedCard(for product: ProductItem, index: Int) -> some View {
-        let sageColor = Color(red: 0.46, green: 0.50, blue: 0.44)
+        let brandColor = Color.brandPrimary
         let cardBg = Color.clear
         
         VStack(alignment: .leading, spacing: 0) {
             ZStack(alignment: .topLeading) {
-                Color(red: 0.95, green: 0.95, blue: 0.95)
+                Color.brandAccentWash
                     .frame(width: 140, height: 140)
                 
                 if let urlString = product.path, let url = URL(string: AppConstants.API.imageBasePath + urlString) {
@@ -266,7 +266,7 @@ struct RegistryDetailView: View {
                 
                 Text(index % 2 == 0 ? "TRENDING" : "POPULAR")
                     .font(.system(size: 9, weight: .bold))
-                    .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                    .foregroundColor(.textPrimary)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
                     .background(Color.white.opacity(0.8))
@@ -285,14 +285,14 @@ struct RegistryDetailView: View {
                 
                 Text(product.title)
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                    .foregroundColor(.textPrimary)
                     .lineLimit(2)
                     .frame(minHeight: 32, alignment: .topLeading)
                 
                 if let price = product.price {
                     Text(price.formatted(.currency(code: "USD")))
                         .font(.system(size: 12))
-                        .foregroundColor(Color(red: 0.4, green: 0.35, blue: 0.3))
+                        .foregroundColor(.brandPrimary)
                 }
                 
                 Button {
@@ -305,7 +305,7 @@ struct RegistryDetailView: View {
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 8)
-                        .background(sageColor)
+                        .background(brandColor)
                         .clipShape(Capsule())
                 }
                 .padding(.top, 8)

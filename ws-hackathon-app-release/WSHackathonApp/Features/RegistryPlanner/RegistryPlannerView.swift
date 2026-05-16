@@ -22,7 +22,7 @@ struct RegistryPlannerView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color(hex: "F9F8F6").ignoresSafeArea()
+                Color.appBackground.ignoresSafeArea()
 
                 VStack(spacing: 0) {
                     promptBar
@@ -38,13 +38,13 @@ struct RegistryPlannerView: View {
                     Text("AI REGISTRY STUDIO")
                         .font(.system(size: 12, weight: .bold))
                         .kerning(2)
-                        .foregroundColor(.primary)
+                        .foregroundColor(.textPrimary)
                 }
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button { closePlanner() } label: {
                         Image(systemName: "xmark")
                             .font(.system(size: 16, weight: .medium))
-                            .foregroundColor(.primary)
+                            .foregroundColor(.textPrimary)
                     }
                 }
             }
@@ -66,7 +66,7 @@ struct RegistryPlannerView: View {
         VStack(spacing: 12) {
             HStack(spacing: 12) {
                 Image(systemName: "sparkles")
-                    .foregroundColor(Color(hex: "757D6B"))
+                    .foregroundColor(.brandPrimary)
                     .font(.system(size: 14))
 
                 TextField(
@@ -128,7 +128,7 @@ struct RegistryPlannerView: View {
                 .font(.system(size: 24, weight: .bold, design: .serif))
             Text("Tell us your style, event, and budget.")
                 .font(.system(size: 14))
-                .foregroundColor(.secondary)
+                .foregroundColor(.textSecondary)
             Spacer()
         }
         .padding(.horizontal, 24)
@@ -140,7 +140,7 @@ struct RegistryPlannerView: View {
             ProgressView().scaleEffect(1.4)
             Text(message)
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundColor(.textSecondary)
             Spacer()
         }
     }
@@ -157,7 +157,7 @@ struct RegistryPlannerView: View {
         VStack(spacing: 16) {
             Spacer()
             Text(message)
-                .foregroundColor(.secondary)
+                .foregroundColor(.textSecondary)
             Spacer()
         }
     }

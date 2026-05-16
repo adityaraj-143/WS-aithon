@@ -18,7 +18,7 @@ struct CreateRegistryView: View {
 
     var body: some View {
         ZStack {
-            Color(red: 0.96, green: 0.95, blue: 0.93)
+            Color.appBackground
                 .ignoresSafeArea()
 
             VStack(alignment: .leading, spacing: 0) {
@@ -29,7 +29,7 @@ struct CreateRegistryView: View {
                     } label: {
                         Image(systemName: "arrow.left")
                             .font(.system(size: 18, weight: .medium))
-                            .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                            .foregroundColor(.textPrimary)
                             .frame(width: 48, height: 48)
                             .background(Color.white)
                             .clipShape(Circle())
@@ -46,11 +46,11 @@ struct CreateRegistryView: View {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Create Registry")
                                 .font(.system(size: 34, weight: .regular, design: .serif))
-                                .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                                .foregroundColor(.textPrimary)
 
                             Text("Plan and organize your perfect collection.")
                                 .font(.system(size: 16))
-                                .foregroundColor(Color.gray)
+                                .foregroundColor(.textTertiary)
                         }
                         .padding(.top, 24)
 
@@ -87,7 +87,7 @@ struct CreateRegistryView: View {
                                 fieldLabel("BUDGET (OPTIONAL)")
                                 HStack {
                                     Text("$")
-                                        .foregroundColor(.gray)
+                                        .foregroundColor(.textTertiary)
                                     TextField("0.00", text: $viewModel.budget)
                                         .keyboardType(.decimalPad)
                                 }
@@ -118,9 +118,9 @@ struct CreateRegistryView: View {
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 20)
-                        .background(viewModel.isValid ? Color(red: 0.46, green: 0.50, blue: 0.44) : Color(white: 0.75))
+                        .background(viewModel.isValid ? Color.brandPrimary : Color.textMuted)
                         .clipShape(Capsule())
-                        .shadow(color: viewModel.isValid ? Color(red: 0.46, green: 0.50, blue: 0.44).opacity(0.3) : Color.clear, radius: 10, x: 0, y: 5)
+                        .shadow(color: viewModel.isValid ? Color.brandPrimary.opacity(0.3) : Color.clear, radius: 10, x: 0, y: 5)
                     }
                     .disabled(!viewModel.isValid)
                     .padding(.horizontal, 24)
@@ -130,7 +130,7 @@ struct CreateRegistryView: View {
                     LinearGradient(
                         stops: [
                             .init(color: .clear, location: 0),
-                            .init(color: Color(red: 0.96, green: 0.95, blue: 0.93), location: 0.2)
+                            .init(color: .appBackground, location: 0.2)
                         ],
                         startPoint: .top,
                         endPoint: .bottom
@@ -158,7 +158,7 @@ struct CreateRegistryView: View {
                 HStack(spacing: 16) {
                     ZStack {
                         Circle()
-                            .fill(viewModel.isAIEnabled ? Color(red: 0.46, green: 0.50, blue: 0.44) : Color.clear)
+                            .fill(viewModel.isAIEnabled ? Color.brandPrimary : Color.clear)
                             .frame(width: 28, height: 28)
                             .overlay(Circle().stroke(Color.gray.opacity(0.3), lineWidth: viewModel.isAIEnabled ? 0 : 2))
                         
@@ -172,18 +172,18 @@ struct CreateRegistryView: View {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Generate with AI")
                             .font(.system(size: 16, weight: .bold))
-                            .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                            .foregroundColor(.textPrimary)
                         
                         Text("Let AI curate the perfect collection")
                             .font(.system(size: 12))
-                            .foregroundColor(.gray)
+                            .foregroundColor(.textTertiary)
                     }
                     
                     Spacer()
                     
                     Image(systemName: "sparkles")
                         .font(.system(size: 20))
-                        .foregroundColor(.gray.opacity(0.4))
+                        .foregroundColor(.textTertiary.opacity(0.4))
                 }
                 .padding(20)
                 .background(viewModel.isAIEnabled ? Color.white : Color.white.opacity(0.5))
@@ -202,7 +202,7 @@ struct CreateRegistryView: View {
                     )
                     .lineLimit(4...8)
                     .padding(16)
-                    .background(Color(white: 0.98))
+                    .background(Color.brandAccentWash)
                     .cornerRadius(12)
                     .padding(20)
                 }
@@ -250,16 +250,16 @@ struct CreateRegistryView: View {
         Text(text)
             .font(.system(size: 12, weight: .bold))
             .tracking(1.0)
-            .foregroundColor(Color.gray)
+            .foregroundColor(.textTertiary)
     }
 
     private func menuLabel(_ text: String) -> some View {
         HStack {
             Text(text)
-                .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                .foregroundColor(.textPrimary)
             Spacer()
             Image(systemName: "chevron.down")
-                .foregroundColor(.gray)
+                .foregroundColor(.textTertiary)
         }
         .formFieldStyle()
     }
@@ -274,7 +274,7 @@ private extension View {
             .cornerRadius(12)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(Color(white: 0.9), lineWidth: 1)
+                    .stroke(Color.borderSubtle, lineWidth: 1)
             )
     }
 }

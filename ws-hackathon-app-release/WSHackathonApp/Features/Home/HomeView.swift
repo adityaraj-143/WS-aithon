@@ -14,7 +14,7 @@ struct HomeView: View {
     @EnvironmentObject var registryRepository: RegistryRepository
     @EnvironmentObject var tabBarVM: WSTabBarViewModel
     
-    private let bgColor = Color(red: 245/255, green: 243/255, blue: 237/255)
+    private let bgColor = Color.appBackground
     
     var body: some View {
         NavigationStack(path: $tabBarVM.homePath) {
@@ -65,11 +65,11 @@ private extension HomeView {
             VStack(alignment: .leading, spacing: 6) {
                 Text("Home")
                     .font(.system(size: 34, weight: .regular, design: .serif))
-                    .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                    .foregroundColor(.textPrimary)
                 
                 Text("Curate your perfect collection")
                     .font(.system(size: 15))
-                    .foregroundColor(Color(red: 0.45, green: 0.45, blue: 0.45))
+                    .foregroundColor(.textSecondary)
             }
             Spacer()
         }
@@ -81,24 +81,24 @@ private extension HomeView {
     var searchBar: some View {
         HStack {
             Image(systemName: "magnifyingglass")
-                .foregroundColor(Color(red: 0.4, green: 0.4, blue: 0.4))
+                .foregroundColor(.textSecondary)
                 .font(.system(size: 18))
             
             TextField("Search products, brands...", text: $viewModel.searchText)
                 .font(.system(size: 15))
-                .foregroundColor(.black)
+                .foregroundColor(.textPrimary)
                 .autocorrectionDisabled()
             
             if !viewModel.searchText.isEmpty {
                 Button(action: { viewModel.searchText = "" }) {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(Color(red: 0.7, green: 0.7, blue: 0.7))
+                        .foregroundColor(.textTertiary)
                 }
             }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
-        .background(Color(red: 0.95, green: 0.94, blue: 0.91))
+        .background(Color.brandAccentWash)
         .clipShape(Capsule())
         .padding(.horizontal, 20)
         .padding(.bottom, 24)
@@ -108,7 +108,7 @@ private extension HomeView {
         VStack(alignment: .leading, spacing: 16) {
             Text("Browse Categories")
                 .font(.system(size: 20, weight: .regular, design: .serif))
-                .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                .foregroundColor(.textPrimary)
                 .padding(.horizontal, 20)
             
             let displayCategories = viewModel.categories
@@ -161,22 +161,7 @@ private extension HomeView {
         return ZStack(alignment: .bottomLeading) {
             Color.clear
                 .overlay(
-                    AsyncImage(url: imageUrl) { phase in
-                        switch phase {
-                        case .empty:
-                            Color(red: 0.9, green: 0.9, blue: 0.9)
-                                .overlay(ProgressView())
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .scaledToFill()
-                        case .failure(_):
-                            Color(red: 0.9, green: 0.9, blue: 0.9)
-                                .overlay(Image(systemName: "photo").foregroundColor(.gray))
-                        @unknown default:
-                            Color(red: 0.9, green: 0.9, blue: 0.9)
-                        }
-                    }
+                    CustomAsyncImage(url: imageUrl)
                 )
                 .clipShape(RoundedRectangle(cornerRadius: 20))
             
@@ -206,7 +191,7 @@ private extension HomeView {
                 let sectionTitle = viewModel.activeCategoryFilter == "All" ? "All Essentials" : "\(viewModel.activeCategoryFilter) Essentials"
                 Text(sectionTitle)
                     .font(.system(size: 20, weight: .regular, design: .serif))
-                    .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                    .foregroundColor(.textPrimary)
                 
                 Spacer()
             }

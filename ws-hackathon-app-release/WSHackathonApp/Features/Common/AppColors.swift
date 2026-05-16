@@ -10,30 +10,34 @@ import SwiftUI
 /// A cohesive color system inspired by Apple's native aesthetic
 /// with a warm teal accent palette.
 extension Color {
-
     // ─── Brand ───────────────────────────────────────
-    static let wsBrand        = Color(hex: "4ABFBF")   // Teal primary
-    static let wsBrandDark    = Color(hex: "2E9E9E")   // Pressed / darker teal
-    static let wsBrandLight   = Color(hex: "D6F5F2")   // Teal wash for highlights
-
+    static let brandPrimary        = Color(hex: "A07459") // Warm Clay
+    static let brandPrimaryPressed = Color(hex: "8A634A") // Darker Clay
+    static let brandSecondary      = Color(hex: "C7AE9D") // Soft Taupe
+    static let brandAccentWash     = Color(hex: "F5EFEB") // Subtle Highlight
+    
     // ─── Surfaces ────────────────────────────────────
-    static let wsBackground   = Color(UIColor.systemGroupedBackground)
-    static let wsCard         = Color(UIColor.secondarySystemGroupedBackground)
-    static let wsElevated     = Color(UIColor.tertiarySystemBackground)
-
+    static let appBackground       = Color(hex: "F9F8F6") // Warm Ivory
+    static let surfacePrimary      = Color.white
+    static let surfaceElevated     = Color.white
+    static let surfaceOverlay      = Color.black.opacity(0.05)
+    
     // ─── Text ────────────────────────────────────────
-    static let wsTitle        = Color(UIColor.label)
-    static let wsBody         = Color(UIColor.secondaryLabel)
-    static let wsCaption      = Color(UIColor.tertiaryLabel)
-
-    // ─── Pastel Accents (for stat cards / badges) ────
-    static let pastelMint     = Color(hex: "E0FAF3")
-    static let pastelLavender = Color(hex: "EEE5FF")
-    static let pastelPeach    = Color(hex: "FFEEE0")
-    static let pastelSky      = Color(hex: "E3F1FF")
-
+    static let textPrimary         = Color(hex: "1A1C1C") // Deep Graphite
+    static let textSecondary       = Color(hex: "6B6D6D") // Muted Slate
+    static let textTertiary        = Color(hex: "9A9C9C") // Soft Gray
+    static let textMuted           = Color(hex: "C4C6C6") // Ghost Gray
+    
+    // ─── Borders ─────────────────────────────────────
+    static let borderSubtle        = Color(white: 0.92)
+    static let borderSelected      = Color(hex: "A07459")
+    
     // ─── Semantic ────────────────────────────────────
-    static let wsSuccess      = Color.green
-    static let wsDestructive  = Color.red
+    static let wsSuccess           = Color(hex: "6B7D6B") // Sage Green
+    static let wsDestructive       = Color(hex: "B05B5B") // Muted Terracotta
+    static let wsWarning           = Color(hex: "D9A75F") // Ocher Gold
+    
+    // Legacy support (to be phased out during migration)
+    static let wsBrand             = brandPrimary
+    static let wsBackground        = appBackground
 }
-

@@ -11,12 +11,12 @@ struct ConfettiOverlay: View {
     @State private var startTime = Date()
     
     private let confettiColors: [Color] = [
-        Color(red: 115/255, green: 125/255, blue: 105/255),  // olive green
-        Color(red: 0.15, green: 0.15, blue: 0.15),           // charcoal
-        Color(red: 0.92, green: 0.91, blue: 0.88),           // warm beige
-        Color(red: 200/255, green: 180/255, blue: 150/255),   // light tan
-        Color(red: 170/255, green: 160/255, blue: 140/255),   // warm grey
-        Color(red: 220/255, green: 200/255, blue: 170/255),   // cream
+        .brandPrimary,
+        .brandSecondary,
+        .brandAccentWash,
+        .wsSuccess,
+        .textPrimary,
+        .textTertiary
     ]
     
     var body: some View {
