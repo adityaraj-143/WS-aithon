@@ -21,7 +21,10 @@ struct RegistryView: View {
     @EnvironmentObject var registryRepo: RegistryRepository
     @EnvironmentObject var cartRepo: CartRepository
     @EnvironmentObject var tabBarVM: WSTabBarViewModel
-
+    @EnvironmentObject var homeVM: HomeViewModel
+    
+    @State private var showPlanner = false
+    
     var body: some View {
         NavigationStack(path: $tabBarVM.registryPath) {
             
@@ -72,13 +75,9 @@ struct RegistryView: View {
         .onAppear {
             viewModel.bind(repository: registryRepo)
         }
-        .alert("Delete Registry", isPresented: $showingDeleteAlert) {
-            Button("Cancel", role: .cancel) { }
-            Button("Delete", role: .destructive) {
-                viewModel.deleteRegistry(using: registryRepo)
-            }
-        } message: {
-            Text("Are you sure you want to delete this registry? This action cannot be undone.")
+        .sheet(isPresented: $showPlanner) {
+            RegistryPlannerView(productDTOs: homeVM.productDTOs)
+                .environmentObject(registryRepo)
         }
     }
 }
@@ -136,38 +135,54 @@ private extension RegistryView {
                 .background(Color(red: 0.46, green: 0.50, blue: 0.44)) // Olive green
                 .clipShape(Capsule())
             }
-            .padding(.top, 16)
+            .buttonStyle(.plain)
             
+            Divider().padding(.horizontal)
+            
+            Button {
+                showPlanner = true
+            } label: {
+                planRegistryButton
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+        }
+        .frame(maxWidth: .infinity)
+        .background(Color.white)
+        .cornerRadius(12)
+        .padding(.horizontal, 16)
+    }
+    
+    var createRegistryButton: some View {
+        HStack(spacing: 12) {
+            Image(systemName: AppImages.Registry.plus)
+                .foregroundColor(.black)
+            Text(AppStrings.Registry.create)
+                .font(.headline)
+                .foregroundColor(.black)
             Spacer()
         }
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 24)
     }
     
-    var populatedStateView: some View {
-        ZStack(alignment: .bottomTrailing) {
-            ScrollView {
-                VStack(spacing: 16) {
-                    ForEach(viewModel.registries) { registry in
-                        Button(action: {
-                            registryRepo.activeRegistryId = registry.id
-                            tabBarVM.registryPath.append(.detail)
-                        }) {
-                            registryCard(
-                                title: registry.displayName,
-                                type: registry.event.rawValue.uppercased() + " EVENT",
-                                date: registry.date.formatted(date: .abbreviated, time: .omitted),
-                                itemsCount: "\(registry.items.count) Items",
-                                budget: registry.budget
-                            )
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                    }
-                    
-                }
-                .padding(.horizontal, 24)
-                .padding(.bottom, 100)
-            }
+    var planRegistryButton: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "sparkles")
+                .foregroundColor(Color(hex: "e94560"))
+            Text("Plan My Registry with AI")
+                .font(.headline)
+                .foregroundColor(.black)
+            Spacer()
+            Image(systemName: AppImages.Registry.chevron)
+                .foregroundColor(.gray)
+        }
+        .frame(maxWidth: .infinity)
+        .padding()
+    }
+    
+    var instructionCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
             
             // Floating Action Button
             Button {

@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct HomeView: View {
-    @StateObject private var viewModel = HomeViewModel()
-
+    
+    @EnvironmentObject private var viewModel: HomeViewModel
+    
     @EnvironmentObject var cartRepository: CartRepository
     @EnvironmentObject var registryRepository: RegistryRepository
     @EnvironmentObject var tabBarVM: WSTabBarViewModel

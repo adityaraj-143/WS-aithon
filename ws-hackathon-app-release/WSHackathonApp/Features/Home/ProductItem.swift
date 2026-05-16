@@ -12,6 +12,13 @@ struct ProductItem: Identifiable, Hashable {
     let price: Double?
     let retailPrice: Double?
     let path: String?
+    let description: String?
+    let eventTags: [String]
+    let slotHints: [String]
+    let styleTags: [String]
+    let settingTags: [String]
+    let essentialForEvents: [String]
+    let color: String?
     
     // Detailed fields
     let brand: String?
@@ -65,36 +72,14 @@ extension ProductItem {
         } else {
             self.path = nil
         }
-        
-        // Detailed fields mapping
-        self.brand = dto.properties?.brand
-        self.shortDescription = dto.shortName
-        self.availability = dto.availability
-        self.deliveryEstimate = dto.deliveryEstimate
-        self.material = dto.properties?.material
-        self.collection = dto.properties?.collection
-        
-        self.productType = dto.properties?.productType
-        self.canGiftWrap = (dto.properties?.canGiftWrap?.lowercased() == "true")
-        self.isFreeShipping = dto.freeShip ?? false
-        
-        // Color parsing e.g. "green-parent/basil" -> "Basil Green"
-        if let colorRaw = dto.properties?.color {
-            let parts = colorRaw.split(separator: "/")
-            if parts.count > 1 {
-                let mainColor = parts[0].replacingOccurrences(of: "-parent", with: "").capitalized
-                let shade = parts[1].capitalized
-                if mainColor.lowercased() == shade.lowercased() {
-                    self.color = mainColor
-                } else {
-                    self.color = "\(shade) \(mainColor)"
-                }
-            } else {
-                self.color = colorRaw.capitalized
-            }
-        } else {
-            self.color = nil
-        }
+
+        self.description = dto.description
+        self.eventTags = dto.eventTags ?? []
+        self.slotHints = dto.slotHints ?? []
+        self.styleTags = dto.styleTags ?? []
+        self.settingTags = dto.settingTags ?? []
+        self.essentialForEvents = dto.essentialForEvents ?? []
+        self.color = dto.properties?.color
     }
 }
 

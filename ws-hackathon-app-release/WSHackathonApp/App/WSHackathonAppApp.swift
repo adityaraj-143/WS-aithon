@@ -12,6 +12,7 @@ struct WSHackathonAppApp: App {
      @StateObject private var registryRepo = RegistryRepository()
      @StateObject private var cartRepo = CartRepository()
      @StateObject private var tabBarVM = WSTabBarViewModel()
+     @StateObject private var homeVM = HomeViewModel()
     
     var body: some Scene {
         WindowGroup {
@@ -19,6 +20,7 @@ struct WSHackathonAppApp: App {
                 .environmentObject(registryRepo)
                 .environmentObject(cartRepo)
                 .environmentObject(tabBarVM)
+                .environmentObject(homeVM)
         }
     }
 }
