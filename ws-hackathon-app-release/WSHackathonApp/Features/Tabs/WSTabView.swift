@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct WSTabView: View {    
+struct WSTabView: View {
     @EnvironmentObject var viewModel: WSTabBarViewModel
     @EnvironmentObject var cartRepository: CartRepository
     @EnvironmentObject var registryRepository: RegistryRepository
@@ -27,6 +27,7 @@ struct WSTabView: View {
                     .tag(tab)
             }
         }
+        .tint(Color.wsBrand) // Branded tint on the native tab bar
         .alert("New Invitation", isPresented: $showingGlobalInvite) {
             Button("Join Registry") {
                 if let invite = pendingInvite {
@@ -71,7 +72,7 @@ struct WSTabView: View {
         }
         socketService.acceptInvite(invite)
     }
-    
+
     @ViewBuilder
     private func view(for tab: TabItem) -> some View {
         switch tab {
@@ -79,6 +80,8 @@ struct WSTabView: View {
             HomeView()
         case .registry:
             RegistryView()
+        case .cart:
+            CartView()
         }
     }
 }

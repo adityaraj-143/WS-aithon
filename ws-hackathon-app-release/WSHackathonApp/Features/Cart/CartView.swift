@@ -11,73 +11,228 @@ struct CartView: View {
     @StateObject private var viewModel = CartViewModel()
     @EnvironmentObject var cartRepository: CartRepository
     @EnvironmentObject var tabBarVM: WSTabBarViewModel
+    @EnvironmentObject var homeVM: HomeViewModel
+
+    private let bgColor = Color(red: 245/255, green: 243/255, blue: 237/255)
+    private let warmBrown = Color(red: 175/255, green: 155/255, blue: 130/255)
     
+    @State private var showCheckout = false
+
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color(.systemGray6)
-                    .ignoresSafeArea()
-                if viewModel.isEmptyCart {
-                    VStack {
-                        EmptyCartView {
-                            tabBarVM.selectTab(.home)
-                        }
-                        Spacer()
-                    }
-                } else {
-                    VStack(spacing: 0) {
-                        
-                        ScrollView {
-                            VStack(spacing: 16) {
-                                ForEach(viewModel.items) { item in
-                                    CartItemRow(
-                                        item: item,
-                                        onAdd: { viewModel.add(item) },
-                                        onRemove: { viewModel.removeItem(item) }
-                                    )
-                                }
-                            }
-                            .padding(16)
-                        }
-                        
-                        // MARK: - Bottom Total View
-                        VStack(spacing: 12) {
-                            
-                            HStack {
-                                Text(AppStrings.Cart.total)
-                                    .font(.headline)
-                                
-                                Spacer()
-                                
-                                Text(viewModel.totalPriceText)
-                                    .font(.headline)
-                                    .fontWeight(.bold)
-                            }
-                            
-                            Button(action: {
-                                // TODO: - Implement checkout flow
-                            }) {
-                                Text(AppStrings.Cart.checkoutButton)
-                                    .fontWeight(.semibold)
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .background(Color.black)
-                                    .foregroundColor(.white)
-                                    .cornerRadius(10)
-                            }
-                        }
-                        .padding()
-                        .background(Color.white)
-                        .cornerRadius(16.0)
-                        .shadow(color: Color(.systemGray4), radius: 4, x: 0, y: -2)
+            ZStack(alignment: .bottom) {
+                bgColor.ignoresSafeArea()
+
+                VStack(alignment: .leading, spacing: 0) {
+                    headerView
+                    
+                    if viewModel.isEmptyCart {
+                        emptyState
+                    } else {
+                        cartContent
                     }
                 }
             }
-            .navigationTitle(AppStrings.Cart.title)
+            .navigationBarHidden(true)
         }
         .onAppear {
-            Task {
-                viewModel.bind(repository: cartRepository)
+            viewModel.bind(repository: cartRepository)
+            viewModel.updateRecommendations(allProducts: homeVM.products)
+        }
+        .onChange(of: viewModel.items.count) {
+            viewModel.updateRecommendations(allProducts: homeVM.products)
+        }
+        .fullScreenCover(isPresented: $showCheckout) {
+            CheckoutView(
+                items: viewModel.items,
+                totalPrice: cartRepository.totalPrice
+            )
+        }
+    }
+}
+
+// MARK: - Sub-views
+
+private extension CartView {
+
+    // ─── Header View ─────────────────────────────────────────────
+    var headerView: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("Cart")
+                .font(.system(size: 34, weight: .regular, design: .serif))
+                .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+            
+            if !viewModel.isEmptyCart {
+                Text("\(viewModel.items.reduce(0) { $0 + $1.quantity }) items in your cart")
+                    .font(.system(size: 15))
+                    .foregroundColor(Color(red: 0.45, green: 0.45, blue: 0.45))
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 20)
+        .padding(.top, 20)
+        .padding(.bottom, 16)
+    }
+
+    // ─── Empty State ─────────────────────────────────────────────
+    var emptyState: some View {
+        VStack(spacing: 20) {
+            Spacer()
+            
+            Image(systemName: "cart")
+                .font(.system(size: 52, weight: .light))
+                .foregroundColor(Color(red: 0.7, green: 0.7, blue: 0.7))
+                .padding(.bottom, 4)
+
+            Text(AppStrings.Cart.emptyMessage)
+                .font(.system(size: 20, weight: .medium, design: .serif))
+                .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                .multilineTextAlignment(.center)
+
+            Text("Use the tab bar to browse and add items")
+                .font(.system(size: 15))
+                .foregroundColor(Color(red: 0.45, green: 0.45, blue: 0.45))
+                .multilineTextAlignment(.center)
+            
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 20)
+    }
+
+    // ─── Cart Content ────────────────────────────────────────────
+    var cartContent: some View {
+        VStack(spacing: 0) {
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 0) {
+                    // Item list
+                    LazyVStack(spacing: 12) {
+                        ForEach(viewModel.items) { item in
+                            CartItemRow(
+                                item: item,
+                                onAdd: { viewModel.add(item) },
+                                onRemove: { viewModel.removeItem(item) }
+                            )
+                        }
+                    }
+                    .padding(.horizontal, 20)
+
+                    // Recommendations
+                    smartRecommendationsSection
+                        .padding(.top, 24)
+                }
+                .padding(.bottom, 130)
+            }
+
+            // Checkout bar
+            checkoutBar
+        }
+    }
+
+    // ─── Checkout Bar ────────────────────────────────────────────
+    var checkoutBar: some View {
+        HStack(spacing: 16) {
+            Button {
+                showCheckout = true
+            } label: {
+                Text(AppStrings.Cart.checkoutButton)
+                    .font(.system(size: 15, weight: .medium))
+                    .foregroundColor(.white)
+                    .frame(minWidth: 150)
+                    .padding(.vertical, 16)
+                    .background(warmBrown)
+                    .clipShape(Capsule())
+            }
+
+            Spacer()
+
+            VStack(alignment: .trailing, spacing: 2) {
+                Text(AppStrings.Cart.total)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(Color(red: 0.45, green: 0.45, blue: 0.45))
+                Text(viewModel.totalPriceText)
+                    .font(.system(size: 22, weight: .regular, design: .serif))
+                    .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+            }
+        }
+        .padding(20)
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .shadow(color: Color.black.opacity(0.06), radius: 16, y: 4)
+        .padding(.horizontal, 20)
+        .padding(.top, 8)
+        .padding(.bottom, 24)
+    }
+
+    // ─── Smart Recommendations ───────────────────────────────────
+    @ViewBuilder
+    var smartRecommendationsSection: some View {
+        if !viewModel.recommendations.isEmpty {
+            VStack(alignment: .leading, spacing: 14) {
+                Text("Complete Your Bundle")
+                    .font(.system(size: 20, weight: .regular, design: .serif))
+                    .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                    .padding(.horizontal, 20)
+
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 12) {
+                        ForEach(viewModel.recommendations) { product in
+                            VStack(alignment: .leading, spacing: 0) {
+                                ZStack {
+                                    Color(red: 0.95, green: 0.95, blue: 0.95)
+                                    CustomAsyncImage(url: product.imageURL)
+                                }
+                                .frame(width: 140, height: 140)
+                                .clipShape(RoundedRectangle(cornerRadius: 14))
+                                .clipped()
+
+                                VStack(alignment: .leading, spacing: 4) {
+                                    if let brand = product.brand {
+                                        Text(brand.uppercased())
+                                            .font(.system(size: 9, weight: .bold))
+                                            .tracking(1)
+                                            .foregroundColor(Color(red: 0.5, green: 0.5, blue: 0.5))
+                                            .lineLimit(1)
+                                    }
+                                    
+                                    Text(product.title)
+                                        .font(.system(size: 13, weight: .medium))
+                                        .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                                        .lineLimit(2)
+                                        .frame(minHeight: 32, alignment: .topLeading)
+
+                                    Text(product.price?.formatted(.currency(code: "USD")) ?? "$0.00")
+                                        .font(.system(size: 12))
+                                        .foregroundColor(Color(red: 0.4, green: 0.35, blue: 0.3))
+                                }
+                                .padding(.top, 8)
+                                .padding(.horizontal, 4)
+
+                                Button {
+                                    withAnimation {
+                                        viewModel.add(product: product)
+                                        viewModel.updateRecommendations(allProducts: homeVM.products)
+                                    }
+                                } label: {
+                                    Text("+ Add to Cart")
+                                        .font(.system(size: 12, weight: .medium))
+                                        .foregroundColor(.white)
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.vertical, 8)
+                                        .background(warmBrown)
+                                        .clipShape(Capsule())
+                                }
+                                .padding(.top, 8)
+                                .padding(.horizontal, 4)
+                                .padding(.bottom, 4)
+                            }
+                            .frame(width: 140)
+                            .background(bgColor)
+                            .cornerRadius(16)
+                        }
+                    }
+                    .padding(.horizontal, 20)
+                }
             }
         }
     }

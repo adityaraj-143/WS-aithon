@@ -34,6 +34,9 @@ struct HomeView: View {
                     }
                 }
             }
+            .onTapGesture {
+                hideKeyboard()
+            }
             .navigationBarHidden(true)
             .navigationDestination(for: HomeRoute.self) { route in
                 switch route {

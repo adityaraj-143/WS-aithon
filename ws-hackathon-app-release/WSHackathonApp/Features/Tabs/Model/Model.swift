@@ -10,6 +10,7 @@ import Foundation
 enum TabItem: Int, CaseIterable, Identifiable {
     case home = 0
     case registry
+    case cart
     
     var id: Int { rawValue }
     
@@ -17,6 +18,7 @@ enum TabItem: Int, CaseIterable, Identifiable {
         switch self {
         case .home: return "Home"
         case .registry: return "Registry"
+        case .cart: return "Cart"
         }
     }
     
@@ -24,6 +26,7 @@ enum TabItem: Int, CaseIterable, Identifiable {
         switch self {
         case .home: return "house"
         case .registry: return "list.bullet"
+        case .cart: return "cart"
         }
     }
     

@@ -120,6 +120,9 @@ struct CreateRegistryView: View {
                 .background(Color(red: 0.96, green: 0.95, blue: 0.93))
             }
         }
+        .onTapGesture {
+            hideKeyboard()
+        }
         .navigationBarHidden(true)
         .task {
             await homeVM.fetchProducts()

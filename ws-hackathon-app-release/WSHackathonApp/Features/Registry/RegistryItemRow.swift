@@ -4,16 +4,17 @@
 //
 //  Created by Nilesh Mahajan on 06/04/26.
 //
+
 import SwiftUI
 
 struct RegistryItemRow: View {
-    
+
     @StateObject private var viewModel: RegistryItemRowViewModel
-    
+
     init(viewModel: RegistryItemRowViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
-    
+
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
             
@@ -41,7 +42,7 @@ struct RegistryItemRow: View {
                     .font(.system(size: 14, weight: .medium))
                     .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
                     .lineLimit(2)
-                
+
                 Text(viewModel.priceText)
                     .font(.system(size: 14))
                     .foregroundColor(Color(red: 0.54, green: 0.40, blue: 0.31)) // Brownish price

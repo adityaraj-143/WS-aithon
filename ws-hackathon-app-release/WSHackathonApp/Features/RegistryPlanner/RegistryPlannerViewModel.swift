@@ -52,13 +52,15 @@ final class RegistryPlannerViewModel: ObservableObject {
         }
         state = .indexing
 
-        Task.detached(priority: .userInitiated) { [weak self] in
-            guard let self else { return }
-            self.planner.buildIndex(dtos: dtos)
-            await MainActor.run {
-                self.indexReady = self.planner.hasIndex
-                self.state = self.planner.hasIndex ? .idle : .error("Unable to build the AI product index on this device.")
-            }
+        let localPlanner = self.planner
+        Task {
+            let hasIndex = await Task.detached(priority: .userInitiated) {
+                localPlanner.buildIndex(dtos: dtos)
+                return localPlanner.hasIndex
+            }.value
+
+            self.indexReady = hasIndex
+            self.state = hasIndex ? .idle : .error("Unable to build the AI product index on this device.")
         }
     }
 
@@ -74,31 +76,10 @@ final class RegistryPlannerViewModel: ObservableObject {
 
         state = .searching
 
+        let localPlanner = self.planner
         Task {
-            let response = await Task.detached(priority: .userInitiated) { [weak self] in
-                guard let self else {
-                    return PlannedRegistryResponse(
-                        intent: RegistryPromptIntent(
-                            rawPrompt: query,
-                            budget: nil,
-                            eventType: nil,
-                            styleHints: [],
-                            ownedKeywords: [],
-                            excludedKeywords: []
-                        ),
-                        browseProducts: [],
-                        registryPlan: RegistryPlan(
-                            items: [],
-                            totalCost: 0,
-                            budget: .infinity,
-                            coverageScore: 0,
-                            missingEssentials: [],
-                            budgetBreakdown: RegistryBudgetBreakdown(essentialsCost: 0, optionalCost: 0)
-                        )
-                    )
-                }
-
-                return self.planner.plan(prompt: query, topK: 20, minScore: 0.1)
+            let response = await Task.detached(priority: .userInitiated) {
+                return localPlanner.plan(prompt: query, topK: 20, minScore: 0.1)
             }.value
 
             if response.browseProducts.isEmpty && response.registryPlan.isEmpty {
