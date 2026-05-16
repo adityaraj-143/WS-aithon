@@ -12,7 +12,6 @@ struct RegistryDetailView: View {
     @EnvironmentObject var tabBarVM: WSTabBarViewModel
     @StateObject private var viewModel = RegistryDetailViewModel()
     @State private var showInviteSheet = false
-    @State private var showSuccessToast = false
     
     var body: some View {
         ZStack {
@@ -155,22 +154,6 @@ struct RegistryDetailView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .overlay(
-            VStack {
-                if showSuccessToast {
-                    Text("Invite sent to \(guestName)!")
-                        .font(.system(size: 14, weight: .bold))
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 24)
-                        .padding(.vertical, 12)
-                        .background(Color.green)
-                        .cornerRadius(25)
-                        .transition(.move(edge: .top).combined(with: .opacity))
-                        .padding(.top, 20)
-                    Spacer()
-                }
-            }
-        )
         .sheet(isPresented: $showInviteSheet) {
             RegistryInviteView(registry: registryRepo.currentRegistry)
         }
