@@ -166,23 +166,25 @@ io.on("connection", (socket) => {
    * Updates the global state and broadcasts to the room.
    */
   socket.on("sync_registry", (payload) => {
-    const { registryId, registryData } = payload;
+    const { registryId, registryData, userId } = payload;
     if (!registryId || !registryData) return;
 
-    const userId = getUserIdBySocketId(socket.id);
+    const resolvedUserId = userId || getUserIdBySocketId(socket.id);
+    if (!resolvedUserId) return;
     
     // If new registry, set owner and initial members
     if (!registries[registryId]) {
-        registryData.ownerId = userId;
-        registryData.members = [userId];
+        registryData.ownerId = resolvedUserId;
+        registryData.members = [resolvedUserId];
         // Ensure collaboratorNames includes owner
-        const user = activeUsers.get(userId);
+        const user = activeUsers.get(resolvedUserId);
         registryData.collaboratorNames = [user ? user.displayName : "Owner"];
     } else {
-        // Keep existing server-managed metadata
-        registryData.ownerId = registries[registryId].ownerId;
-        registryData.members = registries[registryId].members;
-        registryData.collaboratorNames = registries[registryId].collaboratorNames;
+        // Keep existing server-managed metadata, fallback to current user if uninitialized
+        const user = activeUsers.get(resolvedUserId);
+        registryData.ownerId = registries[registryId].ownerId || resolvedUserId;
+        registryData.members = registries[registryId].members || [resolvedUserId];
+        registryData.collaboratorNames = registries[registryId].collaboratorNames || [user ? user.displayName : "Owner"];
     }
 
     registries[registryId] = registryData;
@@ -272,6 +274,81 @@ io.on("connection", (socket) => {
     if (invitations.length !== originalCount) {
         saveInvites();
     }
+  });
+
+  /**
+   * EVENT: delete_registry
+   * Called when a user deletes/leaves a registry.
+   */
+  socket.on("delete_registry", (payload) => {
+    const { registryId, displayName, userId } = payload;
+    if (!registryId || !registries[registryId]) return;
+
+    const resolvedUserId = userId || getUserIdBySocketId(socket.id);
+    if (!resolvedUserId) return;
+
+    console.log(`🗑️ User ${resolvedUserId} wants to delete/leave registry ${registryId}`);
+
+    let registry = registries[registryId];
+
+    // 1. Remove user from members list
+    if (registry.members) {
+      registry.members = registry.members.filter(id => id !== resolvedUserId);
+    }
+
+    // 2. Remove user's name from collaboratorNames (case-insensitive check)
+    let nameToRemove = displayName;
+    const user = activeUsers.get(resolvedUserId);
+    if (!nameToRemove && user) {
+      nameToRemove = user.displayName;
+    }
+
+    if (nameToRemove && registry.collaboratorNames) {
+      const cleanNameToRemove = nameToRemove.trim().toLowerCase();
+      registry.collaboratorNames = registry.collaboratorNames.filter(name => 
+        name.trim().toLowerCase() !== cleanNameToRemove
+      );
+    }
+
+    // 3. Clean up any pending invitations between this user and this registry
+    const originalInvCount = invitations.length;
+    invitations = invitations.filter(inv => {
+      const matchTo = inv.toUserId === resolvedUserId;
+      const matchReg = (inv.registryId || "") === (registryId || "");
+      return !(matchTo && matchReg);
+    });
+    if (invitations.length !== originalInvCount) {
+      saveInvites();
+      console.log(`🧹 Cleaned up ${originalInvCount - invitations.length} pending invites for deleted registry.`);
+    }
+
+    // 4. Purge permanently if no members or collaborators are left
+    const noMembers = !registry.members || registry.members.length === 0;
+    const noCollaborators = !registry.collaboratorNames || registry.collaboratorNames.length === 0;
+
+    if (noMembers || noCollaborators) {
+      console.log(`🧹 Registry ${registryId} has no members or collaborators left. Deleting permanently.`);
+      delete registries[registryId];
+    } else {
+      // If the owner left, assign a new owner from the remaining members
+      if (registry.ownerId === resolvedUserId) {
+        registry.ownerId = registry.members[0];
+        console.log(`👑 Owner changed to ${registry.ownerId} for registry ${registryId}`);
+      }
+      // Broadcast updated registry with the user removed to everyone in the room EXCEPT the leaving user
+      socket.to(registryId).emit("registry_updated", registry);
+    }
+
+    saveRegistries();
+
+    // Send the updated registries list to the deleting user
+    const userRegistries = Object.values(registries).filter(reg => 
+      reg.ownerId === resolvedUserId || (reg.members && reg.members.includes(resolvedUserId))
+    );
+    socket.emit("user_registries", userRegistries);
+
+    // Also leave the room for this registry
+    socket.leave(registryId);
   });
 
   /**

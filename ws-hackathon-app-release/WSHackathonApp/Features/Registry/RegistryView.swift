@@ -179,21 +179,20 @@ private extension RegistryView {
             // Check if we already have it
             if !registryRepo.registries.contains(where: { $0.id == uuid }) {
                 registryRepo.createRegistry(
+                    id: uuid,
                     firstName: invite.fromDisplayName,
                     lastName: " (Shared)",
                     event: .wedding, // Default or parsed from name
                     date: Date(),
                     budget: "Unknown"
                 )
-                // Update the ID to match the invited one for "sync" illusion
-                if var last = registryRepo.registries.last {
-                    // This is hacky but for a demo it works to align them
-                    // registryRepo.activeRegistryId = last.id
-                }
             } else {
                 registryRepo.activeRegistryId = uuid
                 showDetail = true
             }
+            
+            // Join real-time room for updates
+            socketService.joinRoom(registryId: uuid.uuidString)
         }
         socketService.acceptInvite(invite)
     }
@@ -249,27 +248,48 @@ private extension RegistryView {
 
     var populatedStateView: some View {
         ZStack(alignment: .bottomTrailing) {
-            ScrollView {
-                VStack(spacing: 16) {
-                    ForEach(viewModel.registries) { registry in
-                        Button {
-                            registryRepo.activeRegistryId = registry.id
-                            showDetail = true
+            List {
+                ForEach(viewModel.registries) { registry in
+                    Button {
+                        registryRepo.activeRegistryId = registry.id
+                        showDetail = true
+                    } label: {
+                        registryCard(
+                            title: registry.displayName,
+                            type: registry.event.rawValue.uppercased() + " EVENT",
+                            date: registry.date.formatted(date: .abbreviated, time: .omitted),
+                            itemsCount: "\(registry.items.count) Items",
+                            budget: registry.budget
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .listRowInsets(EdgeInsets(top: 8, leading: 24, bottom: 8, trailing: 24))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                        Button(role: .destructive) {
+                            withAnimation {
+                                viewModel.deleteRegistry(registry, using: registryRepo)
+                            }
                         } label: {
-                            registryCard(
-                                title: registry.displayName,
-                                type: registry.event.rawValue.uppercased() + " EVENT",
-                                date: registry.date.formatted(date: .abbreviated, time: .omitted),
-                                itemsCount: "\(registry.items.count) Items",
-                                budget: registry.budget
-                            )
+                            Label("Delete", systemImage: "trash")
                         }
-                        .buttonStyle(.plain)
+                    }
+                    .contextMenu {
+                        Button(role: .destructive) {
+                            withAnimation {
+                                viewModel.deleteRegistry(registry, using: registryRepo)
+                            }
+                        } label: {
+                            Label("Delete Registry", systemImage: "trash")
+                        }
                     }
                 }
-                .padding(.horizontal, 24)
-                .padding(.bottom, 100)
             }
+            .listStyle(.plain)
+            .background(Color.clear)
+            .scrollContentBackground(.hidden)
+            .padding(.bottom, 80)
 
             Button {
                 showCreateSheet = true

@@ -102,6 +102,24 @@ final class RegistryRepository: ObservableObject {
         SocketService.shared.joinRoom(registryId: newRegistry.id.uuidString)
     }
     
+    // MARK: - Delete
+    
+    func deleteRegistry(id: UUID) {
+        // 1. Remove from registries list
+        registries.removeAll { $0.id == id }
+        
+        // 2. Clear or update activeRegistryId if needed
+        if activeRegistryId == id {
+            activeRegistryId = registries.first?.id
+        }
+        
+        // 3. Save to disk
+        saveToDisk()
+        
+        // 4. Emit socket event
+        SocketService.shared.deleteRegistry(id: id.uuidString)
+    }
+    
     // MARK: - Add Product
     
     func addProduct(_ product: ProductItem) {
@@ -267,6 +285,17 @@ final class RegistryRepository: ObservableObject {
         } else {
             // New registry we didn't have locally (e.g. joined via invite on another device)
             if let registry = parseRegistry(from: dict) {
+                // If it is a shared registry, only add it if we are a collaborator on it
+                let isShared = registry.lastName.contains("Shared") || !registry.collaboratorNames.isEmpty
+                if isShared {
+                    let myName = SocketService.shared.currentDisplayName.lowercased()
+                    let isMeCollaborator = registry.collaboratorNames.contains { $0.lowercased() == myName }
+                    if !isMeCollaborator {
+                        print("⚠️ Skipping remote update for registry \(idString) since we are not a collaborator on it.")
+                        return
+                    }
+                }
+                
                 registries.append(registry)
                 saveToDisk()
             }

@@ -166,7 +166,8 @@ class SocketService: ObservableObject {
     func syncRegistry(id: String, data: [String: Any]) {
         let payload: [String: Any] = [
             "registryId": id,
-            "registryData": data
+            "registryData": data,
+            "userId": currentUserId
         ]
         socket?.emit(SocketEvents.syncRegistry, payload)
     }
@@ -231,5 +232,14 @@ class SocketService: ObservableObject {
         DispatchQueue.main.async {
             self.pendingRegistryInvites.removeAll { $0 == invite }
         }
+    }
+    
+    func deleteRegistry(id: String) {
+        let payload: [String: Any] = [
+            "registryId": id,
+            "displayName": currentDisplayName,
+            "userId": currentUserId
+        ]
+        socket?.emit(SocketEvents.deleteRegistry, payload)
     }
 }

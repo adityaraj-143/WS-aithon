@@ -14,6 +14,7 @@ struct RegistryDetailView: View {
     @State private var showInviteAlert = false
     @State private var guestName = ""
     @State private var showSuccessToast = false
+    @State private var showDeleteConfirmation = false
     
     private var totalSpent: Double {
         guard let registry = registryRepo.currentRegistry else { return 0 }
@@ -240,11 +241,29 @@ struct RegistryDetailView: View {
                             .foregroundColor(.textPrimary)
                     }
                     
+                    Button(action: { showDeleteConfirmation = true }) {
+                        Image(systemName: "trash")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(.red)
+                    }
                 }
             }
         }
         .task {
             await viewModel.fetchSuggestedProducts()
+        }
+        .confirmationDialog(
+            "Are you sure you want to delete this registry? If other people are collaborating, you will be removed from it.",
+            isPresented: $showDeleteConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("Delete", role: .destructive) {
+                if let current = registryRepo.currentRegistry {
+                    registryRepo.deleteRegistry(id: current.id)
+                }
+                dismiss()
+            }
+            Button("Cancel", role: .cancel) {}
         }
     }
     
