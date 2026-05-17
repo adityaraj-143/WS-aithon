@@ -13,17 +13,17 @@ struct EmptyCartView: View {
         VStack(spacing: 20) {
             Image(systemName: "cart")
                 .font(.system(size: 52, weight: .light))
-                .foregroundStyle(Color.wsBrand.opacity(0.5))
+                .foregroundStyle(Color.brandPrimary.opacity(0.5))
                 .padding(.bottom, 4)
 
             Text(AppStrings.Cart.emptyMessage)
                 .font(.title3.weight(.semibold))
-                .foregroundStyle(Color.wsTitle)
+                .foregroundStyle(Color.textPrimary)
                 .multilineTextAlignment(.center)
 
             Text("Use the tab bar to browse and add items")
                 .font(.subheadline)
-                .foregroundStyle(Color.wsBody)
+                .foregroundStyle(Color.textSecondary)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)

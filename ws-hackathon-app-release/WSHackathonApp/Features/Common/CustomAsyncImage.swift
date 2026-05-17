@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct CustomAsyncImage: View {
     let url: URL?
@@ -17,14 +18,15 @@ struct CustomAsyncImage: View {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFill()
+                    .clipped()
             } else {
-                Color.wsElevated
+                Color.brandAccentWash
                 ProgressView()
-                    .tint(Color.wsBrand)
+                    .tint(.brandPrimary)
             }
         }
-        .onAppear {
-            loader.load(url: url)
+        .task(id: url) {
+            await loader.load(url: url)
         }
     }
 }

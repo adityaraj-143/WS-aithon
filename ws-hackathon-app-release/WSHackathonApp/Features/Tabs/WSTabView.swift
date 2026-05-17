@@ -27,7 +27,7 @@ struct WSTabView: View {
                     .tag(tab)
             }
         }
-        .tint(Color.wsBrand) // Branded tint on the native tab bar
+        .tint(.brandPrimary) // Branded tint on the native tab bar
         .alert("New Invitation", isPresented: $showingGlobalInvite) {
             Button("Join Registry") {
                 if let invite = pendingInvite {

@@ -192,6 +192,19 @@ io.on("connection", (socket) => {
   });
 
   /**
+   * EVENT: registry_cart_state_synced
+   * Broadcasts collaborative cart state changes to everyone in the room except sender.
+   */
+  socket.on("registry_cart_state_synced", (payload) => {
+    const { registryId } = payload;
+    if (!registryId) return;
+    
+    // Broadcast to the room (socket.to sends to everyone but the sender)
+    socket.to(registryId).emit("registry_cart_state_synced", payload);
+  });
+
+
+  /**
    * Requirement 4: get_users (Client -> Server)
    * Returns active users list
    */

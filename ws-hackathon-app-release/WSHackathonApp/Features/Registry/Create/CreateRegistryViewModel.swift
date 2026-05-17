@@ -16,9 +16,10 @@ final class CreateRegistryViewModel: ObservableObject {
     @Published var budget: String = ""
     @Published var aiPrompt: String = ""
     
+    @Published var isAIEnabled: Bool = false
+    
     var isValid: Bool {
-        !registryName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-        !aiPrompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        !registryName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     var normalizedBudget: String? {
@@ -26,9 +27,14 @@ final class CreateRegistryViewModel: ObservableObject {
         return trimmed.isEmpty ? nil : trimmed
     }
 
+    var effectiveRegistryName: String {
+        let trimmed = registryName.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? "My Registry" : trimmed
+    }
+
     var planningContext: RegistryPlanningContext {
         RegistryPlanningContext(
-            registryName: registryName.trimmingCharacters(in: .whitespacesAndNewlines),
+            registryName: effectiveRegistryName,
             event: selectedEvent,
             date: date,
             budget: normalizedBudget,

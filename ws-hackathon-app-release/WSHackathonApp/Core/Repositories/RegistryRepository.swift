@@ -50,6 +50,24 @@ final class RegistryRepository: ObservableObject {
                 self.applyBulkRemoteUpdate(array)
             }
         }
+
+        NotificationCenter.default.addObserver(forName: .didConnectSocket, object: nil, queue: .main) { [weak self] _ in
+            guard let self = self else { return }
+            Task { @MainActor in
+                self.joinAllLocalRegistryRooms()
+            }
+        }
+
+        if SocketService.shared.isConnected {
+            joinAllLocalRegistryRooms()
+        }
+    }
+
+    func joinAllLocalRegistryRooms() {
+        for registry in registries {
+            print("🏠 Automatically joining socket room for local registry: \(registry.id.uuidString)")
+            SocketService.shared.joinRoom(registryId: registry.id.uuidString)
+        }
     }
     
     var currentRegistry: Registry? {
@@ -100,6 +118,24 @@ final class RegistryRepository: ObservableObject {
         
         // Joining room for the registry
         SocketService.shared.joinRoom(registryId: newRegistry.id.uuidString)
+    }
+    
+    // MARK: - Delete
+    
+    func deleteRegistry(id: UUID) {
+        // 1. Remove from registries list
+        registries.removeAll { $0.id == id }
+        
+        // 2. Clear or update activeRegistryId if needed
+        if activeRegistryId == id {
+            activeRegistryId = registries.first?.id
+        }
+        
+        // 3. Save to disk
+        saveToDisk()
+        
+        // 4. Emit socket event
+        SocketService.shared.deleteRegistry(id: id.uuidString)
     }
     
     // MARK: - Add Product
@@ -267,8 +303,22 @@ final class RegistryRepository: ObservableObject {
         } else {
             // New registry we didn't have locally (e.g. joined via invite on another device)
             if let registry = parseRegistry(from: dict) {
+                // If it is a shared registry, only add it if we are a collaborator on it
+                let isShared = registry.lastName.contains("Shared") || !registry.collaboratorNames.isEmpty
+                if isShared {
+                    let myName = SocketService.shared.currentDisplayName.lowercased()
+                    let isMeCollaborator = registry.collaboratorNames.contains { $0.lowercased() == myName }
+                    if !isMeCollaborator {
+                        print("⚠️ Skipping remote update for registry \(idString) since we are not a collaborator on it.")
+                        return
+                    }
+                }
+                
                 registries.append(registry)
                 saveToDisk()
+                
+                // Automatically join room for newly loaded remote registry
+                SocketService.shared.joinRoom(registryId: registry.id.uuidString)
             }
         }
     }

@@ -17,65 +17,103 @@ struct ProductCardView: View {
     let onRemoveFromRegistry: () -> Void
     let onSelect: () -> Void
     
+    private let accentColor = Color.brandPrimary
+    
     var body: some View {
-        // ✅ FIX: VStack aligned to .top so it never floats or grows unexpectedly
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: 12) {
             
             // MARK: - Image Section
             ZStack(alignment: .top) {
-                AsyncImage(url: product.imageURL) { phase in
-                    if let image = phase.image {
-                        image
-                            .resizable()
-                            .scaledToFill()
-                    } else {
-                        Color(red: 0.95, green: 0.95, blue: 0.95)
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                // ✅ FIX: Reduced from 200 to 160 so text section has breathing room
-                .frame(height: 160)
-                .clipShape(RoundedRectangle(cornerRadius: 16))
-                .clipped()
+                CustomAsyncImage(url: product.imageURL)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 180)
+                    .clipShape(RoundedRectangle(cornerRadius: 24))
                 .onTapGesture(perform: onSelect)
                 
                 HStack(alignment: .top) {
-                    statusPill
+                    if quantity == 0 {
+                        statusPill
+                    }
+                    
                     Spacer()
+                    
+                    if quantity > 0 {
+                        HStack(spacing: 8) {
+                            Button(action: onRemove) {
+                                Image(systemName: "minus")
+                                    .font(.system(size: 10, weight: .bold))
+                                    .foregroundColor(accentColor)
+                                    .frame(width: 24, height: 24)
+                                    .background(Color.white)
+                                    .clipShape(Circle())
+                            }
+                            
+                            Text("\(quantity)")
+                                .font(.system(size: 13, weight: .bold))
+                                .foregroundColor(.textPrimary)
+                                .frame(minWidth: 12)
+                            
+                            Button(action: onAdd) {
+                                Image(systemName: "plus")
+                                    .font(.system(size: 10, weight: .bold))
+                                    .foregroundColor(accentColor)
+                                    .frame(width: 24, height: 24)
+                                    .background(Color.white)
+                                    .clipShape(Circle())
+                            }
+                        }
+                        .padding(4)
+                        .background(Color.surfacePrimary)
+                        .clipShape(Capsule())
+                        .overlay(Capsule().stroke(Color.borderSubtle, lineWidth: 1))
+                        .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 4)
+                    } else {
+                        Button(action: onAdd) {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.surfacePrimary)
+                                    .frame(width: 36, height: 36)
+                                    .overlay(Circle().stroke(Color.borderSubtle, lineWidth: 1))
+                                    .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 4)
+                                
+                                Image(systemName: "cart")
+                                    .font(.system(size: 14, weight: .bold))
+                                    .foregroundColor(accentColor)
+                            }
+                        }
+                    }
                 }
-                .padding(10)
+                .padding(12)
             }
             
             // MARK: - Text Section
-            // ✅ FIX: Wrap in a fixed-min-height container so short titles
-            //         don't cause the card to report less height than its neighbour
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 6) {
                 if let brand = product.brand {
                     Text(brand.uppercased())
-                        .font(.system(size: 10, weight: .bold))
-                        .tracking(1)
-                        .foregroundColor(Color(red: 0.5, green: 0.5, blue: 0.5))
+                        .font(.system(size: 11, weight: .medium))
+                        .kerning(0.5)
+                        .foregroundColor(.textSecondary)
                         .lineLimit(1)
                 }
                 
                 Text(product.title)
-                    .font(.system(size: 15, weight: .medium))
-                    .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                    .font(.system(size: 16, weight: .regular, design: .serif))
+                    .kerning(0.3)
+                    .foregroundColor(.textPrimary)
+                    .lineLimit(2)
                     .fixedSize(horizontal: false, vertical: true)
-                    .multilineTextAlignment(.leading)
-                    .frame(minHeight: 40, alignment: .topLeading)
+                    .frame(height: 44, alignment: .topLeading)
                 
-                Text(product.price?.formatted(.currency(code: "USD")) ?? "$0.00")
-                    .font(.system(size: 14, weight: .regular))
-                    .foregroundColor(Color(red: 0.4, green: 0.35, blue: 0.3))
+                if let price = product.price {
+                    Text(price.formatted(.currency(code: "USD")))
+                        .font(.system(size: 15, weight: .regular, design: .serif))
+                        .foregroundColor(.textSecondary)
+                }
             }
-            .padding(.top, 10)
             .padding(.horizontal, 4)
             .padding(.bottom, 8)
         }
-        // ✅ FIX: Card background + rounded corners so it looks self-contained
-        .background(Color(red: 245/255, green: 243/255, blue: 237/255))
-        .cornerRadius(16)
+        .background(Color.clear)
     }
     
     @ViewBuilder
@@ -83,12 +121,13 @@ struct ProductCardView: View {
         let status = getStatus()
         Text(status)
             .font(.system(size: 10, weight: .bold))
-            .tracking(0.5)
-            .foregroundColor(.black)
+            .kerning(0.5)
             .padding(.horizontal, 10)
             .padding(.vertical, 6)
-            .background(Color.white)
+            .background(Color.surfacePrimary)
             .clipShape(Capsule())
+            .overlay(Capsule().stroke(Color.borderSubtle, lineWidth: 1))
+            .shadow(color: Color.black.opacity(0.04), radius: 6, x: 0, y: 2)
     }
     
     private func getStatus() -> String {

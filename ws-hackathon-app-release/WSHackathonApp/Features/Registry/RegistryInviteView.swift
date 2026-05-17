@@ -12,7 +12,7 @@ struct RegistryInviteView: View {
                     VStack(spacing: 12) {
                         ProgressView()
                         Text("Connecting to server...")
-                            .foregroundColor(.secondary)
+                            .foregroundColor(.textSecondary)
                     }
                     .frame(maxHeight: .infinity)
                 } else if socketService.activeUsers.isEmpty {
@@ -24,7 +24,7 @@ struct RegistryInviteView: View {
                             .font(.headline)
                         Text("Ask your friends to open the app!")
                             .font(.subheadline)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(.textSecondary)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal)
                     }
@@ -37,7 +37,7 @@ struct RegistryInviteView: View {
                                     .font(.headline)
                                 Text("Online")
                                     .font(.caption)
-                                    .foregroundColor(.green)
+                                    .foregroundColor(.wsSuccess)
                             }
                             
                             Spacer()
@@ -51,7 +51,7 @@ struct RegistryInviteView: View {
                                     .fontWeight(.semibold)
                                     .padding(.horizontal, 12)
                                     .padding(.vertical, 6)
-                                    .background(Color.blue)
+                                    .background(Color.brandPrimary)
                                     .foregroundColor(.white)
                                     .cornerRadius(12)
                             }

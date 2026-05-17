@@ -19,6 +19,12 @@ struct WSHackathonAppApp: App {
                 // ✅ Start socket ONLY when UI is ready
                 .onAppear {
                     SocketService.shared.startSession()
+                    
+                    // Bind cooperative shared registry cart sync coordinator globally at startup
+                    RegistryCartSyncManager.shared.bind(
+                        cartRepository: cartRepo,
+                        registryRepository: registryRepo
+                    )
                 }
         }
     }

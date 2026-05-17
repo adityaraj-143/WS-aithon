@@ -14,10 +14,31 @@ struct RegistryDetailView: View {
     @State private var showInviteAlert = false
     @State private var guestName = ""
     @State private var showSuccessToast = false
+    @State private var showDeleteConfirmation = false
+    
+    private var totalSpent: Double {
+        guard let registry = registryRepo.currentRegistry else { return 0 }
+        return registry.items.reduce(0) { $0 + ($1.price * Double($1.quantity)) }
+    }
+    
+    private var budgetAmount: Double {
+        guard let registry = registryRepo.currentRegistry,
+              let budgetStr = registry.budget,
+              let amount = Double(budgetStr.filter { "0123456789.".contains($0) }) else { return 0 }
+        return amount
+    }
+    
+    private var percentLeft: Int {
+        let budget = budgetAmount
+        guard budget > 0 else { return 100 }
+        let spent = totalSpent
+        let used = (spent / budget) * 100
+        return max(0, 100 - Int(used))
+    }
     
     var body: some View {
         ZStack {
-            Color(red: 0.96, green: 0.95, blue: 0.93)
+            Color.appBackground
                 .ignoresSafeArea()
             
             if let registry = registryRepo.currentRegistry {
@@ -28,37 +49,18 @@ struct RegistryDetailView: View {
                         // Title
                         VStack(alignment: .leading, spacing: 8) {
                             Text(registry.displayName.components(separatedBy: " - ").first ?? registry.displayName)
-                                .font(.system(size: 36, weight: .regular, design: .serif))
-                                .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                                .font(.system(size: 34, weight: .regular, design: .serif))
+                                .foregroundColor(.textPrimary)
                             
                             HStack(spacing: 8) {
-                                Text(registry.event.rawValue.uppercased() + " EVENT")
+                                Text("\(registry.event.rawValue) EVENT • \(registry.date.formatted(date: .abbreviated, time: .omitted))")
                                     .font(.system(size: 10, weight: .bold))
                                     .tracking(1.0)
-                                    .foregroundColor(Color(red: 0.46, green: 0.50, blue: 0.44))
+                                    .foregroundColor(.brandPrimary)
+                                    .textCase(.uppercase)
                                 
                                 Spacer()
-                                
-                                Button(action: {
-                                    showInviteAlert = true
-                                }) {
-                                    HStack(spacing: 4) {
-                                        Image(systemName: "person.badge.plus")
-                                        Text("Invite")
-                                    }
-                                    .font(.system(size: 14, weight: .semibold))
-                                    .foregroundColor(.blue)
-                                    .padding(.horizontal, 12)
-                                    .padding(.vertical, 6)
-                                    .background(Color.blue.opacity(0.1))
-                                    .cornerRadius(12)
-                                }
                             }
-                                    .foregroundColor(.gray)
-                                
-                                Text(registry.date.formatted(date: .abbreviated, time: .omitted))
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.gray)
                                 
                                 if !registry.collaboratorNames.isEmpty {
                                     HStack(spacing: 4) {
@@ -67,7 +69,7 @@ struct RegistryDetailView: View {
                                         Text("With: " + registry.collaboratorNames.joined(separator: ", "))
                                             .font(.system(size: 12, weight: .medium))
                                     }
-                                    .foregroundColor(Color(red: 0.46, green: 0.50, blue: 0.44))
+                                    .foregroundColor(.brandPrimary)
                                     .padding(.top, 4)
                                 }
                             }
@@ -75,36 +77,49 @@ struct RegistryDetailView: View {
                         .padding(.horizontal, 24)
                         .padding(.top, 24)
                         
-                        // Budget Progress (Mocked)
+                        // Budget Progress
                         if let budget = registry.budget, !budget.isEmpty {
-                            VStack(spacing: 12) {
+                            VStack(alignment: .leading, spacing: 16) {
                                 HStack(alignment: .bottom) {
-                                    Text("$0") // Mock spent value
-                                        .font(.system(size: 16, weight: .bold))
-                                        .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("$\(Int(totalSpent))")
+                                            .font(.system(size: 44, weight: .regular, design: .serif))
+                                            .foregroundColor(.textPrimary)
+                                        Text("amount used so far")
+                                            .font(.system(size: 10, weight: .bold))
+                                            .tracking(1.0)
+                                            .foregroundColor(.textSecondary)
+                                            .textCase(.uppercase)
+                                    }
                                     Spacer()
-                                    Text("of $\(budget) planned")
-                                        .font(.system(size: 14))
-                                        .foregroundColor(.gray)
                                 }
                                 
                                 GeometryReader { geometry in
                                     ZStack(alignment: .leading) {
                                         Capsule()
-                                            .fill(Color(white: 0.9))
-                                            .frame(height: 4)
+                                            .fill(Color.borderSubtle)
+                                            .frame(height: 8)
                                         
                                         Capsule()
-                                            .fill(Color(red: 0.46, green: 0.50, blue: 0.44))
-                                            .frame(width: geometry.size.width * 0.0, height: 4) // Mock progress
+                                            .fill(Color.brandPrimary)
+                                            .frame(width: geometry.size.width * min(1.0, (budgetAmount > 0 ? (totalSpent / budgetAmount) : 0)), height: 8)
+                    .animation(.easeInOut(duration: 0.4), value: totalSpent)
                                     }
                                 }
-                                .frame(height: 4)
+                                .frame(height: 8)
+                                
+                                HStack {
+                                    Text("Budget: $\(budget)")
+                                        .font(.system(size: 12, weight: .bold))
+                                        .foregroundColor(.textSecondary)
+                                    
+                                    Spacer()
+                                    
+                                    Text("\(percentLeft)% LEFT")
+                                        .font(.system(size: 12, weight: .bold))
+                                        .foregroundColor(.gray)
+                                }
                             }
-                            .padding(24)
-                            .background(Color.white)
-                            .cornerRadius(12)
-                            .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color(white: 0.9), lineWidth: 1))
                             .padding(.horizontal, 24)
                             .padding(.top, 24)
                         }
@@ -114,7 +129,7 @@ struct RegistryDetailView: View {
                             VStack(alignment: .leading, spacing: 16) {
                                 Text("Saved Items")
                                     .font(.system(size: 24, weight: .regular, design: .serif))
-                                    .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                                    .foregroundColor(.textPrimary)
                                     .padding(.horizontal, 24)
                                 
                                 VStack(spacing: 0) {
@@ -128,10 +143,12 @@ struct RegistryDetailView: View {
                                             )
                                         )
                                         .padding(.horizontal, 24)
+                                        .padding(.vertical, 12)
                                         
                                         Divider()
                                             .background(Color(white: 0.9))
                                             .padding(.horizontal, 24)
+                                            .padding(.vertical, 8)
                                     }
                                 }
                             }
@@ -142,7 +159,7 @@ struct RegistryDetailView: View {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Suggested For Your Event")
                                 .font(.system(size: 24, weight: .regular, design: .serif))
-                                .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                                .foregroundColor(.textPrimary)
                                 .padding(.horizontal, 24)
                             
                             Text("Trending items for \(registry.event.rawValue) registries.")
@@ -160,6 +177,8 @@ struct RegistryDetailView: View {
                                 .padding(.top, 16)
                             }
                         }
+                        .padding(.top, 64)
+                        .padding(.bottom, 100)
                     }
                 }
             else {
@@ -175,7 +194,7 @@ struct RegistryDetailView: View {
                         .foregroundColor(.white)
                         .padding(.horizontal, 24)
                         .padding(.vertical, 12)
-                        .background(Color.green)
+                        .background(Color.wsSuccess)
                         .cornerRadius(25)
                         .transition(.move(edge: .top).combined(with: .opacity))
                         .padding(.top, 20)
@@ -210,22 +229,22 @@ struct RegistryDetailView: View {
                 Button(action: { dismiss() }) {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 18, weight: .semibold))
-                        .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                        .foregroundColor(.textPrimary)
                 }
             }
             
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 HStack(spacing: 16) {
-                    Button(action: { /* Add people */ }) {
-                        Image(systemName: "person.2.fill")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                    Button(action: { showInviteAlert = true }) {
+                        Image(systemName: "person.badge.plus")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(.textPrimary)
                     }
                     
-                    Button(action: { /* Share */ }) {
-                        Image(systemName: "square.and.arrow.up")
+                    Button(action: { showDeleteConfirmation = true }) {
+                        Image(systemName: "trash")
                             .font(.system(size: 18, weight: .semibold))
-                            .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                            .foregroundColor(.red)
                     }
                 }
             }
@@ -233,60 +252,90 @@ struct RegistryDetailView: View {
         .task {
             await viewModel.fetchSuggestedProducts()
         }
+        .confirmationDialog(
+            "Are you sure you want to delete this registry? If other people are collaborating, you will be removed from it.",
+            isPresented: $showDeleteConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("Delete", role: .destructive) {
+                if let current = registryRepo.currentRegistry {
+                    registryRepo.deleteRegistry(id: current.id)
+                }
+                dismiss()
+            }
+            Button("Cancel", role: .cancel) {}
+        }
     }
     
     // MARK: - Components
     
     @ViewBuilder
     func suggestedCard(for product: ProductItem, index: Int) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            ZStack(alignment: .top) {
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(Color.white)
-                    .frame(width: 160, height: 160)
+        let brandColor = Color.brandPrimary
+        let cardBg = Color.clear
+        
+        VStack(alignment: .leading, spacing: 0) {
+            ZStack(alignment: .topLeading) {
+                Color.brandAccentWash
+                    .frame(width: 140, height: 140)
                 
                 if let urlString = product.path, let url = URL(string: AppConstants.API.imageBasePath + urlString) {
                     CustomAsyncImage(url: url)
-                        .frame(width: 160, height: 160)
-                        .cornerRadius(16)
+                        .frame(width: 140, height: 140)
                 }
                 
-                HStack(alignment: .top) {
-                    Text(index % 2 == 0 ? "TRENDING" : "POPULAR")
-                        .font(.system(size: 10, weight: .bold))
-                        .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(Color.white.opacity(0.8))
-                        .cornerRadius(4)
-                    
-                    Spacer()
-                    
-                    Image(systemName: "heart")
-                        .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
-                }
-                .padding(12)
+                Text(index % 2 == 0 ? "TRENDING" : "POPULAR")
+                    .font(.system(size: 9, weight: .bold))
+                    .foregroundColor(.textPrimary)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(Color.white.opacity(0.8))
+                    .cornerRadius(4)
+                    .padding(10)
             }
+            .clipShape(RoundedRectangle(cornerRadius: 14))
+            .clipped()
             
             VStack(alignment: .leading, spacing: 4) {
-                Text("BRAND")
-                    .font(.system(size: 10, weight: .bold))
+                Text(product.brand?.uppercased() ?? "BRAND")
+                    .font(.system(size: 9, weight: .bold))
                     .tracking(1.0)
                     .foregroundColor(.gray)
+                    .lineLimit(1)
                 
                 Text(product.title)
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundColor(Color(red: 0.15, green: 0.18, blue: 0.18))
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(.textPrimary)
                     .lineLimit(2)
+                    .frame(minHeight: 32, alignment: .topLeading)
                 
                 if let price = product.price {
-                    Text("$\(price, specifier: "%.2f")")
-                        .font(.system(size: 14))
-                        .foregroundColor(Color(red: 0.54, green: 0.40, blue: 0.31))
+                    Text(price.formatted(.currency(code: "USD")))
+                        .font(.system(size: 12))
+                        .foregroundColor(.brandPrimary)
                 }
+                
+                Button {
+                    withAnimation {
+                        registryRepo.addProduct(product)
+                    }
+                } label: {
+                    Text("+ Add to Registry")
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 8)
+                        .background(brandColor)
+                        .clipShape(Capsule())
+                }
+                .padding(.top, 8)
             }
-            .frame(width: 160, alignment: .leading)
+            .padding(10)
         }
+        .frame(width: 140)
+        .background(cardBg)
+        .cornerRadius(16)
+        .shadow(color: Color.black.opacity(0.03), radius: 5, x: 0, y: 2)
     }
 }
 

@@ -16,7 +16,7 @@ struct UserDiscoveryView: View {
                     VStack(spacing: 12) {
                         ProgressView()
                         Text("Connecting to server...")
-                            .foregroundColor(.secondary)
+                            .foregroundColor(.textSecondary)
                     }
                     .frame(maxHeight: .infinity)
                 } else if socketService.activeUsers.isEmpty {
@@ -40,7 +40,7 @@ struct UserDiscoveryView: View {
                                     .font(.headline)
                                 Text(user.userId.prefix(8) + "...")
                                     .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(.textSecondary)
                             }
                             
                             Spacer()
@@ -52,7 +52,7 @@ struct UserDiscoveryView: View {
                                     .fontWeight(.semibold)
                                     .padding(.horizontal, 16)
                                     .padding(.vertical, 8)
-                                    .background(Color.blue)
+                                    .background(Color.brandPrimary)
                                     .foregroundColor(.white)
                                     .cornerRadius(20)
                             }
@@ -70,7 +70,7 @@ struct UserDiscoveryView: View {
                             .fontWeight(.bold)
                         Text("Online")
                             .font(.system(size: 10))
-                            .foregroundColor(.green)
+                            .foregroundColor(.wsSuccess)
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
