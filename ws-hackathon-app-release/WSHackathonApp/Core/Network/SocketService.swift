@@ -80,6 +80,7 @@ class SocketService: ObservableObject {
             print("🟢 Socket Connected")
             DispatchQueue.main.async { self.isConnected = true }
             self.emitConnectUser()
+            NotificationCenter.default.post(name: .didConnectSocket, object: nil)
         }
         
         socket.on(clientEvent: .disconnect) { [weak self] _, _ in
@@ -146,6 +147,13 @@ class SocketService: ObservableObject {
             print("📦 Received \(array.count) account registries")
             NotificationCenter.default.post(name: .didFetchUserRegistries, object: array)
         }
+        
+        // Listen for real-time collaborative cart updates
+        socket.on(SocketEvents.registryCartStateSynced) { data in
+            guard let dict = data.first as? [String: Any] else { return }
+            print("🛒 Received real-time collaborative cart update")
+            NotificationCenter.default.post(name: .didReceiveRegistryCartSync, object: dict)
+        }
     }
     
     /**
@@ -163,10 +171,15 @@ class SocketService: ObservableObject {
         socket?.emit(SocketEvents.joinRegistryRoom, registryId)
     }
 
+    func emitCartSync(payload: [String: Any]) {
+        socket?.emit(SocketEvents.registryCartStateSynced, payload)
+    }
+
     func syncRegistry(id: String, data: [String: Any]) {
         let payload: [String: Any] = [
             "registryId": id,
-            "registryData": data
+            "registryData": data,
+            "userId": currentUserId
         ]
         socket?.emit(SocketEvents.syncRegistry, payload)
     }
@@ -231,5 +244,14 @@ class SocketService: ObservableObject {
         DispatchQueue.main.async {
             self.pendingRegistryInvites.removeAll { $0 == invite }
         }
+    }
+    
+    func deleteRegistry(id: String) {
+        let payload: [String: Any] = [
+            "registryId": id,
+            "displayName": currentDisplayName,
+            "userId": currentUserId
+        ]
+        socket?.emit(SocketEvents.deleteRegistry, payload)
     }
 }

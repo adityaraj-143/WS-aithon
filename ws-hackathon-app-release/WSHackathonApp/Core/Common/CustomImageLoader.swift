@@ -11,21 +11,21 @@ import Combine
 final class CustomImageLoader: ObservableObject {
     @Published var image: UIImage?
     
-    private var hasLoaded = false
+    private var lastUrl: URL?
     
-    func load(url: URL?) {
-        guard !hasLoaded, let url else { return }
-        hasLoaded = true
+    @MainActor
+    func load(url: URL?) async {
+        guard let url, url != lastUrl else { return }
+        lastUrl = url
+        image = nil
         
-        Task {
-            do {
-                let (data, _) = try await URLSession.shared.data(from: url)
-                if let img = UIImage(data: data) {
-                    await MainActor.run {
-                        self.image = img
-                    }
-                }
-            } catch {
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            if let img = UIImage(data: data) {
+                self.image = img
+            }
+        } catch {
+            if !(error is CancellationError) {
                 print("Image load failed:", error)
             }
         }

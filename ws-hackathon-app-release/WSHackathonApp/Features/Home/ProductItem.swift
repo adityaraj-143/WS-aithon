@@ -36,7 +36,12 @@ struct ProductItem: Identifiable, Hashable {
     
     var imageURL: URL? {
         if let imageUrl = path {
-            return URL(string: AppConstants.API.imageBasePath + imageUrl)
+            let cleanPath = imageUrl.hasPrefix("/") ? String(imageUrl.dropFirst()) : imageUrl
+            let urlString = AppConstants.API.imageBasePath + cleanPath
+            if let encodedUrlString = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+                return URL(string: encodedUrlString)
+            }
+            return URL(string: urlString)
         }
         return nil
     }

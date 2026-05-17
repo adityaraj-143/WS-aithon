@@ -10,7 +10,8 @@ import Combine
 
 class HomeViewModel: ObservableObject {
     @Published var searchText: String = ""
-    @Published var selectedCategory: String = "All"
+    @Published var selectedCategory: String = "All" // Used for carousel auto-scrolling
+    @Published var activeCategoryFilter: String = "All" // Used for the products grid filter below
     @Published var products: [ProductItem] = []
     /// Raw DTOs exposed for the on-device AI planner (richer fields than ProductItem)
     @Published var productDTOs: [ProductItemDTO] = []
@@ -65,11 +66,11 @@ class HomeViewModel: ObservableObject {
     var filteredProducts: [ProductItem] {
         var result = products
         
-        if selectedCategory != "All" {
+        if activeCategoryFilter != "All" {
             result = result.filter { product in
                 guard let type = product.productType?.lowercased() else { return false }
                 
-                switch selectedCategory {
+                switch activeCategoryFilter {
                 case "Kitchen":
                     return type.contains("dutch") || type.contains("fry-pan") || type.contains("coffee") || type.contains("cutting") || type.contains("oil")
                 case "Dining":
@@ -87,6 +88,28 @@ class HomeViewModel: ObservableObject {
         }
         
         return result
+    }
+    
+    func imageURL(for category: String) -> URL? {
+        if category == "All" {
+            return products.first?.imageURL
+        }
+        
+        let productsInCategory = products.filter { product in
+            guard let type = product.productType?.lowercased() else { return false }
+            switch category {
+            case "Kitchen":
+                return type.contains("dutch") || type.contains("fry-pan") || type.contains("coffee") || type.contains("cutting") || type.contains("oil")
+            case "Dining":
+                return type.contains("serveware") || type.contains("cups") || type.contains("glasses") || type.contains("susan")
+            case "Bedding":
+                return false
+            default:
+                return false
+            }
+        }
+        
+        return productsInCategory.first?.imageURL
     }
     
     func fetchProducts() async {

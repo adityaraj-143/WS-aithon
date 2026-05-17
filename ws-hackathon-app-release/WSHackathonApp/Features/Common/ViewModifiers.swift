@@ -16,9 +16,9 @@ struct WSCardModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .padding(padding)
-            .background(Color.wsCard)
+            .background(Color.surfacePrimary)
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-            .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 3)
+            .shadow(color: .black.opacity(0.05), radius: 14, x: 0, y: 6)
     }
 }
 
@@ -36,25 +36,22 @@ struct WSPrimaryButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.headline.weight(.bold))
+            .font(.headline.weight(.semibold))
+            .kerning(0.5)
             .foregroundStyle(.white)
-            .frame(maxWidth: .infinity, minHeight: 52)
+            .frame(maxWidth: .infinity, minHeight: 56)
             .background(
-                LinearGradient(
-                    colors: isEnabled
-                        ? [Color.wsBrand, Color.wsBrandDark]
-                        : [Color.gray.opacity(0.4), Color.gray.opacity(0.3)],
-                    startPoint: .leading,
-                    endPoint: .trailing
-                )
+                isEnabled
+                    ? (configuration.isPressed ? Color.brandPrimaryPressed : Color.brandPrimary)
+                    : Color.textMuted.opacity(0.8)
             )
-            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-            .shadow(color: isEnabled ? Color.wsBrand.opacity(0.35) : .clear,
-                    radius: configuration.isPressed ? 2 : 8,
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .shadow(color: isEnabled ? Color.black.opacity(0.08) : .clear,
+                    radius: configuration.isPressed ? 4 : 12,
                     x: 0,
-                    y: configuration.isPressed ? 1 : 4)
-            .scaleEffect(configuration.isPressed ? 0.97 : 1)
-            .animation(.spring(response: 0.25, dampingFraction: 0.6), value: configuration.isPressed)
+                    y: configuration.isPressed ? 2 : 6)
+            .scaleEffect(configuration.isPressed ? 0.98 : 1)
+            .animation(.spring(response: 0.3, dampingFraction: 0.7), value: configuration.isPressed)
     }
 }
 
@@ -82,10 +79,10 @@ struct StepperPill: View {
                     .font(.system(size: 13, weight: .bold))
             }
         }
-        .foregroundStyle(Color.wsBrand)
+        .foregroundStyle(Color.brandPrimary)
         .padding(.horizontal, 14)
         .padding(.vertical, 8)
-        .background(Color.wsBrandLight)
+        .background(Color.brandAccentWash)
         .clipShape(Capsule())
     }
 }
@@ -108,11 +105,11 @@ struct StatBadge: View {
 
             Text(value)
                 .font(.title2.weight(.black))
-                .foregroundStyle(Color.wsTitle)
+                .foregroundStyle(Color.textPrimary)
 
             Text(label)
                 .font(.caption2.weight(.medium))
-                .foregroundStyle(Color.wsBody)
+                .foregroundStyle(Color.textSecondary)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 14)
@@ -131,12 +128,12 @@ struct WSSectionHeader: View {
         HStack(alignment: .firstTextBaseline) {
             Text(title)
                 .font(.title3.weight(.bold))
-                .foregroundStyle(Color.wsTitle)
+                .foregroundStyle(Color.textPrimary)
             Spacer()
             if let trailing {
                 Text(trailing)
                     .font(.subheadline.weight(.medium))
-                    .foregroundStyle(Color.wsCaption)
+                    .foregroundStyle(Color.textTertiary)
             }
         }
     }

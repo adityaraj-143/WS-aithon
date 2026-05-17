@@ -71,3 +71,8 @@ pnpm-lock.yaml
 .cache/
 .parcel-cache/
 .eslintcache
+
+# Root notes
+/context.md
+/summary.md
+/hackathon-backend-ai-flow.md

@@ -25,6 +25,11 @@ struct ReceiveInvitePayload: Codable, Equatable {
     let registryName: String?
 }
 
+extension Notification.Name {
+    static let didReceiveRegistryCartSync = Notification.Name("didReceiveRegistryCartSync")
+    static let didConnectSocket = Notification.Name("didConnectSocket")
+}
+
 // Requirement 8: Scalable Architecture - Socket Event Constants
 enum SocketEvents {
     static let connectUser = "connect_user"
@@ -39,4 +44,8 @@ enum SocketEvents {
     static let registryUpdated = "registry_updated"
     static let userRegistries = "user_registries"
     static let acceptInvite = "accept_invite"
+    static let deleteRegistry = "delete_registry"
+    
+    // Collaborative shared cart sync events
+    static let registryCartStateSynced = "registry_cart_state_synced"
 }
