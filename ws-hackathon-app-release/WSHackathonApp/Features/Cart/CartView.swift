@@ -12,6 +12,7 @@ struct CartView: View {
     @EnvironmentObject var cartRepository: CartRepository
     @EnvironmentObject var tabBarVM: WSTabBarViewModel
     @EnvironmentObject var homeVM: HomeViewModel
+    @EnvironmentObject var registryRepo: RegistryRepository
 
     private let bgColor = Color.appBackground
     private let brandColor = Color.brandPrimary
@@ -56,6 +57,7 @@ struct CartView: View {
                     }
                 }
             )
+            .environmentObject(registryRepo)
         }
     }
 }

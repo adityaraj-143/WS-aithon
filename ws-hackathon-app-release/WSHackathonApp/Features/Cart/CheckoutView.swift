@@ -12,6 +12,8 @@ struct CheckoutView: View {
     
     @Environment(\.dismiss) private var dismiss
     @State private var selectedPayment: PaymentMethod = .creditCard
+    @State private var isSplitBill = false
+    @EnvironmentObject var registryRepo: RegistryRepository
     
     private let bgColor = Color.appBackground
     private let brandColor = Color.brandPrimary
@@ -48,6 +50,12 @@ struct CheckoutView: View {
                         // ─── Order Summary ───────────────────────────
                         orderSummarySection
                         
+                        if showSplitBillOption {
+                            sectionDivider
+                            
+                            splitBillSection
+                        }
+                        
                         sectionDivider
                         
                         // ─── Payment Methods ─────────────────────────
@@ -71,6 +79,10 @@ struct CheckoutView: View {
             // Bottom Pay Button
             VStack {
                 Spacer()
+                
+                let divisor = isSplitBill ? Double(collaboratorCount) : 1.0
+                let payableAmount = (totalPrice + totalPrice * 0.08) / divisor
+                
                 Button(action: {
                     onPaySuccess?()
                     dismiss()
@@ -78,7 +90,7 @@ struct CheckoutView: View {
                     HStack(spacing: 10) {
                         Image(systemName: "lock.fill")
                             .font(.system(size: 14))
-                        Text("Pay \(totalPrice.formatted(.currency(code: "USD")))")
+                        Text("Pay \(payableAmount.formatted(.currency(code: "USD")))")
                             .font(.system(size: 16, weight: .medium))
                     }
                     .foregroundColor(.white)
@@ -206,6 +218,35 @@ struct CheckoutView: View {
         .buttonStyle(PlainButtonStyle())
     }
     
+    // MARK: - Split Bill
+    
+    private var splitBillSection: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            sectionTitle("COLLABORATIVE GIFTING")
+            
+            HStack(spacing: 16) {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Split Bill Equally")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(.textPrimary)
+                    
+                    Text("Divide total among \(collaboratorCount) collaborators")
+                        .font(.system(size: 12))
+                        .foregroundColor(.textTertiary)
+                }
+                
+                Spacer()
+                
+                Toggle("", isOn: $isSplitBill.animation(.spring(response: 0.35, dampingFraction: 0.8)))
+                    .labelsHidden()
+                    .tint(brandColor)
+            }
+            .padding(16)
+            .background(Color.white)
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        }
+    }
+    
     // MARK: - Card Offers
     
     private var cardOffersSection: some View {
@@ -216,9 +257,9 @@ struct CheckoutView: View {
                 HStack(alignment: .top, spacing: 12) {
                     Image(systemName: offer.icon)
                         .font(.system(size: 16))
-                        .foregroundColor(accentSuccess)
+                        .foregroundColor(brandColor)
                         .frame(width: 36, height: 36)
-                        .background(accentSuccess.opacity(0.1))
+                        .background(brandColor.opacity(0.1))
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                     
                     VStack(alignment: .leading, spacing: 4) {
@@ -232,6 +273,7 @@ struct CheckoutView: View {
                             .fixedSize(horizontal: false, vertical: true)
                     }
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(14)
                 .background(Color.white)
                 .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
@@ -242,20 +284,43 @@ struct CheckoutView: View {
     // MARK: - Price Breakdown
     
     private var priceBreakdownSection: some View {
-        VStack(spacing: 12) {
-            priceRow("Subtotal", value: totalPrice)
+        let divisor = isSplitBill ? Double(collaboratorCount) : 1.0
+        let rawSubtotal = totalPrice
+        let rawTax = totalPrice * 0.08
+        
+        let displaySubtotal = rawSubtotal
+        let displayTax = rawTax / divisor
+        let displayTotal = (rawSubtotal + rawTax) / divisor
+        
+        return VStack(spacing: 12) {
+            priceRow("Subtotal", value: displaySubtotal)
+            
+            if isSplitBill {
+                HStack {
+                    Text("Split Between")
+                        .font(.system(size: 14))
+                        .foregroundColor(.textSecondary)
+                    Spacer()
+                    Text("\(collaboratorCount) People")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundColor(.brandPrimary)
+                }
+                
+                priceRow("Per Person", value: rawSubtotal / divisor)
+            }
+            
             priceRow("Shipping", value: 0, label: "FREE")
-            priceRow("Estimated Tax", value: totalPrice * 0.08)
+            priceRow(isSplitBill ? "Estimated Tax (Per Person)" : "Estimated Tax", value: displayTax)
             
             Divider()
                 .background(Color.borderSubtle)
             
             HStack {
-                Text("Total")
+                Text(isSplitBill ? "Total Payable" : "Total")
                     .font(.system(size: 16, weight: .semibold, design: .serif))
                     .foregroundColor(.textPrimary)
                 Spacer()
-                Text((totalPrice + totalPrice * 0.08).formatted(.currency(code: "USD")))
+                Text(displayTotal.formatted(.currency(code: "USD")))
                     .font(.system(size: 18, weight: .regular, design: .serif))
                     .foregroundColor(.textPrimary)
             }
@@ -281,6 +346,32 @@ struct CheckoutView: View {
     }
     
     // MARK: - Helpers
+    
+    private var uniqueRegistryIds: Set<String> {
+        Set(items.compactMap { $0.registryId })
+    }
+    
+    private var singleRegistryId: UUID? {
+        guard uniqueRegistryIds.count == 1,
+              let firstIdStr = uniqueRegistryIds.first,
+              let uuid = UUID(uuidString: firstIdStr) else {
+            return nil
+        }
+        return uuid
+    }
+    
+    private var checkoutRegistry: Registry? {
+        guard let uuid = singleRegistryId else { return nil }
+        return registryRepo.registries.first { $0.id == uuid }
+    }
+    
+    private var collaboratorCount: Int {
+        checkoutRegistry?.collaboratorNames.count ?? 0
+    }
+    
+    private var showSplitBillOption: Bool {
+        uniqueRegistryIds.count == 1 && collaboratorCount > 1
+    }
     
     private func sectionTitle(_ title: String) -> some View {
         Text(title)
