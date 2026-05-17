@@ -14,7 +14,7 @@ struct ProductDetailView: View {
     @EnvironmentObject var tabBarVM: WSTabBarViewModel
     @Environment(\.dismiss) var dismiss
     
-    private let bgColor = Color(red: 245/255, green: 243/255, blue: 237/255)
+    private let bgColor = Color.appBackground
     
     @State private var showRegistrySheet = false
     @State private var selectedRegistryIds: Set<UUID> = []
@@ -30,13 +30,7 @@ struct ProductDetailView: View {
                 VStack(spacing: 0) {
                     // Large Image Header
                     GeometryReader { geo in
-                        AsyncImage(url: viewModel.product.imageURL) { phase in
-                            if let image = phase.image {
-                                image.resizable().scaledToFill()
-                            } else {
-                                Color(.systemGray5)
-                            }
-                        }
+                        CustomAsyncImage(url: viewModel.product.imageURL)
                         .frame(width: geo.size.width, height: geo.size.height)
                         .clipped()
                     }
@@ -51,23 +45,23 @@ struct ProductDetailView: View {
                                 Text(brand.uppercased())
                                     .font(.system(size: 11, weight: .bold))
                                     .tracking(2)
-                                    .foregroundColor(Color(red: 0.5, green: 0.5, blue: 0.5))
+                                    .foregroundColor(.textTertiary)
                             }
                             
                             Text(viewModel.product.title)
                                 .font(.system(size: 26, weight: .regular, design: .serif))
-                                .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                                .foregroundColor(.textPrimary)
                                 .fixedSize(horizontal: false, vertical: true)
                             
                             HStack(alignment: .firstTextBaseline, spacing: 12) {
                                 Text(viewModel.product.price?.formatted(.currency(code: "USD")) ?? "$0.00")
                                     .font(.system(size: 22, weight: .regular, design: .serif))
-                                    .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                                    .foregroundColor(.textPrimary)
                                 
                                 if let retail = viewModel.product.retailPrice, let price = viewModel.product.price, retail > price {
                                     Text(retail.formatted(.currency(code: "USD")))
                                         .font(.system(size: 15, weight: .regular, design: .serif))
-                                        .foregroundColor(Color(red: 0.5, green: 0.5, blue: 0.5))
+                                        .foregroundColor(.textTertiary)
                                         .strikethrough()
                                 }
                             }
@@ -94,7 +88,7 @@ struct ProductDetailView: View {
                         }
                         
                         Divider()
-                            .background(Color(red: 0.9, green: 0.9, blue: 0.9))
+                            .background(Color.borderSubtle)
                             .padding(.vertical, 8)
                         
                         // Specifications Grid
@@ -128,11 +122,11 @@ struct ProductDetailView: View {
                 Button(action: { dismiss() }) {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 16, weight: .bold))
-                        .foregroundColor(.black)
+                        .foregroundColor(.textPrimary)
                         .frame(width: 40, height: 40)
-                        .background(Color.white)
+                        .background(Color.surfacePrimary)
                         .clipShape(Circle())
-                        .shadow(color: .black.opacity(0.1), radius: 4)
+                        .shadow(color: Color.textPrimary.opacity(0.1), radius: 4)
                 }
                 Spacer()
             }
@@ -152,20 +146,20 @@ struct ProductDetailView: View {
                     Spacer()
                     HStack(spacing: 12) {
                         Image(systemName: "checkmark.circle.fill")
-                            .foregroundColor(Color(red: 175/255, green: 155/255, blue: 130/255))
+                            .foregroundColor(.brandPrimary)
                             .font(.system(size: 22))
                         Text(cartAlertMessage)
                             .font(.system(size: 15, weight: .medium))
-                            .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                            .foregroundColor(.textPrimary)
                     }
                     .padding(.horizontal, 24)
                     .padding(.vertical, 14)
-                    .background(Color.white)
+                    .background(Color.surfacePrimary)
                     .clipShape(Capsule())
                     .shadow(color: .black.opacity(0.1), radius: 12, y: 4)
                     .overlay(
                         Capsule()
-                            .stroke(Color(red: 0.9, green: 0.9, blue: 0.9), lineWidth: 1)
+                            .stroke(Color.borderSubtle, lineWidth: 1)
                     )
                     .padding(.bottom, 100)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
@@ -201,6 +195,8 @@ struct ProductDetailView: View {
             )
             .presentationDetents([.fraction(0.85)])
             .presentationDragIndicator(.visible)
+            .presentationCornerRadius(32)
+            .presentationBackground(Color.appBackground)
         }
     }
     
@@ -214,11 +210,12 @@ struct ProductDetailView: View {
                     Text("Add to Registry")
                 }
                 .font(.system(size: 15, weight: .medium))
-                .foregroundColor(.white)
+                .foregroundColor(.brandPrimary)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 16)
-                .background(Color(red: 115/255, green: 125/255, blue: 105/255))
+                .background(Color.surfacePrimary)
                 .clipShape(Capsule())
+                .overlay(Capsule().stroke(Color.brandPrimary, lineWidth: 1.5))
             }
             
             let isInCart = cartRepository.items.contains(where: { $0.id == viewModel.product.id })
@@ -254,7 +251,7 @@ struct ProductDetailView: View {
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 16)
-                .background(Color(red: 175/255, green: 155/255, blue: 130/255))
+                .background(Color.brandPrimary)
                 .clipShape(Capsule())
             }
         }
@@ -274,10 +271,10 @@ struct ProductDetailView: View {
         Text(text)
             .font(.system(size: 10, weight: .bold))
             .tracking(0.5)
-            .foregroundColor(Color(red: 0.3, green: 0.3, blue: 0.3))
+            .foregroundColor(.textSecondary)
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
-            .background(Color(red: 0.92, green: 0.91, blue: 0.88))
+            .background(Color.brandAccentWash)
             .clipShape(Capsule())
     }
     
@@ -286,10 +283,10 @@ struct ProductDetailView: View {
             Text(title)
                 .font(.system(size: 10, weight: .bold))
                 .tracking(1)
-                .foregroundColor(Color(red: 0.5, green: 0.5, blue: 0.5))
+                .foregroundColor(.textTertiary)
             Text(value)
                 .font(.system(size: 14, weight: .medium))
-                .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                .foregroundColor(.textPrimary)
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
@@ -305,7 +302,7 @@ struct RegistrySelectionSheet: View {
     
     @Environment(\.dismiss) var dismiss
     
-    private let bgColor = Color(red: 245/255, green: 243/255, blue: 237/255)
+    private let bgColor = Color.appBackground
     
     var body: some View {
         ZStack(alignment: .top) {
@@ -316,14 +313,14 @@ struct RegistrySelectionSheet: View {
                 HStack {
                     Text("Save to Registry")
                         .font(.system(size: 24, weight: .regular, design: .serif))
-                        .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                        .foregroundColor(.textPrimary)
                     Spacer()
                     Button(action: { dismiss() }) {
                         Image(systemName: "xmark")
                             .font(.system(size: 14, weight: .bold))
-                            .foregroundColor(.black)
+                            .foregroundColor(.textPrimary)
                             .frame(width: 30, height: 30)
-                            .background(Color.black.opacity(0.05))
+                            .background(Color.textPrimary.opacity(0.05))
                             .clipShape(Circle())
                     }
                 }
@@ -346,14 +343,14 @@ struct RegistrySelectionSheet: View {
                                     .font(.system(size: 15, weight: .medium))
                                 Spacer()
                             }
-                            .foregroundColor(Color(red: 115/255, green: 125/255, blue: 105/255))
+                            .foregroundColor(.brandPrimary)
                             .padding(.vertical, 18)
                             .background(
                                 RoundedRectangle(cornerRadius: 16)
                                     .strokeBorder(
                                         style: StrokeStyle(lineWidth: 1, dash: [6, 4])
                                     )
-                                    .foregroundColor(Color(red: 0.7, green: 0.7, blue: 0.7))
+                                    .foregroundColor(.textTertiary)
                             )
                         }
                     }
@@ -371,7 +368,7 @@ struct RegistrySelectionSheet: View {
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 18)
-                        .background(Color(red: 115/255, green: 125/255, blue: 105/255))
+                        .background(Color.brandPrimary)
                         .clipShape(Capsule())
                 }
                 .disabled(selectedIds.isEmpty)
@@ -415,21 +412,21 @@ struct RegistrySelectionSheet: View {
                 // Folder Icon Box
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)
-                        .fill(Color(red: 0.92, green: 0.9, blue: 0.88))
+                        .fill(Color.brandAccentWash)
                         .frame(width: 48, height: 48)
                     Image(systemName: "folder")
                         .font(.system(size: 20))
-                        .foregroundColor(Color(red: 0.5, green: 0.5, blue: 0.5))
+                        .foregroundColor(.textTertiary)
                 }
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(registry.displayName)
                         .font(.system(size: 15, weight: .medium))
-                        .foregroundColor(Color(red: 0.15, green: 0.15, blue: 0.15))
+                        .foregroundColor(.textPrimary)
                     
                     Text("\(registry.items.count) Items • 1 Collaborators")
                         .font(.system(size: 13))
-                        .foregroundColor(Color(red: 0.5, green: 0.5, blue: 0.5))
+                        .foregroundColor(.textTertiary)
                 }
                 
                 Spacer()
@@ -437,12 +434,12 @@ struct RegistrySelectionSheet: View {
                 // Radio/Check circle
                 ZStack {
                     Circle()
-                        .stroke(isSelected ? Color.clear : Color(red: 0.8, green: 0.8, blue: 0.8), lineWidth: 1)
+                        .stroke(isSelected ? Color.clear : Color.textMuted, lineWidth: 1)
                         .frame(width: 24, height: 24)
                     
                     if isSelected {
                         Circle()
-                            .fill(Color(red: 115/255, green: 125/255, blue: 105/255))
+                            .fill(Color.brandPrimary)
                             .frame(width: 24, height: 24)
                         Image(systemName: "checkmark")
                             .font(.system(size: 12, weight: .bold))
@@ -453,11 +450,11 @@ struct RegistrySelectionSheet: View {
             .padding(16)
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(isSelected ? Color(red: 0.9, green: 0.9, blue: 0.86) : Color.white)
+                    .fill(isSelected ? Color.brandAccentWash : Color.surfacePrimary)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
-                    .stroke(isSelected ? Color(red: 115/255, green: 125/255, blue: 105/255) : Color(red: 0.9, green: 0.9, blue: 0.9), lineWidth: 1)
+                    .stroke(isSelected ? Color.brandPrimary : Color.borderSubtle, lineWidth: 1)
             )
         }
         .buttonStyle(PlainButtonStyle())

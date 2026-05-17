@@ -19,16 +19,16 @@ struct RegistrySuccessView: View {
             // Celebration icon
             ZStack {
                 Circle()
-                    .fill(Color.wsBrandLight)
+                    .fill(Color.brandAccentWash)
                     .frame(width: 100, height: 100)
                 Image(systemName: "checkmark.seal.fill")
                     .font(.system(size: 48))
-                    .foregroundStyle(Color.wsBrand)
+                    .foregroundStyle(Color.brandPrimary)
             }
 
             Text("Registry Created 🎉")
                 .font(.title.weight(.bold))
-                .foregroundStyle(Color.wsTitle)
+                .foregroundStyle(Color.textPrimary)
 
             Text(registryRepo.currentRegistry?.displayName ?? "")
                 .font(.headline)
@@ -42,6 +42,6 @@ struct RegistrySuccessView: View {
             Spacer(minLength: 40)
         }
         .frame(maxWidth: .infinity)
-        .background(Color.wsBackground.ignoresSafeArea())
+        .background(Color.appBackground.ignoresSafeArea())
     }
 }
