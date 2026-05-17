@@ -195,6 +195,8 @@ struct ProductDetailView: View {
             )
             .presentationDetents([.fraction(0.85)])
             .presentationDragIndicator(.visible)
+            .presentationCornerRadius(32)
+            .presentationBackground(Color.appBackground)
         }
     }
     

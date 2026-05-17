@@ -167,7 +167,7 @@ private extension HomeView {
             
             // Gradient Overlay
             LinearGradient(
-                gradient: Gradient(colors: [Color.black.opacity(0.6), Color.clear, Color.black.opacity(0.1)]),
+                gradient: Gradient(colors: [Color.black.opacity(0.45), Color.clear, Color.black.opacity(0.05)]),
                 startPoint: .bottom,
                 endPoint: .top
             )
@@ -181,7 +181,7 @@ private extension HomeView {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .clipShape(RoundedRectangle(cornerRadius: 20))
         .scaleEffect(isActiveFilter ? 0.96 : 1.0)
-        .shadow(color: Color.black.opacity(isActiveFilter ? 0.12 : 0.06), radius: isActiveFilter ? 16 : 10, x: 0, y: isActiveFilter ? 8 : 4)
+        .shadow(color: Color.black.opacity(isActiveFilter ? 0.08 : 0.04), radius: isActiveFilter ? 18 : 12, x: 0, y: isActiveFilter ? 8 : 4)
         .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isActiveFilter)
     }
     

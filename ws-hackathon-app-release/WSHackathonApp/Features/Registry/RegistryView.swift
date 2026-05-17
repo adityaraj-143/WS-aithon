@@ -95,6 +95,8 @@ struct RegistryView: View {
                 }
             )
             .environmentObject(registryRepo)
+            .presentationCornerRadius(32)
+            .presentationBackground(Color.appBackground)
         }
     }
 }

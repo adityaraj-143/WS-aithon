@@ -229,6 +229,8 @@ struct RegistryPlanResultView: View {
                 browseProducts: response.browseProducts,
                 isProductInRegistry: isProductInRegistry
             )
+            .presentationCornerRadius(32)
+            .presentationBackground(Color.appBackground)
         }
     }
 }

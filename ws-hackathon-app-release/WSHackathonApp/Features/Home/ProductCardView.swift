@@ -63,16 +63,18 @@ struct ProductCardView: View {
                             }
                         }
                         .padding(4)
-                        .background(Color.white)
+                        .background(Color.surfacePrimary)
                         .clipShape(Capsule())
-                        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+                        .overlay(Capsule().stroke(Color.borderSubtle, lineWidth: 1))
+                        .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 4)
                     } else {
                         Button(action: onAdd) {
                             ZStack {
                                 Circle()
-                                    .fill(Color.white)
+                                    .fill(Color.surfacePrimary)
                                     .frame(width: 36, height: 36)
-                                    .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+                                    .overlay(Circle().stroke(Color.borderSubtle, lineWidth: 1))
+                                    .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 4)
                                 
                                 Image(systemName: "cart")
                                     .font(.system(size: 14, weight: .bold))
@@ -96,6 +98,7 @@ struct ProductCardView: View {
                 
                 Text(product.title)
                     .font(.system(size: 16, weight: .regular, design: .serif))
+                    .kerning(0.3)
                     .foregroundColor(.textPrimary)
                     .lineLimit(2)
                     .fixedSize(horizontal: false, vertical: true)
@@ -121,9 +124,10 @@ struct ProductCardView: View {
             .kerning(0.5)
             .padding(.horizontal, 10)
             .padding(.vertical, 6)
-            .background(Color.white)
+            .background(Color.surfacePrimary)
             .clipShape(Capsule())
-            .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
+            .overlay(Capsule().stroke(Color.borderSubtle, lineWidth: 1))
+            .shadow(color: Color.black.opacity(0.04), radius: 6, x: 0, y: 2)
     }
     
     private func getStatus() -> String {

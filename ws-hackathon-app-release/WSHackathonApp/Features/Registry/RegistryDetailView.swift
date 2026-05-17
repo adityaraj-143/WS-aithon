@@ -102,6 +102,7 @@ struct RegistryDetailView: View {
                                         Capsule()
                                             .fill(Color.brandPrimary)
                                             .frame(width: geometry.size.width * min(1.0, (budgetAmount > 0 ? (totalSpent / budgetAmount) : 0)), height: 8)
+                    .animation(.easeInOut(duration: 0.4), value: totalSpent)
                                     }
                                 }
                                 .frame(height: 8)
