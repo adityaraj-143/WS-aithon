@@ -50,6 +50,24 @@ final class RegistryRepository: ObservableObject {
                 self.applyBulkRemoteUpdate(array)
             }
         }
+
+        NotificationCenter.default.addObserver(forName: .didConnectSocket, object: nil, queue: .main) { [weak self] _ in
+            guard let self = self else { return }
+            Task { @MainActor in
+                self.joinAllLocalRegistryRooms()
+            }
+        }
+
+        if SocketService.shared.isConnected {
+            joinAllLocalRegistryRooms()
+        }
+    }
+
+    func joinAllLocalRegistryRooms() {
+        for registry in registries {
+            print("🏠 Automatically joining socket room for local registry: \(registry.id.uuidString)")
+            SocketService.shared.joinRoom(registryId: registry.id.uuidString)
+        }
     }
     
     var currentRegistry: Registry? {
@@ -298,6 +316,9 @@ final class RegistryRepository: ObservableObject {
                 
                 registries.append(registry)
                 saveToDisk()
+                
+                // Automatically join room for newly loaded remote registry
+                SocketService.shared.joinRoom(registryId: registry.id.uuidString)
             }
         }
     }

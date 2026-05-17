@@ -68,4 +68,8 @@ final class CartRepository: ObservableObject {
     func removeItemCompletely(productId: String) {
         items.removeAll(where: { $0.id == productId })
     }
+
+    func setItems(_ newItems: [CartItem]) {
+        self.items = newItems
+    }
 }
