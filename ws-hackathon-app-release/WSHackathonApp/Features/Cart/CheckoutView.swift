@@ -8,6 +8,7 @@ import SwiftUI
 struct CheckoutView: View {
     let items: [CartItem]
     let totalPrice: Double
+    var onPaySuccess: (() -> Void)? = nil
     
     @Environment(\.dismiss) private var dismiss
     @State private var selectedPayment: PaymentMethod = .creditCard
@@ -70,7 +71,10 @@ struct CheckoutView: View {
             // Bottom Pay Button
             VStack {
                 Spacer()
-                Button(action: { dismiss() }) {
+                Button(action: {
+                    onPaySuccess?()
+                    dismiss()
+                }) {
                     HStack(spacing: 10) {
                         Image(systemName: "lock.fill")
                             .font(.system(size: 14))

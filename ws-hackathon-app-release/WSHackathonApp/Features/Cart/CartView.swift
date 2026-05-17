@@ -44,8 +44,17 @@ struct CartView: View {
         }
         .fullScreenCover(isPresented: $showCheckout) {
             CheckoutView(
-                items: viewModel.items,
-                totalPrice: cartRepository.totalPrice
+                items: viewModel.selectedItems,
+                totalPrice: viewModel.selectedTotalPrice,
+                onPaySuccess: {
+                    withAnimation {
+                        let selected = viewModel.selectedItems
+                        for item in selected {
+                            cartRepository.removeItemCompletely(productId: item.id)
+                        }
+                        viewModel.selectedCheckoutSections.removeAll()
+                    }
+                }
             )
         }
     }
@@ -110,7 +119,7 @@ private extension CartView {
 
     // ─── Cart Content ────────────────────────────────────────────
     var cartContent: some View {
-        VStack(spacing: 0) {
+        ZStack(alignment: .bottom) {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 0) {
                     // Accordion sections
@@ -121,11 +130,14 @@ private extension CartView {
                     smartRecommendationsSection
                         .padding(.top, 24)
                 }
-                .padding(.bottom, 130)
+                .padding(.bottom, viewModel.selectedCheckoutSections.isEmpty ? 60 : 180)
             }
 
             // Checkout bar
-            checkoutBar
+            if !viewModel.selectedCheckoutSections.isEmpty {
+                checkoutBar
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
         }
     }
 
@@ -167,12 +179,9 @@ private extension CartView {
                             Spacer()
                             
                             Image(systemName: "chevron.right")
-                                .font(.system(size: 12, weight: .bold))
-                                .foregroundColor(.textTertiary)
+                                .font(.system(size: 12, weight: .semibold))
+                                .foregroundColor(.textSecondary)
                                 .rotationEffect(.degrees(section.isExpanded ? 90 : 0))
-                                .frame(width: 28, height: 28)
-                                .background(Color.brandAccentWash.opacity(0.6))
-                                .clipShape(Circle())
                         }
                         .padding(.horizontal, 20)
                         .padding(.vertical, 18)
@@ -185,7 +194,7 @@ private extension CartView {
                             .background(Color.borderSubtle)
                             .padding(.horizontal, 20)
                         
-                        VStack(spacing: 12) {
+                        VStack(spacing: 0) {
                             ForEach(section.items) { item in
                                 CartItemRow(
                                     item: item,
@@ -205,34 +214,67 @@ private extension CartView {
                                         }
                                     }
                                 )
+                                
+                                if item.id != section.items.last?.id {
+                                    Divider()
+                                        .background(Color.borderSubtle.opacity(0.5))
+                                        .padding(.leading, 116)
+                                        .padding(.trailing, 20)
+                                }
                             }
                         }
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 16)
-                        .background(Color.brandAccentWash.opacity(0.3))
+                        
+                        Divider()
+                            .background(Color.borderSubtle.opacity(0.5))
+                            .padding(.horizontal, 20)
                         
                         // Section Subtotal
                         HStack {
-                            Text("Section Subtotal")
-                                .font(.system(size: 12, weight: .bold))
-                                .tracking(1)
+                            Text("Subtotal")
+                                .font(.system(size: 14, weight: .regular))
                                 .foregroundColor(.textSecondary)
-                                .textCase(.uppercase)
                             
                             Spacer()
                             
                             Text(String(format: "$%.2f", section.totalAmount))
-                                .font(.system(size: 16, weight: .semibold, design: .serif))
+                                .font(.system(size: 16, weight: .medium, design: .serif))
                                 .foregroundColor(.brandPrimary)
                         }
                         .padding(.horizontal, 20)
-                        .padding(.vertical, 16)
-                        .background(Color.white)
+                        .padding(.top, 16)
+                        .padding(.bottom, 12)
+                        
+                        let isSelected = viewModel.selectedCheckoutSections.contains(section.id)
+                        Button {
+                            withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+                                viewModel.toggleCheckoutSection(section.id)
+                            }
+                        } label: {
+                            HStack(spacing: 8) {
+                                if isSelected {
+                                    Image(systemName: "checkmark")
+                                        .font(.system(size: 12, weight: .bold))
+                                }
+                                Text(isSelected ? "Remove From Checkout" : "Add To Checkout")
+                                    .font(.system(size: 14, weight: .semibold))
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                            .background(isSelected ? Color.clear : Color.brandPrimary)
+                            .foregroundColor(isSelected ? Color.brandPrimary : .white)
+                            .clipShape(Capsule())
+                            .overlay(
+                                Capsule()
+                                    .stroke(Color.brandPrimary, lineWidth: isSelected ? 1 : 0)
+                            )
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 20)
                     }
                 }
                 .background(Color.white)
                 .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                .shadow(color: Color.black.opacity(0.03), radius: 12, x: 0, y: 6)
+                .shadow(color: Color.black.opacity(0.015), radius: 10, x: 0, y: 4)
             }
         }
     }
@@ -240,23 +282,24 @@ private extension CartView {
     // ─── Checkout Bar ────────────────────────────────────────────
     var checkoutBar: some View {
         HStack(spacing: 0) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(viewModel.totalPriceText)
-                    .font(.system(size: 16, weight: .bold))
+            VStack(alignment: .leading, spacing: 3) {
+                Text(viewModel.selectedSectionsText)
+                    .font(.system(size: 13, weight: .bold))
                     .foregroundColor(.textPrimary)
                 
-                Text("Total Amount")
-                    .font(.system(size: 13))
-                    .foregroundColor(.gray)
+                let itemCount = viewModel.selectedItemsCount
+                Text("\(itemCount) \(itemCount == 1 ? "Item" : "Items") • \(viewModel.selectedTotalPriceText)")
+                    .font(.system(size: 11))
+                    .foregroundColor(.textSecondary)
             }
-            .padding(.leading, 32)
+            .padding(.leading, 24)
             
             Spacer()
             
             Button {
                 showCheckout = true
             } label: {
-                Text(AppStrings.Cart.checkoutButton)
+                Text("Checkout")
                     .font(.system(size: 15, weight: .bold))
                     .foregroundColor(.white)
                     .padding(.horizontal, 32)

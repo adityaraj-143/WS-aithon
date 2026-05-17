@@ -11,46 +11,29 @@ struct CartItemRow: View {
         HStack(alignment: .top, spacing: 16) {
             // ─── Image ───────────────────────────────────────
             ZStack {
-                Color.brandAccentWash
+                Color.brandAccentWash.opacity(0.4)
                 
                 CustomAsyncImage(url: item.imageURL)
                     .aspectRatio(contentMode: .fill)
             }
-            .frame(width: 84, height: 84)
-            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .stroke(Color.borderSubtle, lineWidth: 1)
-            )
+            .frame(width: 80, height: 80)
+            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
 
             // ─── Info ────────────────────────────────────────
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 4) {
                 // Category/Badge label
-                Text(item.registryId != nil ? "REGISTRY EXCLUSIVE" : "CURATED COLLECTION")
-                    .font(.system(size: 8, weight: .bold))
-                    .tracking(1.2)
-                    .foregroundColor(.brandPrimary)
+                if item.registryId != nil {
+                    Text("REGISTRY EXCLUSIVE")
+                        .font(.system(size: 8, weight: .bold))
+                        .tracking(1.0)
+                        .foregroundColor(.brandPrimary)
+                }
                 
                 Text(item.title)
-                    .font(.system(size: 14, weight: .medium))
+                    .font(.system(size: 14, weight: .regular))
                     .foregroundColor(.textPrimary)
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)
-
-                HStack(spacing: 8) {
-                    Text("$\(item.price, specifier: "%.2f")")
-                        .font(.system(size: 13, weight: .semibold, design: .serif))
-                        .foregroundColor(.textSecondary)
-                    
-                    if item.quantity > 1 {
-                        Text("•")
-                            .font(.system(size: 10))
-                            .foregroundColor(.textMuted)
-                        Text("$\(item.price * Double(item.quantity), specifier: "%.2f") total")
-                            .font(.system(size: 12, design: .serif))
-                            .foregroundColor(.brandPrimary)
-                    }
-                }
 
                 Spacer(minLength: 8)
 
@@ -58,11 +41,9 @@ struct CartItemRow: View {
                 HStack(spacing: 12) {
                     Button(action: onRemove) {
                         Image(systemName: "minus")
-                            .font(.system(size: 10, weight: .bold))
+                            .font(.system(size: 10, weight: .medium))
                             .foregroundColor(.textSecondary)
                             .frame(width: 24, height: 24)
-                            .background(Color.white)
-                            .clipShape(Circle())
                     }
 
                     Text("\(item.quantity)")
@@ -72,39 +53,49 @@ struct CartItemRow: View {
 
                     Button(action: onAdd) {
                         Image(systemName: "plus")
-                            .font(.system(size: 10, weight: .bold))
+                            .font(.system(size: 10, weight: .medium))
                             .foregroundColor(.textSecondary)
                             .frame(width: 24, height: 24)
-                            .background(Color.white)
-                            .clipShape(Circle())
                     }
                 }
-                .padding(.horizontal, 6)
-                .padding(.vertical, 4)
-                .background(Color.brandAccentWash)
+                .padding(.horizontal, 4)
+                .padding(.vertical, 2)
+                .background(Color.brandAccentWash.opacity(0.6))
                 .clipShape(Capsule())
-                .overlay(
-                    Capsule()
-                        .stroke(Color.borderSubtle, lineWidth: 1)
-                )
             }
 
-            Spacer(minLength: 0)
+            Spacer(minLength: 12)
 
-            // ─── Remove Action ──────────────────────────────
-            Button(action: onRemoveCompletely) {
-                Image(systemName: "xmark")
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundColor(.textTertiary)
-                    .frame(width: 24, height: 24)
-                    .background(Color.brandAccentWash.opacity(0.5))
-                    .clipShape(Circle())
+            // ─── Price & Remove ──────────────────────────────
+            VStack(alignment: .trailing, spacing: 12) {
+                // Remove button
+                Button(action: onRemoveCompletely) {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundColor(.textTertiary)
+                        .frame(width: 20, height: 20)
+                        .background(Color.brandAccentWash.opacity(0.4))
+                        .clipShape(Circle())
+                }
+                
+                Spacer(minLength: 0)
+                
+                // Total price aligned right
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text("$\(item.price * Double(item.quantity), specifier: "%.2f")")
+                        .font(.system(size: 15, weight: .medium, design: .serif))
+                        .foregroundColor(.textPrimary)
+                    
+                    if item.quantity > 1 {
+                        Text("$\(item.price, specifier: "%.2f") each")
+                            .font(.system(size: 10))
+                            .foregroundColor(.textSecondary)
+                    }
+                }
             }
-            .padding(.top, 2)
         }
-        .padding(16)
+        .padding(.vertical, 16)
+        .padding(.horizontal, 20)
         .background(Color.white)
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-        .shadow(color: Color.black.opacity(0.02), radius: 8, x: 0, y: 4)
     }
 }

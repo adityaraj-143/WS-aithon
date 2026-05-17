@@ -26,10 +26,55 @@ final class CartViewModel: ObservableObject {
     @Published private(set) var items: [CartItem] = []
     @Published private(set) var sections: [CartSection] = []
     @Published var expandedSections: Set<String> = []
+    @Published var selectedCheckoutSections: Set<String> = []
     
     private var cancellable: AnyCancellable?
     private var repository: CartRepository?
     private var hasInitializedExpandedState = false
+    
+    func toggleCheckoutSection(_ id: String) {
+        if selectedCheckoutSections.contains(id) {
+            selectedCheckoutSections.remove(id)
+        } else {
+            selectedCheckoutSections.insert(id)
+        }
+    }
+    
+    var selectedSectionsText: String {
+        let count = selectedCheckoutSections.count
+        if count == 1 {
+            if selectedCheckoutSections.contains("personal") {
+                return "1 Collection Selected"
+            } else {
+                return "1 Registry Selected"
+            }
+        } else {
+            if selectedCheckoutSections.contains("personal") {
+                return "\(count) Collections Selected"
+            } else {
+                return "\(count) Registries Selected"
+            }
+        }
+    }
+    
+    var selectedItemsCount: Int {
+        sections.filter { selectedCheckoutSections.contains($0.id) }
+            .reduce(0) { $0 + $1.items.reduce(0) { $0 + $1.quantity } }
+    }
+    
+    var selectedTotalPrice: Double {
+        sections.filter { selectedCheckoutSections.contains($0.id) }
+            .reduce(0.0) { $0 + $1.totalAmount }
+    }
+    
+    var selectedTotalPriceText: String {
+        String(format: "$%.2f", selectedTotalPrice)
+    }
+    
+    var selectedItems: [CartItem] {
+        sections.filter { selectedCheckoutSections.contains($0.id) }
+            .flatMap { $0.items }
+    }
     
     func bind(repository: CartRepository) {
         self.repository = repository
@@ -113,6 +158,10 @@ final class CartViewModel: ObservableObject {
                 items: newSections[0].items
             )
         }
+        
+        // Keep selectedCheckoutSections up to date with currently existing sections
+        let existingIds = Set(newSections.map { $0.id })
+        self.selectedCheckoutSections = self.selectedCheckoutSections.intersection(existingIds)
         
         self.sections = newSections
     }
