@@ -252,18 +252,16 @@ struct RegistryDetailView: View {
         .task {
             await viewModel.fetchSuggestedProducts()
         }
-        .confirmationDialog(
-            "Are you sure you want to delete this registry? If other people are collaborating, you will be removed from it.",
-            isPresented: $showDeleteConfirmation,
-            titleVisibility: .visible
-        ) {
-            Button("Delete", role: .destructive) {
+        .alert("Delete Registry", isPresented: $showDeleteConfirmation) {
+            Button("Yes", role: .destructive) {
                 if let current = registryRepo.currentRegistry {
                     registryRepo.deleteRegistry(id: current.id)
                 }
                 dismiss()
             }
-            Button("Cancel", role: .cancel) {}
+            Button("No", role: .cancel) {}
+        } message: {
+            Text("Are you sure you want to delete this registry?")
         }
     }
     

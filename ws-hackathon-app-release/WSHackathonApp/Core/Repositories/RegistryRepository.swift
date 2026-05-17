@@ -14,6 +14,16 @@ final class RegistryRepository: ObservableObject {
     @Published var registries: [Registry] = []
     @Published var activeRegistryId: UUID?
     
+    private var deletedRegistryIds: Set<UUID> {
+        get {
+            guard let array = UserDefaults.standard.stringArray(forKey: "deleted_registry_ids") else { return [] }
+            return Set(array.compactMap { UUID(uuidString: $0) })
+        }
+        set {
+            let array = newValue.map { $0.uuidString }
+            UserDefaults.standard.set(array, forKey: "deleted_registry_ids")
+        }
+    }
     private var cancellables = Set<AnyCancellable>()
     
     init() {
@@ -105,6 +115,11 @@ final class RegistryRepository: ObservableObject {
     // MARK: - Delete
     
     func deleteRegistry(id: UUID) {
+        // Track as deleted to ignore incoming socket sync updates for it
+        var currentDeleted = deletedRegistryIds
+        currentDeleted.insert(id)
+        deletedRegistryIds = currentDeleted
+        
         // 1. Remove from registries list
         registries.removeAll { $0.id == id }
         
@@ -239,6 +254,12 @@ final class RegistryRepository: ObservableObject {
     private func applyRemoteUpdate(_ dict: [String: Any]) {
         guard let idString = dict["id"] as? String,
               let id = UUID(uuidString: idString) else { return }
+        
+        // Ignore remote updates for registries that were deleted locally
+        if deletedRegistryIds.contains(id) {
+            print("📦 Ignoring remote update for recently deleted registry \(idString)")
+            return
+        }
         
         // Find if we have this registry
         if let index = registries.firstIndex(where: { $0.id == id }) {

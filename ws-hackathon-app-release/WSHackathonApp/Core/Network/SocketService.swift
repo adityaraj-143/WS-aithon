@@ -179,6 +179,14 @@ class SocketService: ObservableObject {
         ]
         socket?.emit(SocketEvents.connectUser, data)
         
+        // Retry pending deletions from UserDefaults to sync offline changes
+        if let deletedIds = UserDefaults.standard.stringArray(forKey: "deleted_registry_ids") {
+            for id in deletedIds {
+                print("🔄 Retrying delete_registry for \(id) on connect/reconnect")
+                deleteRegistry(id: id)
+            }
+        }
+        
         // Fetch users immediately after connecting
         fetchUsers()
     }
